@@ -7,7 +7,10 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
+  plugins: [
+    require("daisyui"),
+    require('tw-bootstrap-grid-optimizer')
+  ],
   daisyui: {
     themes: ["retro", "coffee"],
   },
