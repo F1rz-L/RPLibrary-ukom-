@@ -12,7 +12,7 @@ export default {
     require('tw-bootstrap-grid-optimizer')
   ],
   daisyui: {
-    themes: ["retro", "coffee"],
+    themes: ["retro", "coffee", "luxury"],
   },
 }
 
