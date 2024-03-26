@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 function Navbar() {
     return (
-        <div className="navbar bg-base-300 rounded-b-2xl px-8">
+        <div className="navbar bg-base-300 px-8">
             <div className="flex-1">
                 <Link to={"/"} className="btn btn-ghost text-xl w-1/12" 
                 // style={{ backgroundImage: "url(/RPLibrary.png)", backgroundSize: "72px 72px", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
