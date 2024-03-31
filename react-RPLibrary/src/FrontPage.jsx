@@ -8,6 +8,7 @@ import Skeleton from './Components/Skeleton';
 import HomePage from './Pages/HomePage';
 import { Route, Routes } from 'react-router-dom';
 import BookIndex from './Pages/BookIndex';
+import CartPage from './Pages/CartPage';
 
 function FrontPage() {
   return (
@@ -26,6 +27,7 @@ function FrontPage() {
             <Routes>
               <Route path="/" element={<HomePage />}/>
               <Route path="/book-index" element={<BookIndex />}/>
+              <Route path='/cart' element={<CartPage />}/>
             </Routes>
           </div>
         </div>

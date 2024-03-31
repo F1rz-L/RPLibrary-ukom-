@@ -12,12 +12,12 @@ function Book() {
                         <div className='rounded-lg col-4 glass flex justify-center align-middle'>
                             <img src="https://marketplace.canva.com/EAFPHUaBrFc/1/0/1003w/canva-black-and-white-modern-alone-story-book-cover-QHBKwQnsgzs.jpg" className='max-h-[75svh]' alt="" />
                         </div>
-                        <div className="col-8 h-fit">
+                        <div className="col-8 h-fit flex flex-col justify-between">
                             <div className='mx-8'>
                                 <h3 className="font-bold text-4xl">Alone : A True Story</h3>
                                 <p className="text-sm">by Morgan Maxwell</p>
                             </div>
-                            <div className="flex w-fit h-fit row mx-4 flex-col justify-center p-4 rounded-box my-4 bg-base-200 ">
+                            <div className="flex w-fit h-fit mx-4 flex-col justify-center p-4 rounded-box my-4 bg-base-200 ">
                                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit quos quam et, laboriosam quibusdam illo perferendis exercitationem hic possimus totam ipsa nam, saepe consequuntur magnam non fugiat deserunt. Minima, animi!</p>
                                 <div className="divider" />
                                 <div className='flex justify-center '>
@@ -37,8 +37,17 @@ function Book() {
                                     <p>PT. Dramedia Pustaka Utama</p>
                                 </div>
                             </div>
-                            <div className="row mt-4 flex justify-around h-fit self-bottom px-8">
-                                <h2 className='col-8 font-bold text-4xl'>Rp56.000</h2>
+                            <div className="mt-4 flex justify-between px-8">
+                                <div className='flex flex-col'>
+                                    <h2 className='col-8 font-bold text-4xl -mt-3'>Rp56.000</h2>
+                                    <div className="rating mt-2">
+                                        <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
+                                        <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
+                                        <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
+                                        <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
+                                        <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
+                                    </div>
+                                </div>
                                 <button className="btn btn-primary col-4">Add to cart</button>
                             </div>
                         </div>
