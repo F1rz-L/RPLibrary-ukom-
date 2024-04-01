@@ -1,0 +1,30 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.grad{
+    width: 100svw;
+    height: 100svh;
+    position: absolute;
+    z-index: 1;
+    background: radial-gradient(circle, transparent, grey 100%);
+}
+
+#bg-pattern{
+    width: 100svw;
+    height: 100svh;
+    background-image: url("assets/RPLibrary(pattern).png");
+    background-size: 7.5%;
+    background-position: 0% 0%;
+    animation: pan 180s infinite linear forwards;
+}
+
+@keyframes pan {
+    0%{
+        background-position: 0% 0%;
+    }
+    100%{
+        background-position:100% 150%;
+    }
+}
