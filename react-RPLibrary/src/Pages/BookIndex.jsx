@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import Skeleton from '../Components/Skeleton'
 import { link } from '../Axios/link'
-import Book from '../Components/Book'
+// import Book from '../Components/Book'
 import UseGet from '../Axios/UseGet'
 
 function BookIndex() {
 
     const [isi] = UseGet('/buku')
-    console.log(isi.data)
+    console.log(isi.data);
+    const [isLoading, setIsLoading] = useState(true);
+    const LoadedBook = lazy(() => import('../Components/Book'))
 
-    async function ambilData() {
-
-    }
+    useEffect(() => {
+        // Simulate an API call
+        setTimeout(() => {
+            setIsLoading(false);
+        }, Math.floor(Math.random() * 10) + 1);
+    }, []);
 
     return (
         <>
@@ -32,8 +37,15 @@ function BookIndex() {
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
                         isi.data?.map((data, index) => {
-                            return (<Book key={index} {...data} />)
+                            return (
+                                <>
+                                    <Suspense key={index} fallback={<Skeleton />}>
+                                        <LoadedBook {...data} />
+                                    </Suspense>
+                                </>
+                            )
                         })
+
                     }
                 </div>
                 {/* <div className="row">
@@ -46,7 +58,7 @@ function BookIndex() {
                         </div>
                     </div>
                 </div> */}
-                
+
             </div>
         </>
     )
