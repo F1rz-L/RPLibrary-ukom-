@@ -37,12 +37,17 @@ function Navbar() {
                     <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-2 z-[1] p-2 shadow bg-base-100 rounded-box">
                         <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
                             <div className="btn btn-circle avatar placeholder">
-                                <div className="w-20 bg-neutral text-neutral-content rounded-full">
+                                <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
                                     <span className='text-lg'>N</span>
                                 </div>
+
+                                {/* Bluemark, jika statuspelanggan = 2 */}
+                                <div className="w-10 h-10 -mt-4 -z-0"><img src="bookmark-3-svgrepo-com.svg" alt="" /></div>
                             </div>
                             <div className="justify-start">
-                                <h3 className='text-lg font-bold'>Name</h3>
+                                <div className="flex">
+                                    <h3 className='text-lg font-bold'>Name </h3>
+                                </div>
                                 <p className='text-sm'>Curator</p>
                                 <p className='text-sm'>email@email.com</p>
                             </div>
