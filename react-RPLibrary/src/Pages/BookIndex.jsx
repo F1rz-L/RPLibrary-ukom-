@@ -7,7 +7,7 @@ import UseGet from '../Axios/UseGet'
 function BookIndex() {
 
     const [isi] = UseGet('/buku')
-    // console.log(isi.data)
+    console.log(isi.data)
 
     async function ambilData() {
 
@@ -31,38 +31,12 @@ function BookIndex() {
                 </div>
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        // [isi.data].map((data, index) => {
-                        //     return (<Book {...data} key={index} />)
-                        //     console.log(data)
-                        // })
+                        isi.data?.map((data, index) => {
+                            return (<Book key={index} {...data} />)
+                        })
                     }
-                    <table className="table table-bordered mt-4 fs-6">
-                        <thead>
-                            <tr className="text-center">
-                                <th>No</th>
-                                <th>Kategori</th>
-                                <th>Menu</th>
-                                <th>Gambar</th>
-                                <th>Harga</th>
-                                <th>Hapus</th>
-                                <th>Ubah</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                [isi.data].map((data, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <th>{index + 1}</th>
-                                            <td>{value.judul}</td>
-                                        </tr>)
-                                    console.log(data);
-                                })
-                            }
-                        </tbody>
-                    </table>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                     <div className="flex w-full justify-center">
                         <div className="join">
                             <button className="join-item btn">1</button>
@@ -71,7 +45,8 @@ function BookIndex() {
                             <button className="join-item btn">4</button>
                         </div>
                     </div>
-                </div>
+                </div> */}
+                
             </div>
         </>
     )

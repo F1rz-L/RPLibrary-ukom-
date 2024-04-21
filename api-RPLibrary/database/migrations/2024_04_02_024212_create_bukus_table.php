@@ -23,12 +23,15 @@ return new class extends Migration
             $table->string('isbn13', 13);
             $table->float('rating');
             $table->string('cover');
+            $table->string('page_number');
+            $table->string('bahasa');
+            $table->string('harga');
             $table->string('namafile')->nullable();
             $table->timestamps();
         });
 
         $faker = Faker\Factory::create();
-        for($i = 0; $i < 10; $i++){
+        for($i = 0; $i < 50; $i++){
             Buku::create([
                 'judul' => $faker->sentence(),
                 'pengarang' => $faker->name,
@@ -37,7 +40,10 @@ return new class extends Migration
                 'tahun_terbit' => $faker->year,
                 'isbn13' => $faker->isbn13,
                 'rating' => $faker->numberBetween(0, 5),
-                'cover' => $faker->imageUrl(640, 480, 'books'),
+                'page_number' => $faker->numberBetween(0, 500),
+                'bahasa' => $faker->languageCode,
+                'harga' => $faker->numberBetween(10000, 100000),
+                'cover' => "https://picsum.photos/seed/".$faker->word."/360/480",
             ]);
         }
     }

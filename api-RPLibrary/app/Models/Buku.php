@@ -19,5 +19,8 @@ class Buku extends Model
         'cover',
         'isbn13',
         'rating',
+        'page_number',
+        'bahasa',
+        'harga',
     ];
 }

@@ -13,7 +13,7 @@ class BukuController extends Controller
      */
     public function index()
     {
-        //returns all buku
+        //returns all buku but paginate every 20 bukus
         $data = Buku::all();
         return response()->json([
             'message' => 'Success',
