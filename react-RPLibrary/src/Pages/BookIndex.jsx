@@ -7,7 +7,6 @@ import UseGet from '../Axios/UseGet'
 function BookIndex() {
 
     const [isi] = UseGet('/buku')
-    console.log(isi.data);
     const [isLoading, setIsLoading] = useState(true);
     const LoadedBook = lazy(() => import('../Components/Book'))
 
@@ -38,11 +37,9 @@ function BookIndex() {
                     {
                         isi.data?.map((data, index) => {
                             return (
-                                <>
-                                    <Suspense key={index} fallback={<Skeleton />}>
-                                        <LoadedBook {...data} />
-                                    </Suspense>
-                                </>
+                                <Suspense key={index} fallback={<Skeleton />}>
+                                    <LoadedBook {...data} />
+                                </Suspense>
                             )
                         })
 

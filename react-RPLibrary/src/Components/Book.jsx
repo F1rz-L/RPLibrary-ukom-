@@ -1,4 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { faBars, faEdit, faEllipsis, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { lazy, useEffect, useRef, useState } from 'react'
+import { link } from '../Axios/link';
 
 function Book(props) {
     function truncateString(str, num) {
@@ -10,22 +13,28 @@ function Book(props) {
         }
     }
 
+    function judulChecker(judul) {
+        if (judul.length > 30 && judul.length < 40) {
+            return (<h3 className="font-bold text-3xl">{judul}</h3>)
+        } if (judul.length > 40) {
+            return (<h3 className="font-bold text-2xl">{judul}</h3>)
+        } else {
+            return (<h3 className="font-bold text-4xl">{judul}</h3>)
+        }
+    }
+
+    function deleteBook(id) {
+        link.delete(`/buku/${id}`).then(() => {
+            window.location.reload()
+            console.log("deleted");
+        })
+    }
+
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [id, setId] = useState(props.idbuku)
     const [shortJudul, setShortJudul] = useState(truncateString(props.judul, 9))
     const [cover, setCover] = useState(props.cover)
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
-
-    // const [judul, setJudul] = useState('')
-    // const [pengarang, setPengarang] = useState('')
-    // const [deskripsi, setDeskripsi] = useState('')
-    // const [penerbit, setPenerbit] = useState('')
-    // const [isbn13, setIsbn13] = useState('')
-    // const [tahunTerbit, setTahunTerbit] = useState('')
-    // const [modalCover, setModalCover] = useState('')
-    // const [bahasa, setBahasa] = useState('')
-    // const [harga, setHarga] = useState('')
-    // const [pageNumber, setPageNumber] = useState('')
 
     const [judul, setJudul] = useState(props.judul)
     const [pengarang, setPengarang] = useState(props.pengarang)
@@ -33,10 +42,19 @@ function Book(props) {
     const [penerbit, setPenerbit] = useState(props.penerbit)
     const [isbn13, setIsbn13] = useState(props.isbn13)
     const [tahunTerbit, setTahunTerbit] = useState(props.tahun_terbit)
-    const [modalCover, setModalCover] = useState(props.cover)
     const [bahasa, setBahasa] = useState(props.bahasa)
     const [harga, setHarga] = useState(props.harga)
     const [pageNumber, setPageNumber] = useState(props.page_number)
+
+    async function fetchCover() {
+        try {
+            const response = await fetch(cover);
+            const data = await response.json();
+            return response;
+        } catch (error) {
+            console.error('Error fetching URL:', error);
+        }
+    }
 
     return (
         <>
@@ -47,11 +65,11 @@ function Book(props) {
                     </form>
                     <div className="row">
                         <div className='rounded-lg col-4 glass flex justify-center align-middle'>
-                            <img src={`${cover}`} className='max-h-[75svh]' alt="" />
+                            <img src={cover} className='max-h-[75svh]' alt="" />
                         </div>
                         <div className="col-8 h-fit flex flex-col justify-between overflow-y-auto">
                             <div className='mx-8'>
-                                <h3 className="font-bold text-4xl">{judul}</h3>
+                                {judulChecker(judul)}
                                 <p className="text-sm">By {pengarang}</p>
                             </div>
                             <div className="flex w-fit h-fit mx-4 flex-col justify-center p-4 rounded-box my-4 bg-base-200 ">
@@ -85,7 +103,16 @@ function Book(props) {
                                         <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
                                     </div>
                                 </div>
-                                <button className="btn btn-primary col-4">Add to cart</button>
+                                <div className='col-4 gap-2 flex'>
+                                    <button className="btn btn-primary">Add to cart</button>
+                                    <div className="dropdown dropdown-top">
+                                        <div tabIndex={0} role="button" className="btn btn-secondary"><FontAwesomeIcon icon={faBars} /></div>
+                                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
+                                            <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
+                                            <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -96,23 +123,11 @@ function Book(props) {
             </dialog>
 
             <div id='book' onClick={() => {
-                setModalIsOpen(true);
-                setJudul(props.judul)
-                setPengarang(props.pengarang)
-                setDeskripsi(props.deskripsi)
-                setPenerbit(props.penerbit)
-                setIsbn13(props.isbn13)
-                setTahunTerbit(props.tahun_terbit)
-                setModalCover(props.cover)
-                setBahasa(props.bahasa)
-                setHarga(props.harga)
-                setPageNumber(props.page_number)
-
                 document.getElementById(`bookInfoModal${id}`).showModal();
                 console.log(id, modalIsOpen, judul);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
                 <div className="w-36 h-48 bg-base-300 row flex justify-center align-middle rounded-t-box">
-                    <img src={`${cover}`} className='max-w-36 max-h-48 overflow-hidden ' />
+                    <img src={cover} className='max-w-36 max-h-48 overflow-hidden ' />
                 </div>
                 <div className="row mt-2 flex justify-center">
                     <h2 className='text-xl font-semibold'>{shortJudul}</h2>
