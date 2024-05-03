@@ -33,12 +33,16 @@ function GBookApi() {
             </form>
             <ul>
                 {books.map(function (book) {
+                    const isbn13 = book.volumeInfo.industryIdentifiers
+                    ? book.volumeInfo.industryIdentifiers.find(identifier => identifier.type === 'ISBN_13')
+                    : null;
                     return (
                         <div>
                             <li key={book.id}>{book.volumeInfo.title}</li><br />
                             <li key={book.id}>{book.volumeInfo.authors}</li><br />
                             <li key={book.id}>{book.volumeInfo.publishedDate}</li><br />
-                            <li key={book.id}>{book.volumeInfo.description}</li>
+                            <li key={book.id}>{book.volumeInfo.description}</li> <br />
+                            <li key={book.id}>{isbn13 ? isbn13.identifier : 'ISBN Not available'}</li>
                             <div className="divider"></div>
                         </div>
                     );

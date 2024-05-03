@@ -15,7 +15,7 @@ class BukuController extends Controller
      */
     public function index()
     {
-        //returns all buku but paginate every 20 bukus
+        // Controller untuk menampilkan semua buku
         $data = Buku::all();
         return response()->json([
             'message' => 'Success',
@@ -52,20 +52,27 @@ class BukuController extends Controller
      */
     public function edit($idbuku, StoreBukuRequest $request)
     {
-        //make an edit function with id
-        // $this->validate($request, [
-        //     'judul' => 'required',
-        //     'pengarang' => 'required',
-        //     'deskripsi' => 'required',
-        //     'penerbit' => 'required',
-        //     'tahun_terbit' => 'required',
-        //     'isbn13' => 'required',
-        //     'bahasa' => 'required',
-        //     'harga' => 'required',
-        //     'page_number' => 'required',
-        //     'cover' => 'required',
-        // ]);
-
+        
+    }
+    
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $idbuku)
+    {
+        $this->validate($request, [
+            'judul' => 'required',
+            'pengarang' => 'required',
+            'deskripsi' => 'required',
+            'penerbit' => 'required',
+            'tahun_terbit' => 'required',
+            'isbn13' => 'required',
+            'bahasa' => 'required',
+            'harga' => 'required',
+            'page_number' => 'required',
+            'cover' => 'required',
+        ]);
+        
         $data = [
             // 'judul' => $request->input('judul'),
             // 'pengarang' => $request->input('pengarang'),
@@ -103,14 +110,6 @@ class BukuController extends Controller
                 'data' => $data
             ], 400);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBukuRequest $request, Buku $buku)
-    {
-        //
     }
 
     /**

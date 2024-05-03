@@ -34,7 +34,7 @@ function Navbar() {
                             <span className='text-lg'>N</span>
                         </div>
                     </div>
-                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-2 z-[1] p-2 shadow bg-base-100 rounded-box">
+                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-1 z-[1] p-2 shadow bg-base-100 rounded-box">
                         <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
                             <div className="btn btn-circle avatar placeholder">
                                 <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
@@ -52,7 +52,7 @@ function Navbar() {
                                 <p className='text-sm'>email@email.com</p>
                             </div>
                         </div>
-                        {/* <li><Link to={"/profile"}>Profile Settings</Link></li> */}
+                        <li><Link to={"/transactions"}>Transactions</Link></li>
                         <li><Link to={"/login"}>Logout</Link></li>
                     </ul>
                 </div>

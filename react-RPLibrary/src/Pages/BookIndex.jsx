@@ -8,14 +8,7 @@ function BookIndex() {
 
     const [isi] = UseGet('/buku')
     const [isLoading, setIsLoading] = useState(true);
-    const LoadedBook = lazy(() => import('../Components/Book'))
-
-    useEffect(() => {
-        // Simulate an API call
-        setTimeout(() => {
-            setIsLoading(false);
-        }, Math.floor(Math.random() * 10) + 1);
-    }, []);
+    const LoadedBook = lazy(() => import('../Components/Book')) // Untuk menunggu buku diambil
 
     return (
         <>
@@ -33,16 +26,17 @@ function BookIndex() {
                         </select>
                     </form>
                 </div>
+
+                {/* memanggil semua buku yang ada di database table 'bukus' */}
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
                         isi.data?.map((data, index) => {
                             return (
                                 <Suspense key={index} fallback={<Skeleton />}>
                                     <LoadedBook {...data} />
-                                </Suspense>
+                                </Suspense> // Suspense digunakan untuk menunggu buku di load
                             )
                         })
-
                     }
                 </div>
                 {/* <div className="row">
