@@ -53,6 +53,8 @@ function Book(props) {
     const [bahasa, setBahasa] = useState(props.bahasa)
     const [harga, setHarga] = useState(props.harga)
     const [pageNumber, setPageNumber] = useState(props.page_number)
+    const [rating, setRating] = useState(props.rating)
+    const [namaFile, setNamaFile] = useState(props.namafile)
 
     // Untuk mengambil cover
     async function fetchCover() {
@@ -83,6 +85,8 @@ function Book(props) {
                             <input type="text" defaultValue={bahasa} className="input input-bordered w-20 text-center uppercase" />
                             <div className="divider divider-horizontal" />
                             <input type="text" defaultValue={tahunTerbit} className="input input-bordered w-20 text-center" />
+                            <div className="divider divider-horizontal" />
+                            <input type="text" defaultValue={rating} className="input input-bordered w-10 text-center" /><p className="text-xl mt-[0.6rem]">/5</p>
                         </div>
                         <div className="divider"></div>
                         <div className='flex justify-center '>
@@ -93,14 +97,7 @@ function Book(props) {
                     </div>
                     <div className="mt-6 flex justify-between px-8 h-1/6">
                         <div className='flex-col col-8'>
-                            <h2 className='text-4xl -mt-3'>Rp <input type="text" defaultValue={harga} className="input input-bordered w-28 h-10" /></h2>
-                            <div className="rating mt-2">
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                            </div>
+                            <h2 className='text-4xl'>Rp <input type="text" defaultValue={harga} className="input input-bordered w-28 h-10" /></h2>
                         </div>
                         <div className='col-4'>
                             <button className="btn btn-success text-white" onClick={() => setModalIsEditing(false)}>Confirm Edit</button>
@@ -124,6 +121,8 @@ function Book(props) {
                             <p className='uppercase'>{bahasa}</p>
                             <div className="divider divider-horizontal" />
                             <p>{tahunTerbit}</p>
+                            <div className="divider divider-horizontal" />
+                            <p className="row"><p className='mask mask-star-2 mr-1 mt-1 bg-orange-400 w-4 h-4'></p>{rating}/5</p>
                         </div>
                         <div className="divider"></div>
                         <div className='flex justify-center '>
@@ -134,21 +133,14 @@ function Book(props) {
                     </div>
                     <div className="mt-8 flex justify-between px-8 h-1/6">
                         <div className='flex flex-col'>
-                            <h2 className='col-8 font-bold text-4xl -mt-3'>Rp{harga}</h2>
-                            <div className="rating mt-2">
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                                <input type="radio" name="rating-2" className="mask mask-star-2 bg-orange-400" />
-                            </div>
+                            <h2 className='font-bold text-5xl'>Rp{harga}</h2>
                         </div>
-                        <div className='col-4 gap-2 flex'>
-                            <button className="btn btn-primary">Add to cart</button>
+                        <div className='gap-1 flex mr-4'>
+                            {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
+                            <button className="btn btn-secondary">Add to cart</button>
                             <div className="dropdown dropdown-top">
-                                <div tabIndex={0} role="button" className="btn btn-secondary"><FontAwesomeIcon icon={faBars} /></div>
+                                <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
                                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
-                                    {/* <li onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</li> */}
                                     <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
                                     <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
                                 </ul>
@@ -161,7 +153,7 @@ function Book(props) {
     }, [modalIsEditing])
 
     return (
-        <>  
+        <>
             {/* Modal/Pop-up untuk buku */}
             <dialog id={`bookInfoModal${id}`} className="modal">
                 <div className="modal-box w-5/6 max-w-5xl h-5/6 overflow-hidden">
@@ -185,13 +177,14 @@ function Book(props) {
             {/* Tampilan buku saat modal belum dibuka */}
             <div id='book' onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
-                console.log(id, modalIsOpen, judul);
+                console.log(id, judul, namaFile);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
                 <div className="w-36 h-48 bg-base-300 row flex justify-center align-middle rounded-t-box">
                     <img src={cover} className='max-w-36 max-h-48 overflow-hidden ' />
                 </div>
                 <div className="row mt-2 flex justify-center">
-                    <h2 className='text-xl font-semibold'>{shortJudul}</h2>
+                    { namaFile ? <img src="bluemark.svg" alt="" className='w-16 absolute -mt-2 ml-24 z-10' /> : null }
+                    <h2 className='text-xl font-semibold z-20'>{shortJudul}</h2>
                     <p className='text-sm text-gray-600'>{shortPengarang}</p>
                 </div>
             </div>

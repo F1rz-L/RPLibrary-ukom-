@@ -9,6 +9,7 @@ import HomePage from './Pages/HomePage';
 import { Route, Routes } from 'react-router-dom';
 import BookIndex from './Pages/BookIndex';
 import CartPage from './Pages/CartPage';
+import ReadPage from './Pages/ReadPage';
 
 function FrontPage() {
   return (
@@ -28,6 +29,7 @@ function FrontPage() {
               <Route path="/" element={<HomePage />}/>
               <Route path="/book-index" element={<BookIndex />}/>
               <Route path='/cart' element={<CartPage />}/>
+              {/* <Route path="/read" element={<ReadPage />} /> */}
             </Routes>
           </div>
         </div>

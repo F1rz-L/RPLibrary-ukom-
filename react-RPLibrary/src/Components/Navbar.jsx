@@ -42,7 +42,7 @@ function Navbar() {
                                 </div>
 
                                 {/* Bluemark, jika statuspelanggan = 2 */}
-                                <div className="w-10 h-10 -mt-4 -z-0"><img src="bookmark-3-svgrepo-com.svg" alt="" /></div>
+                                <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>
                             </div>
                             <div className="justify-start">
                                 <div className="flex">
