@@ -10,6 +10,7 @@ import { Route, Routes } from 'react-router-dom';
 import BookIndex from './Pages/BookIndex';
 import CartPage from './Pages/CartPage';
 import ReadPage from './Pages/ReadPage';
+import CreateBookPage from './Pages/CreateBookPage';
 
 function FrontPage() {
   return (
@@ -24,11 +25,12 @@ function FrontPage() {
           <div className="col-1 h-svh left-1 justify-center sticky top-1/4">
               <Sidebar />
           </div>
-          <div className="col-11 left-8">
+          <div className="col-10 left-8">
             <Routes>
               <Route path="/" element={<HomePage />}/>
               <Route path="/book-index" element={<BookIndex />}/>
               <Route path='/cart' element={<CartPage />}/>
+              <Route path="/create-book" element={<CreateBookPage />} />
               {/* <Route path="/read" element={<ReadPage />} /> */}
             </Routes>
           </div>

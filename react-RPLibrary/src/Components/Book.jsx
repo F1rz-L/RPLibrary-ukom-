@@ -1,10 +1,19 @@
-import { faBars, faEdit, faEllipsis, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faEdit, faEllipsis, faImage, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { lazy, useEffect, useRef, useState } from 'react'
 import { link } from '../Axios/link';
 import { Link } from 'react-router-dom';
+import { useForm } from "react-hook-form"
+
 
 function Book(props) {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+    } = useForm()
+
     // Untuk menyesuaikan panjang judul
     function truncateString(str, num) {
         if (str.length > num) {
@@ -36,6 +45,7 @@ function Book(props) {
         })
     }
 
+
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [modalIsEditing, setModalIsEditing] = useState(false)
     const [editContent, setEditContent] = useState()
@@ -56,6 +66,26 @@ function Book(props) {
     const [rating, setRating] = useState(props.rating)
     const [namaFile, setNamaFile] = useState(props.namafile)
 
+    function submitEdit(data) {
+        const formData = new URLSearchParams();
+        formData.append('judul', data.judul);
+        formData.append('pengarang', data.pengarang);
+        formData.append('deskripsi', data.deskripsi);
+        formData.append('penerbit', data.penerbit);
+        formData.append('isbn13', data.isbn13);
+        formData.append('bahasa', data.bahasa);
+        formData.append('harga', data.harga);
+        formData.append('page_number', data.pageNumber);
+        formData.append('rating', data.rating);
+        formData.append('tahun_terbit', data.tahunTerbit);
+        formData.append('cover', cover);
+
+        link.put(`/buku/${id}`, formData).then(res => {
+            console.log(res.data)
+            window.location.reload()
+        })
+    }
+
     // Untuk mengambil cover
     async function fetchCover() {
         try {
@@ -72,37 +102,45 @@ function Book(props) {
         if (modalIsEditing) {
             setEditContent(
                 <>
-                    <div className='mx-8'>
-                        <input type="text" defaultValue={judul} className='input input-bordered w-full' />
-                        <p className="text-sm">By <input type="text" defaultValue={pengarang} className="input input-bordered w-48 h-10 mt-1" /></p>
-                    </div>
-                    <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-3/6 overflow-auto">
-                        <textarea name="" defaultValue={deskripsi} rows="1.8" className="textarea textarea-bordered w-full overflow-hidden"></textarea>
-                        <div className="divider" />
-                        <div className='flex justify-center '>
-                            <input type="text" defaultValue={pageNumber} className="input input-bordered w-20 text-center" />
-                            <div className="divider divider-horizontal" />
-                            <input type="text" defaultValue={bahasa} className="input input-bordered w-20 text-center uppercase" />
-                            <div className="divider divider-horizontal" />
-                            <input type="text" defaultValue={tahunTerbit} className="input input-bordered w-20 text-center" />
-                            <div className="divider divider-horizontal" />
-                            <input type="text" defaultValue={rating} className="input input-bordered w-10 text-center" /><p className="text-xl mt-[0.6rem]">/5</p>
+                    <form onSubmit={handleSubmit(submitEdit)}>
+                        <div className='mx-8'>
+                            <input type="text" defaultValue={judul} {...register("judul", { required: true })} className='input input-bordered w-full' />
+                            {errors.judulRequired && <span>This field is required</span>}
+                            {/* <input type="text" defaultValue={judul} className='input input-bordered w-full' id="" /> */}
+                            <p className="text-sm">By <input type="text" defaultValue={pengarang} {...register("pengarang", { required: true })} className="input input-bordered w-48 h-10 mt-1" /> {errors.judulRequired && <span>This field is required</span>} </p>
                         </div>
-                        <div className="divider"></div>
-                        <div className='flex justify-center '>
-                            <p>ISBN13: <input type="text" defaultValue={isbn13} className="input input-bordered w-40" /></p>
-                            <div className="divider divider-horizontal" />
-                            <p><input type="text" defaultValue={penerbit} className="input input-bordered w-60" /></p>
+                        <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-3/6 overflow-auto">
+                            <textarea name="" defaultValue={deskripsi} {...register("deskripsi", { required: true })} rows="1.8" className="textarea textarea-bordered w-full overflow-hidden"></textarea>
+                            <div className="divider" />
+                            <div className='flex justify-center '>
+                                <input type="text" defaultValue={pageNumber} {...register("pageNumber", { required: true })} className="input input-bordered w-20 text-center" />
+                                <div className="divider divider-horizontal" />
+                                <input type="text" defaultValue={bahasa} {...register("bahasa", { required: true })} className="input input-bordered w-20 text-center uppercase" />
+                                <div className="divider divider-horizontal" />
+                                <input type="text" defaultValue={tahunTerbit} {...register("tahunTerbit", { required: true })} className="input input-bordered w-20 text-center" />
+                                <div className="divider divider-horizontal" />
+                                <input type="text" defaultValue={rating} {...register("rating", { required: true })} className="input input-bordered w-12 text-center" /><p className="text-xl mt-[0.6rem]">/5</p>
+                            </div>
+                            <div className="divider"></div>
+                            <div className='flex justify-center '>
+                                <p>ISBN13: <input type="text" defaultValue={isbn13} {...register("isbn13", { required: true })} className="input input-bordered w-40" /></p>
+                                <div className="divider divider-horizontal" />
+                                <input type="text" defaultValue={penerbit} {...register("penerbit", { required: true })} className="input input-bordered w-60" />
+                            </div>
                         </div>
-                    </div>
-                    <div className="mt-6 flex justify-between px-8 h-1/6">
-                        <div className='flex-col col-8'>
-                            <h2 className='text-4xl'>Rp <input type="text" defaultValue={harga} className="input input-bordered w-28 h-10" /></h2>
+                        <div className="mt-6 flex justify-between px-8 h-1/6">
+                            <div className='flex-col col-6'>
+                                <h2 className='text-4xl'>Rp <input type="text" defaultValue={harga} {...register("harga", { required: true })} className="input input-bordered w-28 h-10" /></h2>
+                            </div>
+                            <div className='col-6 flex gap-2'>
+                                {/* <input type="text" defaultValue={cover} {...register("cover", { required: true })} className="input input-bordered w-60" /> */}
+                                <input type="file" id="selectedFile" className='hidden' {...register("cover")} />
+                                <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedFile').click()} />
+                                {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
+                                <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" onClick={() => setModalIsEditing(false)} />
+                            </div>
                         </div>
-                        <div className='col-4'>
-                            <button className="btn btn-success text-white" onClick={() => setModalIsEditing(false)}>Confirm Edit</button>
-                        </div>
-                    </div>
+                    </form>
                 </>
             )
         } else {
@@ -122,7 +160,7 @@ function Book(props) {
                             <div className="divider divider-horizontal" />
                             <p>{tahunTerbit}</p>
                             <div className="divider divider-horizontal" />
-                            <p className="row"><p className='mask mask-star-2 mr-1 mt-1 bg-orange-400 w-4 h-4'></p>{rating}/5</p>
+                            <div className="row"><p className='mask mask-star-2 mr-1 mt-1 bg-orange-400 w-4 h-4'></p>{rating}/5</div>
                         </div>
                         <div className="divider"></div>
                         <div className='flex justify-center '>
@@ -170,7 +208,10 @@ function Book(props) {
                     </div>
                 </div>
                 <form method="dialog" className="modal-backdrop">
-                    <button onClick={() => setModalIsOpen(false)}>close</button>
+                    <button onClick={() => {
+                        setModalIsOpen(false);
+                        setModalIsEditing(false);
+                    }}>close</button>
                 </form>
             </dialog>
 
@@ -183,7 +224,7 @@ function Book(props) {
                     <img src={cover} className='max-w-36 max-h-48 overflow-hidden ' />
                 </div>
                 <div className="row mt-2 flex justify-center">
-                    { namaFile ? <img src="bluemark.svg" alt="" className='w-16 absolute -mt-2 ml-24 z-10' /> : null }
+                    {namaFile ? <img src="bluemark.svg" alt="" className='w-16 absolute -mt-2 ml-24 z-10' /> : null}
                     <h2 className='text-xl font-semibold z-20'>{shortJudul}</h2>
                     <p className='text-sm text-gray-600'>{shortPengarang}</p>
                 </div>

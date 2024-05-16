@@ -3,6 +3,9 @@ import Skeleton from '../Components/Skeleton'
 import { link } from '../Axios/link'
 // import Book from '../Components/Book'
 import UseGet from '../Axios/UseGet'
+import { faFeather } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
 function BookIndex() {
 
@@ -24,6 +27,7 @@ function BookIndex() {
                             <option value={"A - Z"}>A - Z</option>
                             <option value={"Z - A"}>Z - A</option>
                         </select>
+                        <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>
                     </form>
                 </div>
 

@@ -26,7 +26,7 @@ class BukuController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         //
     }
@@ -34,9 +34,27 @@ class BukuController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBukuRequest $request)
+    public function store(Request $request)
     {
-        //
+        $data = [
+            'judul' => $request->judul,
+            'pengarang' => $request->pengarang,
+            'deskripsi' => $request->deskripsi,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+            'isbn13' => $request->isbn13,
+            'bahasa' => $request->bahasa,
+            'harga' => $request->harga,
+            'page_number' => $request->page_number,
+            'cover' => $request->cover,
+            'rating' => $request->rating
+        ];
+
+        $buku = Buku::create($data);
+        return response()->json([
+            'message' => 'Berhasil Menambah Buku',
+            'data' => $buku
+        ], 200);
     }
 
     /**
@@ -60,18 +78,18 @@ class BukuController extends Controller
      */
     public function update(Request $request, $idbuku)
     {
-        $this->validate($request, [
-            'judul' => 'required',
-            'pengarang' => 'required',
-            'deskripsi' => 'required',
-            'penerbit' => 'required',
-            'tahun_terbit' => 'required',
-            'isbn13' => 'required',
-            'bahasa' => 'required',
-            'harga' => 'required',
-            'page_number' => 'required',
-            'cover' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'judul' => 'required',
+        //     'pengarang' => 'required',
+        //     'deskripsi' => 'required',
+        //     'penerbit' => 'required',
+        //     'tahun_terbit' => 'required',
+        //     'isbn13' => 'required',
+        //     'bahasa' => 'required',
+        //     'harga' => 'required',
+        //     'page_number' => 'required',
+        //     'cover' => 'required',
+        // ]);
         
         $data = [
             // 'judul' => $request->input('judul'),
@@ -101,7 +119,7 @@ class BukuController extends Controller
 
         if ($buku) {
             return response()->json([
-                'message' => 'Berhasil mengedit buku',
+                'message' => 'Berhasil mengedit buku!',
                 'data' => $data
             ], 200);
         } else {

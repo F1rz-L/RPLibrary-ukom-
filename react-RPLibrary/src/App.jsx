@@ -7,6 +7,7 @@ import Register from "./Register";
 import { ReactLenis, useLenis } from '@studio-freight/react-lenis'
 import GBookApi from "./Pages/GBookApi";
 import ReadPage from "./Pages/ReadPage";
+import CreateBookPage from "./Pages/CreateBookPage";
 
 function App() {
     const lenis = useLenis(({ scroll }) => {

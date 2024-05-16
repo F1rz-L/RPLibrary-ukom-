@@ -9,7 +9,7 @@ function Footer() {
                     <p className="font-bold">
                         RPLibrary Ltd. <br />Improving literacy rate since 2024.
                     </p>
-                    <p>Copyright © 2024 - Society Group</p>
+                    <p>Copyright © 2024 - Society Group - Meikarta Apart Saffron Blok N</p>
                     <p>All rights reserved.</p>
                 </aside>
             </footer>
