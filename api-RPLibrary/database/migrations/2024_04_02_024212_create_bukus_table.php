@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('tahun_terbit');
             $table->string('isbn13', 13);
             $table->float('rating');
-            $table->string('cover');
+            $table->string('cover')->nullable();
             $table->string('page_number');
             $table->string('bahasa');
             $table->string('harga');

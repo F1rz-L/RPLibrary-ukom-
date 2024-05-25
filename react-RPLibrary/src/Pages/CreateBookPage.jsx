@@ -36,7 +36,7 @@ function CreateBookPage() {
     }
 
 
-    function submitEdit(data) {
+    function createBook(data) {
         const formData = new URLSearchParams();
         formData.append('judul', data.judul);
         formData.append('pengarang', data.pengarang);
@@ -48,7 +48,7 @@ function CreateBookPage() {
         formData.append('page_number', data.page_number);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahun_terbit);
-        formData.append('cover', data.cover);
+        formData.append('cover', '');
 
         link.post(`/buku`, formData).then(res => {
             console.log(res.data)
@@ -61,7 +61,7 @@ function CreateBookPage() {
             <div className="flex">
                 <h1 className='text-5xl ml-8 mb-4 row justify-start font-extrabold'>Input Buku Baru</h1>
             </div>
-            <form onSubmit={handleSubmit(submitEdit)}>
+            <form onSubmit={handleSubmit(createBook)}>
                 <div className="rounded-box bg-base-200 m-4 p-8 flex flex-col gap-2">
                     <label htmlFor="" className="form-control">
                         <span className="label-text">ISBN 13</span>

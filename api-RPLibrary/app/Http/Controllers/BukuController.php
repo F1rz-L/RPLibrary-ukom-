@@ -23,6 +23,26 @@ class BukuController extends Controller
         ], 200);
     }
 
+    public function filter($filter)
+    {
+        switch ($filter) {
+            case 'newest':
+                $data = Buku::orderBy('created_at', 'desc')->get();
+                break;
+            case 'oldest':
+                $data = Buku::orderBy('created_at', 'asc')->get();
+                break;
+            default:
+                $data = Buku::all();
+                break;
+        }
+
+        return response()->json([
+            'message' => 'Data filtered',
+            'data' => $data,
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -70,9 +90,8 @@ class BukuController extends Controller
      */
     public function edit($idbuku, StoreBukuRequest $request)
     {
-        
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
@@ -90,30 +109,40 @@ class BukuController extends Controller
         //     'page_number' => 'required',
         //     'cover' => 'required',
         // ]);
-        
-        $data = [
-            // 'judul' => $request->input('judul'),
-            // 'pengarang' => $request->input('pengarang'),
-            // 'deskripsi' => $request->input('deskripsi'),
-            // 'penerbit' => $request->input('penerbit'),
-            // 'tahun_terbit' => $request->input('tahun_terbit'),
-            // 'isbn13' => $request->input('isbn13'),
-            // 'bahasa' => $request->input('bahasa'),
-            // 'harga' => $request->input('harga'),
-            // 'page_number' => $request->input('page_number'),
-            // 'cover' => $request->input('cover'),
 
-            'judul' => $request->judul,
-            'pengarang' => $request->pengarang,
-            'deskripsi' => $request->deskripsi,
-            'penerbit' => $request->penerbit,
-            'tahun_terbit' => $request->tahun_terbit,
-            'isbn13' => $request->isbn13,
-            'bahasa' => $request->bahasa,
-            'harga' => $request->harga,
-            'page_number' => $request->page_number,
-            'cover' => $request->cover
-        ];
+        if ($request->hasFile('cover')) {
+            $nama_cover = $request->file('cover')->getClientOriginalName();
+            $request->file('cover')->move(public_path('book_cover'), $nama_cover);
+            $data = [
+                'judul' => $request->judul,
+                'pengarang' => $request->pengarang,
+                'deskripsi' => $request->deskripsi,
+                'penerbit' => $request->penerbit,
+                'tahun_terbit' => $request->tahun_terbit,
+                'isbn13' => $request->isbn13,
+                'bahasa' => $request->bahasa,
+                'harga' => $request->harga,
+                'page_number' => $request->page_number,
+                'cover' => url('book_cover/' . $nama_cover),
+                'rating' => $request->rating,
+                'namafile' => $request->namafile,
+            ];
+        } else {
+            $data = [
+                'judul' => $request->judul,
+                'pengarang' => $request->pengarang,
+                'deskripsi' => $request->deskripsi,
+                'penerbit' => $request->penerbit,
+                'tahun_terbit' => $request->tahun_terbit,
+                'isbn13' => $request->isbn13,
+                'bahasa' => $request->bahasa,
+                'harga' => $request->harga,
+                'page_number' => $request->page_number,
+                'rating' => $request->rating,
+                'namafile' => $request->namafile,
+            ];
+        }
+
 
         $buku = Buku::where('idbuku', $idbuku)->update($data);
 

@@ -78,22 +78,36 @@ function Book(props) {
         formData.append('page_number', data.pageNumber);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahunTerbit);
-        formData.append('cover', cover);
+        formData.append('namafile', data.namaFile);
+        formData.append('cover', data.cover);
 
         link.put(`/buku/${id}`, formData).then(res => {
-            console.log(res.data)
+            console.log(res.data, res.data.cover)
             window.location.reload()
         })
     }
 
-    // Untuk mengambil cover
-    async function fetchCover() {
-        try {
-            const response = await fetch(cover);
-            const data = await response.json();
-            return response;
-        } catch (error) {
-            console.error('Error fetching URL:', error);
+    function coverChecker(state) {
+        if (state == "initial") {
+            if (!cover) {
+                return (
+                    <img src={"RPLibrary(placeholder).jpg"} className='' />
+                )
+            } else {
+                return (
+                    <img src={cover} className=' overflow-hidden ' />
+                )
+            }
+        } if (state == "modal") {
+            if (!cover) {
+                return (
+                    <img src={"RPLibrary(placeholder).jpg"} className='max-h-[75svh]' />
+                )
+            } else {
+                return (
+                    <img src={cover} className='max-h-[75svh] ' />
+                )
+            }
         }
     }
 
@@ -134,8 +148,10 @@ function Book(props) {
                             </div>
                             <div className='col-6 flex gap-2'>
                                 {/* <input type="text" defaultValue={cover} {...register("cover", { required: true })} className="input input-bordered w-60" /> */}
-                                <input type="file" id="selectedFile" className='hidden' {...register("cover")} />
-                                <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedFile').click()} />
+                                <input type="file" id="selectedIMG" className='hidden' {...register("cover")} />
+                                <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
+                                <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
+                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
                                 <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" onClick={() => setModalIsEditing(false)} />
                             </div>
@@ -196,11 +212,14 @@ function Book(props) {
             <dialog id={`bookInfoModal${id}`} className="modal">
                 <div className="modal-box w-5/6 max-w-5xl h-5/6 overflow-hidden">
                     <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => setModalIsOpen(false)}>✕</button>
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => {
+                            setModalIsOpen(false)
+                            setModalIsEditing(false)
+                        }}>✕</button>
                     </form>
                     <div className="row flex h-max">
                         <div className='rounded-lg col-4 glass flex justify-center align-middle h-1/6'>
-                            <img src={cover} className='max-h-[75svh]' alt="" />
+                            {coverChecker("modal")}
                         </div>
                         <div className="col-8 flex-col">
                             {editContent}
@@ -218,10 +237,10 @@ function Book(props) {
             {/* Tampilan buku saat modal belum dibuka */}
             <div id='book' onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
-                console.log(id, judul, namaFile);
+                console.log(id, judul, namaFile, cover);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
-                <div className="w-36 h-48 bg-base-300 row flex justify-center align-middle rounded-t-box">
-                    <img src={cover} className='max-w-36 max-h-48 overflow-hidden ' />
+                <div className="w-36 h-48 bg-base-300 row justify-center align-middle rounded-t-box">
+                    {coverChecker("initial")}
                 </div>
                 <div className="row mt-2 flex justify-center">
                     {namaFile ? <img src="bluemark.svg" alt="" className='w-16 absolute -mt-2 ml-24 z-10' /> : null}

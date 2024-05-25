@@ -1,12 +1,81 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ThemeControl from './ThemeControl'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import UseGet from '../Axios/UseGet'
 
 function Navbar() {
+    const navigate = useNavigate()
+    // const [role, setRole] = useState('')
+    // const [navProfile, setNavProfile] = useState('')
+
+    function getUser() {
+        if (sessionStorage.getItem('iduser')) {
+            const iduser = sessionStorage.getItem('iduser');
+            const [user] = UseGet(`user/${iduser}`);
+            console.log(user, sessionStorage.getItem('iduser'));
+            // const inisial = await user.data.nama.slice(0, 1);
+            
+            // switch (user.data.status) {
+            //     case 0:
+            //         setRole("Admin")
+            //         break;
+            //     case 1:
+            //         setRole("Member")
+            //         break;
+            //     case 2:
+            //         setRole("Bluemark")
+            //         break;
+            //     case 3:
+            //         setRole("Curator")
+            //         break;
+            // }
+
+        //         return (
+        //             <div className="dropdown dropdown-end mx-2">
+        //                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar placeholder">
+        //                     <div className="w-10 bg-neutral text-neutral-content rounded-full">
+        //                         <span className='text-lg'>{inisial}</span>
+        //                     </div>
+        //                 </div>
+        //                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-1 z-[1] p-2 shadow bg-base-100 rounded-box">
+        //                     <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
+        //                         <div className="btn btn-circle avatar placeholder">
+        //                             <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
+        //                                 <span className='text-lg'>{inisial}</span>
+        //                             </div>
+
+        //                             {/* Bluemark, jika statuspelanggan = 2 */}
+        //                             <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>
+        //                         </div>
+        //                         <div className="justify-start">
+        //                             <div className="flex">
+        //                                 <h3 className='text-lg font-bold'>Name</h3>
+        //                             </div>
+        //                             {/* <p className='text-sm'>{role}</p> */}
+        //                             <p className='text-sm'>email@email.com</p>
+        //                         </div>
+        //                     </div>
+        //                     <li><Link to={"/transactions"}>Transactions</Link></li>
+        //                     <li onClick={() => logout()} className=''><a>Logout</a></li>
+        //                 </ul>
+        //             </div>
+        //         )
+        //     } else {
+        //         return (
+        //             <button className="btn btn-ghost">Login</button>
+        //         )
+        }
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        navigate('/login')
+    }
+
     return (
         <div className="navbar bg-base-300 px-8">
             <div className="flex-1">
-                <Link to={"/"} className="btn btn-ghost text-xl w-1/12" 
+                <Link to={"/"} className="btn btn-ghost text-xl w-1/12"
                 // style={{ backgroundImage: "url(/RPLibrary.png)", backgroundSize: "72px 72px", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
                 >
                     <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10' />
@@ -28,33 +97,8 @@ function Navbar() {
                         <ThemeControl />
                     </a>
                 </div>
-                <div className="dropdown dropdown-end mx-2">
-                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar placeholder">
-                        <div className="w-10 bg-neutral text-neutral-content rounded-full">
-                            <span className='text-lg'>N</span>
-                        </div>
-                    </div>
-                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-1 z-[1] p-2 shadow bg-base-100 rounded-box">
-                        <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
-                            <div className="btn btn-circle avatar placeholder">
-                                <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
-                                    <span className='text-lg'>N</span>
-                                </div>
-
-                                {/* Bluemark, jika statuspelanggan = 2 */}
-                                <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>
-                            </div>
-                            <div className="justify-start">
-                                <div className="flex">
-                                    <h3 className='text-lg font-bold'>Name </h3>
-                                </div>
-                                <p className='text-sm'>Curator</p>
-                                <p className='text-sm'>email@email.com</p>
-                            </div>
-                        </div>
-                        <li><Link to={"/transactions"}>Transactions</Link></li>
-                        <li><Link to={"/login"}>Logout</Link></li>
-                    </ul>
+                <div>
+                    {getUser()}
                 </div>
             </div>
         </div>

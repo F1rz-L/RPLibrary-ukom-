@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pelanggan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,9 +15,10 @@ class AuthController extends Controller
     {
         $user = new User();
         $rules = [
-            'name' => 'required',
+            'nama' => 'required',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required'
+            'password' => 'required',
+            'alamat' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -26,9 +28,10 @@ class AuthController extends Controller
                 'status' => false
             ], 400);
         } else {
-            $user->name = $request->name;
+            $user->nama = $request->nama;
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
+            $user->alamat = $request->alamat;
             $user->save();
 
             return response()->json([
@@ -64,6 +67,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'user' => $user,
+                'iduser' => $user->id,
                 'token_type' => 'Bearer',
                 'auth_token' => $token,
             ], 200);

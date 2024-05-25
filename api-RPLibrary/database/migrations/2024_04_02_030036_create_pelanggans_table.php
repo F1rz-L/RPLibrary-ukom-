@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Pelanggan;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,16 +12,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelanggans', function (Blueprint $table) {
-            $table->increments('idpelanggan');
-            $table->string('nama');
-            $table->string('email');
-            $table->string('password');
-            $table->string('alamat');
-            $table->integer('status');
-            
-            $table->timestamps();
-        });
+        // Schema::create('pelanggans', function (Blueprint $table) {
+        //     $table->increments('idpelanggan');
+        //     $table->string('nama');
+        //     $table->string('email');
+        //     $table->string('password');
+        //     $table->string('alamat');
+        //     $table->integer('status')->default(1)->nullable();
+
+        //     $table->timestamps();
+        // });
+
+        // $faker = Faker\Factory::create();
+        // Pelanggan::create([
+        //     'nama' => 'admin',
+        //     'email' => 'adm@g.cc',
+        //     'password' => bcrypt('123'),
+        //     'alamat' => 'Aloha Regency'
+        // ]);
     }
 
     /**
