@@ -5,65 +5,70 @@ import UseGet from '../Axios/UseGet'
 
 function Navbar() {
     const navigate = useNavigate()
-    // const [role, setRole] = useState('')
+    const [role, setRole] = useState('')
     // const [navProfile, setNavProfile] = useState('')
+
 
     function getUser() {
         if (sessionStorage.getItem('iduser')) {
             const iduser = sessionStorage.getItem('iduser');
             const [user] = UseGet(`user/${iduser}`);
-            console.log(user, sessionStorage.getItem('iduser'));
-            // const inisial = await user.data.nama.slice(0, 1);
-            
-            // switch (user.data.status) {
-            //     case 0:
-            //         setRole("Admin")
-            //         break;
-            //     case 1:
-            //         setRole("Member")
-            //         break;
-            //     case 2:
-            //         setRole("Bluemark")
-            //         break;
-            //     case 3:
-            //         setRole("Curator")
-            //         break;
+            console.log(user.data?.status, sessionStorage.getItem('iduser'));
+
+            const inisial = user.data?.nama.slice(0, 1);
+            const statusUser = user.data?.status;
+            const [bluemark, setBluemark] = useState(true);
+
+            // if (statusUser == 1) {
+            //     setBluemark(false)
             // }
 
-        //         return (
-        //             <div className="dropdown dropdown-end mx-2">
-        //                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar placeholder">
-        //                     <div className="w-10 bg-neutral text-neutral-content rounded-full">
-        //                         <span className='text-lg'>{inisial}</span>
-        //                     </div>
-        //                 </div>
-        //                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-1 z-[1] p-2 shadow bg-base-100 rounded-box">
-        //                     <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
-        //                         <div className="btn btn-circle avatar placeholder">
-        //                             <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
-        //                                 <span className='text-lg'>{inisial}</span>
-        //                             </div>
+            function roleChecker() {
+                if (statusUser == 0) {
+                    return 'Admin'
+                } else if (statusUser == 1) {
+                    return 'User'
+                } else if (statusUser == 2) {
+                    return 'Bluemark'
+                } else if (statusUser == 3) {
+                    return 'Curator'
+                }
+            }
 
-        //                             {/* Bluemark, jika statuspelanggan = 2 */}
-        //                             <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>
-        //                         </div>
-        //                         <div className="justify-start">
-        //                             <div className="flex">
-        //                                 <h3 className='text-lg font-bold'>Name</h3>
-        //                             </div>
-        //                             {/* <p className='text-sm'>{role}</p> */}
-        //                             <p className='text-sm'>email@email.com</p>
-        //                         </div>
-        //                     </div>
-        //                     <li><Link to={"/transactions"}>Transactions</Link></li>
-        //                     <li onClick={() => logout()} className=''><a>Logout</a></li>
-        //                 </ul>
-        //             </div>
-        //         )
-        //     } else {
-        //         return (
-        //             <button className="btn btn-ghost">Login</button>
-        //         )
+            return (
+                <div className="dropdown dropdown-end mx-2">
+                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar placeholder">
+                        <div className="w-10 bg-neutral text-neutral-content rounded-full">
+                            <span className='text-lg'>{inisial}</span>
+                        </div>
+                    </div>
+                    <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 gap-1 z-[1] p-2 shadow bg-base-100 rounded-box">
+                        <div className='container bg-base-200 rounded-box p-6 flex gap-2 justify-start'>
+                            <div className="btn btn-circle avatar placeholder">
+                                <div className="w-20 bg-neutral text-neutral-content rounded-full z-10">
+                                    <span className='text-lg'>{inisial}</span>
+                                </div>
+                                {/* Bluemark, jika statuspelanggan = 2 */}
+                                {bluemark ? <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>: null}
+                            </div>
+                            <div className="justify-start">
+                                <div className="flex">
+                                    <h3 className='text-lg font-bold pr-20'>{user.data?.nama}</h3>
+                                </div>
+                                <p className='text-sm'>{roleChecker()}</p>
+                                <p className='text-sm'>{user.data?.email}</p>
+                                <p className='text-sm bg-base-300 mt-2 p-2 rounded-box'>{user.data?.alamat}</p>
+                            </div>
+                        </div>
+                        <li><Link to={"/transactions"}>Transactions</Link></li>
+                        <li onClick={() => logout()} className=''><a>Logout</a></li>
+                    </ul>
+                </div>
+            )
+        } else {
+            return (
+                <Link to={"/login"} className="btn btn-accent mx-4 text-white">Login</Link>
+            )
         }
     }
 

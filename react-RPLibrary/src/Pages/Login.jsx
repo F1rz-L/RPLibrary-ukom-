@@ -23,6 +23,7 @@ function Login() {
 
         link.post(`/login`, formData).then(res => {
             sessionStorage.setItem('iduser', res.data.user.id)
+            sessionStorage.setItem('status_user', res.data.user.status)
             sessionStorage.setItem('auth_token', res.data.auth_token)
             console.log(sessionStorage.getItem('auth_token'), sessionStorage.getItem('iduser'))
             navigate('/')
@@ -49,9 +50,9 @@ function Login() {
                         <button type="submit" className="btn btn-primary mt-4">Login</button>
                     </form>
                     <p className='text-sm text-center'>Don't have an account? <Link to={"/register"} className="link">Register</Link>.</p>
-                    <button onClick={() => {
+                    {/* <button onClick={() => {
                         console.log(sessionStorage.getItem('token'), sessionStorage.getItem('iduser'));
-                    }}>test token</button>
+                    }}>test token</button> */}
                 </div>
             </div>
         </>

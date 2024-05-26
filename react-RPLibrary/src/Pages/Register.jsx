@@ -19,7 +19,8 @@ function Register() {
     function submitForm(data) {
         const formData = new URLSearchParams();
         formData.append('email', data.email);
-        formData.append('name', data.name);
+        formData.append('nama', data.nama);
+        formData.append('alamat', data.alamat);
         formData.append('password', data.password);
 
         link.post(`/register`, formData).then(res => {
@@ -37,7 +38,7 @@ function Register() {
                     <form onSubmit={handleSubmit(submitForm)} className="flex justify-center gap-1 flex-col mt-4">
                         <label className="input input-bordered flex items-center gap-2">
                             <FontAwesomeIcon icon={faIdCard} />
-                            <input type="text" name='name' {...register("nama", { required: true })} className="grow placeholder-neutral" placeholder="Nama" />
+                            <input type="text" name='nama' {...register("nama", { required: true })} className="grow placeholder-neutral" placeholder="Nama" />
                         </label>
                         <label className="input input-bordered flex items-center gap-2">
                             <FontAwesomeIcon icon={faMapLocationDot} />
