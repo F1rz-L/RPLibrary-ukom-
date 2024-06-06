@@ -53,6 +53,8 @@ function Book(props) {
     const [shortJudul, setShortJudul] = useState(truncateString(props.judul, 9))
     const [cover, setCover] = useState(props.cover)
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
+    const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
+    const [cart, setCart] = useState([])
 
     const [judul, setJudul] = useState(props.judul)
     const [pengarang, setPengarang] = useState(props.pengarang)
@@ -65,6 +67,16 @@ function Book(props) {
     const [pageNumber, setPageNumber] = useState(props.page_number)
     const [rating, setRating] = useState(props.rating)
     const [namaFile, setNamaFile] = useState(props.namafile)
+
+    function addToCart(){
+    //     setCart([...cart, {
+    //         id: props.id,
+    //         jumlah: 1,
+    //     }])
+    //     sessionStorage.setItem('cart', JSON.stringify(cart))
+    //     console.log(JSON.parse(sessionStorage.getItem('cart')));
+    //     // setModalIsOpen(false)
+    }
 
     function submitEdit(data) {
         const formData = new URLSearchParams();
@@ -166,7 +178,7 @@ function Book(props) {
                         {judulChecker(judul)}
                         <p className="text-sm">By {pengarang}</p>
                     </div>
-                    <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-3/6 overflow-auto">
+                    <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-64 overflow-auto">
                         <p>{deskripsi}</p>
                         <div className="divider" />
                         <div className='flex justify-center '>
@@ -191,7 +203,8 @@ function Book(props) {
                         </div>
                         <div className='gap-1 flex mr-4'>
                             {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
-                            <button className="btn btn-secondary">Add to cart</button>
+                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={addToCart}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
+                            {isNotAdmin ? null : 
                             <div className="dropdown dropdown-top">
                                 <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
                                 <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
@@ -199,6 +212,7 @@ function Book(props) {
                                     <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
                                 </ul>
                             </div>
+                            }
                         </div>
                     </div>
                 </>
@@ -237,7 +251,7 @@ function Book(props) {
             {/* Tampilan buku saat modal belum dibuka */}
             <div id='book' onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
-                console.log(id, judul, namaFile, cover);
+                console.log(id, judul, namaFile, isNotAdmin);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
                 <div className="w-36 h-48 bg-base-300 row justify-center align-middle rounded-t-box">
                     {coverChecker("initial")}

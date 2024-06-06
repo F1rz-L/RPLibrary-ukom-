@@ -17,11 +17,15 @@ function Navbar() {
 
             const inisial = user.data?.nama.slice(0, 1);
             const statusUser = user.data?.status;
-            const [bluemark, setBluemark] = useState(true);
-
-            // if (statusUser == 1) {
-            //     setBluemark(false)
-            // }
+            const [bluemark, setBluemark] = useState(async function () {
+                if (await statusUser == 2) {
+                    console.log("Bluemark!");
+                    return true
+                } else {
+                    console.log("!Bluemark");
+                    return false
+                }
+            });
 
             function roleChecker() {
                 if (statusUser == 0) {
@@ -30,6 +34,7 @@ function Navbar() {
                     return 'User'
                 } else if (statusUser == 2) {
                     return 'Bluemark'
+                    setBluemark(true)
                 } else if (statusUser == 3) {
                     return 'Curator'
                 }
@@ -49,7 +54,7 @@ function Navbar() {
                                     <span className='text-lg'>{inisial}</span>
                                 </div>
                                 {/* Bluemark, jika statuspelanggan = 2 */}
-                                {bluemark ? <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div>: null}
+                                {bluemark ? <div className="w-10 h-10 -mt-4 -z-0"><img src="bluemark.svg" alt="" /></div> : null}
                             </div>
                             <div className="justify-start">
                                 <div className="flex">
@@ -83,7 +88,7 @@ function Navbar() {
                 <Link to={"/"} className="btn btn-ghost text-xl w-1/12"
                 // style={{ backgroundImage: "url(/RPLibrary.png)", backgroundSize: "72px 72px", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
                 >
-                    <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10' />
+                    <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10 -mt-2' />
                 </Link>
             </div>
             <div className="flex-none">

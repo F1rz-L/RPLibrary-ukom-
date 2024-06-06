@@ -39,15 +39,15 @@ function CartPage() {
                     <div className='text-neutral-600 text-sm mx-4'>
                         <div className="flex justify-between">
                             <p className='text-lg'>Subtotal <span className='italic text-sm'>(3 items)</span></p>
-                            <p className='text-lg'>Rp00.000</p>
+                            <p className='text-lg'>Rp56.000</p>
                         </div>
                         <div className="flex justify-between">
-                            <p className='text-lg'>Tax</p>
-                            <p className='text-lg'>Rp00.000</p>
+                            <p className='text-lg'>Tax <span className='italic text-sm'>(10%)</span></p>
+                            <p className='text-lg'>Rp5.600</p>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between mt-4">
                             <p className='text-lg'>Total</p>
-                            <p className='text-lg'>Rp00.000</p>
+                            <p className='text-lg font-bold'>Rp61.600</p>
                         </div>
                     </div>
                     <div className="row flex justify-center mx-8 my-4">

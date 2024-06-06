@@ -34,7 +34,16 @@ function BookIndex() {
 
     const [isi] = UseGet('/buku')
     const [isLoading, setIsLoading] = useState(true);
+    const [isNotAdmin, setIsNotAdmin] = useState(true)
     const LoadedBook = lazy(() => import('../Components/Book')) // Untuk menunggu buku diambil
+
+    useEffect(() => {
+        if (sessionStorage.getItem('status_user') != 0) {
+            setIsNotAdmin(true)
+        } else {
+            setIsNotAdmin(false)
+        }
+    }, []);
 
     return (
         <>
@@ -52,8 +61,8 @@ function BookIndex() {
                             <option value={"A-Z"}>A - Z</option>
                             <option value={"Z-A"}>Z - A</option>
                         </select>
-                        <input type="submit" value="Filter" />
-                        <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>
+                        {/* <input type="submit" value="Filter" /> */}
+                        {isNotAdmin ? null : <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>}
                     </form>
                 </div>
 
