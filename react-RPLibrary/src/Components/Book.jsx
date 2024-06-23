@@ -54,7 +54,7 @@ function Book(props) {
     const [cover, setCover] = useState(props.cover)
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
-    const [cart, setCart] = useState([])
+    const [cart, setCart] = useState({})
 
     const [judul, setJudul] = useState(props.judul)
     const [pengarang, setPengarang] = useState(props.pengarang)
@@ -69,13 +69,8 @@ function Book(props) {
     const [namaFile, setNamaFile] = useState(props.namafile)
 
     function addToCart(){
-    //     setCart([...cart, {
-    //         id: props.id,
-    //         jumlah: 1,
-    //     }])
-    //     sessionStorage.setItem('cart', JSON.stringify(cart))
-    //     console.log(JSON.parse(sessionStorage.getItem('cart')));
-    //     // setModalIsOpen(false)
+        setCart = JSON.stringify(sessionStorage.getItem('cart')) + id;
+        sessionStorage.setItem('cart', JSON.parse(cart))
     }
 
     function submitEdit(data) {
@@ -95,6 +90,7 @@ function Book(props) {
 
         link.put(`/buku/${id}`, formData).then(res => {
             console.log(res.data, res.data.cover)
+            setModalIsEditing(false)
             window.location.reload()
         })
     }
@@ -131,9 +127,9 @@ function Book(props) {
                     <form onSubmit={handleSubmit(submitEdit)}>
                         <div className='mx-8'>
                             <input type="text" defaultValue={judul} {...register("judul", { required: true })} className='input input-bordered w-full' />
-                            {errors.judulRequired && <span>This field is required</span>}
-                            {/* <input type="text" defaultValue={judul} className='input input-bordered w-full' id="" /> */}
-                            <p className="text-sm">By <input type="text" defaultValue={pengarang} {...register("pengarang", { required: true })} className="input input-bordered w-48 h-10 mt-1" /> {errors.judulRequired && <span>This field is required</span>} </p>
+                            {errors.judul && <span>This field is required</span>}
+                            <p className="text-sm">By <input type="text" defaultValue={pengarang} {...register("pengarang", { required: true })} className="input input-bordered w-48 h-10 mt-1" /> 
+                            {errors.pengarang && <span>This field is required</span>} </p>
                         </div>
                         <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-3/6 overflow-auto">
                             <textarea name="" defaultValue={deskripsi} {...register("deskripsi", { required: true })} rows="1.8" className="textarea textarea-bordered w-full overflow-hidden"></textarea>
@@ -160,12 +156,12 @@ function Book(props) {
                             </div>
                             <div className='col-6 flex gap-2'>
                                 {/* <input type="text" defaultValue={cover} {...register("cover", { required: true })} className="input input-bordered w-60" /> */}
-                                <input type="file" id="selectedIMG" className='hidden' {...register("cover")} />
-                                <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
-                                <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
-                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
+                                <input type="file" id="selectedIMG" className='' {...register("cover")} />
+                                {/* <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} /> */}
+                                {/* <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
+                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} /> */}
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
-                                <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" onClick={() => setModalIsEditing(false)} />
+                                <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white"/>
                             </div>
                         </div>
                     </form>

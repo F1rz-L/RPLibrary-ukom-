@@ -139,7 +139,7 @@ class BukuController extends Controller
                 'harga' => $request->harga,
                 'page_number' => $request->page_number,
                 'rating' => $request->rating,
-                'namafile' => $request->namafile,
+                // 'namafile' => $request->namafile,
             ];
         }
 
