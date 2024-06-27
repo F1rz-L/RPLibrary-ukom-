@@ -33,6 +33,7 @@ function BookIndex() {
     }
 
     const [isi] = UseGet('/buku')
+    const [cart, setCart] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [isNotAdmin, setIsNotAdmin] = useState(true)
     const LoadedBook = lazy(() => import('../Components/Book')) // Untuk menunggu buku diambil
@@ -44,6 +45,21 @@ function BookIndex() {
             setIsNotAdmin(false)
         }
     }, []);
+
+    // useEffect(() => {
+    //     const storedCart = JSON.parse(sessionStorage.getItem('cart'));
+    //     if (storedCart) {
+    //       setCart(storedCart);
+    //     }
+    // }, []);
+
+    // useEffect(() => {
+    //     sessionStorage.setItem('cart', JSON.stringify(cart));
+    // }, [cart]);
+    
+    // function addToCart(product) {
+    //     setCart([...cart, product]);
+    // };
 
     return (
         <>

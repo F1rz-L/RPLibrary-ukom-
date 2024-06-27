@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 
 
-function Book(props) {
+const Book = (props, addToCart) => {
     const {
         register,
         handleSubmit,
@@ -54,7 +54,7 @@ function Book(props) {
     const [cover, setCover] = useState(props.cover)
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
-    const [cart, setCart] = useState({})
+    const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')))
 
     const [judul, setJudul] = useState(props.judul)
     const [pengarang, setPengarang] = useState(props.pengarang)
@@ -69,8 +69,11 @@ function Book(props) {
     const [namaFile, setNamaFile] = useState(props.namafile)
 
     function addToCart(){
-        setCart = JSON.stringify(sessionStorage.getItem('cart')) + id;
-        sessionStorage.setItem('cart', JSON.parse(cart))
+            setCart([...cart, id])
+            sessionStorage.setItem('cart', JSON.stringify(cart))
+        
+
+        console.log(JSON.parse(sessionStorage.getItem('cart')));
     }
 
     function submitEdit(data) {
@@ -199,7 +202,7 @@ function Book(props) {
                         </div>
                         <div className='gap-1 flex mr-4'>
                             {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
-                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={addToCart}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
+                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => {addToCart()}}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
                             {isNotAdmin ? null : 
                             <div className="dropdown dropdown-top">
                                 <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
