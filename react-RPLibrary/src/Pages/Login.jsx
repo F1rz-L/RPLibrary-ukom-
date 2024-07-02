@@ -25,7 +25,7 @@ function Login() {
             sessionStorage.setItem('iduser', res.data.user.id)
             sessionStorage.setItem('status_user', res.data.user.status)
             sessionStorage.setItem('auth_token', res.data.auth_token)
-            sessionStorage.setItem('cart', {})
+            sessionStorage.setItem('cart', "[]")
             console.log(sessionStorage.getItem('auth_token'), sessionStorage.getItem('iduser'))
             navigate('/')
         })

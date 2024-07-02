@@ -2,17 +2,19 @@ import { faBars, faEdit, faEllipsis, faImage, faTrash } from '@fortawesome/free-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { lazy, useEffect, useRef, useState } from 'react'
 import { link } from '../Axios/link';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form"
 
 
-const Book = (props, addToCart) => {
+function Book(props) {
     const {
         register,
         handleSubmit,
         watch,
         formState: { errors },
     } = useForm()
+
+    const navigate = useNavigate()
 
     // Untuk menyesuaikan panjang judul
     function truncateString(str, num) {
@@ -40,8 +42,8 @@ const Book = (props, addToCart) => {
     // Untuk menghapus buku
     function deleteBook(id) {
         link.delete(`/buku/${id}`).then(() => {
-            window.location.reload()
             console.log(`deleted ${id}`);
+            window.location.reload()
         })
     }
 
@@ -67,14 +69,17 @@ const Book = (props, addToCart) => {
     const [pageNumber, setPageNumber] = useState(props.page_number)
     const [rating, setRating] = useState(props.rating)
     const [namaFile, setNamaFile] = useState(props.namafile)
-
+    
     function addToCart(){
-            setCart([...cart, id])
-            sessionStorage.setItem('cart', JSON.stringify(cart))
-        
-
-        console.log(JSON.parse(sessionStorage.getItem('cart')));
+        setCart([...cart, id])
+        setTimeout(() => {
+            navigate('/cart')
+        }, 1000);
     }
+    
+    useEffect(() => {
+        sessionStorage.setItem('cart', JSON.stringify(cart))
+    }, [cart])
 
     function submitEdit(data) {
         const formData = new URLSearchParams();
