@@ -80,9 +80,14 @@ class BukuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Buku $buku)
+    public function show($idbuku)
     {
-        //
+        //get singular buku
+        $data = Buku::where('idbuku', $idbuku)->get();
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
     }
 
     /**

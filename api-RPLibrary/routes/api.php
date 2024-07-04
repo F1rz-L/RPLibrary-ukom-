@@ -37,6 +37,7 @@ Route::get('/user/{id}', [UserController::class, 'show']);
 
 Route::post('/buku', [BukuController::class, 'store']); // Create Buku
 Route::get('/buku', [BukuController::class, 'index']); // Read Buku
+Route::get('/buku/{id}', [BukuController::class, 'show']); // Read Singular Buku
 Route::put('/buku/{id}', [BukuController::class, 'update']); // Update Buku
 Route::delete('/buku/{id}', [BukuController::class, 'destroy']); // Delete Buku
 Route::get('/buku/{filter}', [BukuController::class, 'filter']); // Filter Buku
