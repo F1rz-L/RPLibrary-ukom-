@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { link } from './link'
 
 function UseGet(url) {
-    const [isi, setIsi] = React.useState([])
+    const [isi, setIsi] = useState([])
 
     useEffect(() => {
-
-        async function fetchData(){
+        async function fetchData() {
+        /**
+         * Function to fetch data asynchronously.
+         */
             const result = await link.get(url)
             setIsi(result.data)
         }

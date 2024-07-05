@@ -69,14 +69,14 @@ function Book(props) {
     const [pageNumber, setPageNumber] = useState(props.page_number)
     const [rating, setRating] = useState(props.rating)
     const [namaFile, setNamaFile] = useState(props.namafile)
-    
-    function addToCart(){
+
+    function addToCart() {
         setCart([...cart, id])
         setTimeout(() => {
-            navigate('/cart')
-        }, 1000);
+            window.location.reload()
+        }, 500);
     }
-    
+
     useEffect(() => {
         sessionStorage.setItem('cart', JSON.stringify(cart))
     }, [cart])
@@ -136,8 +136,8 @@ function Book(props) {
                         <div className='mx-8'>
                             <input type="text" defaultValue={judul} {...register("judul", { required: true })} className='input input-bordered w-full' />
                             {errors.judul && <span>This field is required</span>}
-                            <p className="text-sm">By <input type="text" defaultValue={pengarang} {...register("pengarang", { required: true })} className="input input-bordered w-48 h-10 mt-1" /> 
-                            {errors.pengarang && <span>This field is required</span>} </p>
+                            <p className="text-sm">By <input type="text" defaultValue={pengarang} {...register("pengarang", { required: true })} className="input input-bordered w-48 h-10 mt-1" />
+                                {errors.pengarang && <span>This field is required</span>} </p>
                         </div>
                         <div className="mx-4 justify-center p-4 rounded-box my-4 bg-base-200 h-3/6 overflow-auto">
                             <textarea name="" defaultValue={deskripsi} {...register("deskripsi", { required: true })} rows="1.8" className="textarea textarea-bordered w-full overflow-hidden"></textarea>
@@ -169,7 +169,7 @@ function Book(props) {
                                 {/* <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
                                 <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} /> */}
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
-                                <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white"/>
+                                <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" />
                             </div>
                         </div>
                     </form>
@@ -207,15 +207,15 @@ function Book(props) {
                         </div>
                         <div className='gap-1 flex mr-4'>
                             {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
-                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => {addToCart()}}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
-                            {isNotAdmin ? null : 
-                            <div className="dropdown dropdown-top">
-                                <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
-                                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
-                                    <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                                    <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
-                                </ul>
-                            </div>
+                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
+                            {isNotAdmin ? null :
+                                <div className="dropdown dropdown-top">
+                                    <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
+                                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
+                                        <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
+                                        <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                                    </ul>
+                                </div>
                             }
                         </div>
                     </div>
