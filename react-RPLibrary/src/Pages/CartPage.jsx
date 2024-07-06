@@ -6,34 +6,44 @@ function CartPage() {
     const [daftarBuku] = UseGet('/buku')
     const [cart, setCart] = useState([])
     const [total, setTotal] = useState(0)
+
+    const taxRate = 0.11; // 11% tax rate
     let subtotal = 0;
+    let taxation = 0;
 
     useEffect(() => {
         const cartData = JSON.parse(sessionStorage.getItem('cart'));
         setCart(cartData || []);
     }, []);
 
+    function handleDelete(id) {
+        const updatedCart = cart.filter(function (item) {
+            return item.id !== id;
+        });
+        sessionStorage.setItem('cart', JSON.stringify(updatedCart));
+        window.location.reload();
+    }
+
     function calculateSubtotal() {
-    
-        cart.forEach(id => {
-            const buku = daftarBuku?.data?.[id];
+        cart.forEach(item => {
+            const buku = daftarBuku?.data?.[item.id - 1];
             if (buku) {
-                console.log(`Adding harga ${buku.harga} for buku with id ${id}`);
                 subtotal += Number(buku.harga);
-                console.log(`Current subtotal: ${subtotal}`);
             }
         });
-    
-        return subtotal;
+
+        return subtotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
 
     function calculateTax() {
-        const taxRate = 0.1; // 10% tax rate
-        return subtotal * taxRate;
+        taxation = subtotal * taxRate;
+        return taxation.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
 
-    function calculateTotal(subtotal, tax) {
-        return subtotal + tax;
+    function calculateTotal() {
+        const total = subtotal + taxation;
+
+        return total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
 
 
@@ -54,8 +64,8 @@ function CartPage() {
             );
         }
 
-        return cart?.map((id, index) => {
-            const buku = daftarBuku?.data?.[id - 1]
+        return cart?.map((item, index) => {
+            const buku = daftarBuku?.data?.[item?.id - 1]
             if (!buku) return null;
 
             return (
@@ -68,7 +78,7 @@ function CartPage() {
                                 <p className="text-sm">by {buku.pengarang}</p>
                             </div>
                             <div className='flex-row justify-between flex'>
-                                <h3 className='font-bold text-3xl'>{buku.harga}<span className='text-lg font-normal'>/pcs</span></h3>
+                                <h3 className='font-bold text-3xl'>{Number(buku.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}<span className='text-lg font-normal'>/pcs</span></h3>
                                 <div className='flex py-2'>
                                     <div className='bg-base-200 rounded-box flex font-bold'>
                                         <button className="btn btn-sm btn-square btn-ghost">-</button>
@@ -76,7 +86,7 @@ function CartPage() {
                                         <button className="btn btn-sm btn-square btn-ghost">+</button>
                                     </div>
                                     {/* delete button */}
-                                    <button className="btn mx-2 btn-sm btn-square btn-ghost">X</button>
+                                    <button className="btn mx-2 btn-sm btn-square btn-ghost" onClick={() => handleDelete(buku.id)}>X</button>
                                 </div>
                             </div>
                         </div>
@@ -88,8 +98,8 @@ function CartPage() {
     }
 
     useEffect(() => {
-        console.log('Daftar Buku:', daftarBuku);
-        console.log('Cart:', cart);
+        // console.log('Daftar Buku:', daftarBuku);
+        // console.log('Cart:', cart);
     }, [daftarBuku, cart]);
 
     return (
@@ -113,12 +123,12 @@ function CartPage() {
                                 <p className='text-lg'>{calculateSubtotal()}</p>
                             </div>
                             <div className="flex justify-between">
-                                <p className='text-lg'>Tax <span className='italic text-sm'>(10%)</span></p>
+                                <p className='text-lg'>Tax <span className='italic text-sm'>(11%)</span></p>
                                 <p className='text-lg'>{calculateTax()}</p>
                             </div>
                             <div className="flex justify-between mt-4">
                                 <p className='text-lg'>Total</p>
-                                <p className='text-lg font-bold'>{calculateTotal(calculateSubtotal(), calculateTax())}</p>
+                                <p className='text-lg font-bold'>{calculateTotal()}</p>
                             </div>
                         </div>
                         <div className="row flex justify-center mx-8 my-4">

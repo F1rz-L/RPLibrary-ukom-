@@ -71,7 +71,11 @@ function Book(props) {
     const [namaFile, setNamaFile] = useState(props.namafile)
 
     function addToCart() {
-        setCart([...cart, id])
+        setCart([...cart, {
+            id: id,
+            jumlah: 1
+        }])
+        
         setTimeout(() => {
             window.location.reload()
         }, 500);
