@@ -6,6 +6,7 @@ function CartPage() {
     const [daftarBuku] = UseGet('/buku')
     const [cart, setCart] = useState([])
     const [total, setTotal] = useState(0)
+    const [jumlahCart, setJumlahCart] = useState(0)
 
     const taxRate = 0.11; // 11% tax rate
     let subtotal = 0;
@@ -16,19 +17,30 @@ function CartPage() {
         setCart(cartData || []);
     }, []);
 
-    function handleDelete(id) {
-        const updatedCart = cart.filter(function (item) {
-            return item.id !== id;
-        });
+    function handleDelete(index) {
+        let updatedCart = [...cart];
+        updatedCart.splice(index, 1);
         sessionStorage.setItem('cart', JSON.stringify(updatedCart));
-        window.location.reload();
+        setCart(updatedCart);
+    }
+
+    function handleQuantityChange(index, quantity) {
+        if (quantity <= 0) {
+            handleDelete(index);
+            return;
+        } else {
+            let updatedCart = [...cart];
+            updatedCart[index].jumlah = quantity;
+            sessionStorage.setItem('cart', JSON.stringify(updatedCart));
+            setCart(updatedCart);
+        }
     }
 
     function calculateSubtotal() {
         cart.forEach(item => {
             const buku = daftarBuku?.data?.[item.id - 1];
             if (buku) {
-                subtotal += Number(buku.harga);
+                subtotal += Number(buku.harga) * item.jumlah;
             }
         });
 
@@ -46,6 +58,13 @@ function CartPage() {
         return total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
     }
 
+    useEffect(() => {
+        let jumlah = 0
+        cart.forEach(item => {
+            jumlah += item.jumlah
+        })
+        setJumlahCart(jumlah);
+    }, [cart]);
 
     function cartContent() {
         if (cart.length === 0) {
@@ -67,6 +86,7 @@ function CartPage() {
         return cart?.map((item, index) => {
             const buku = daftarBuku?.data?.[item?.id - 1]
             if (!buku) return null;
+            console.log(buku?.judul + " : " + index);
 
             return (
                 <div key={index}>
@@ -81,12 +101,12 @@ function CartPage() {
                                 <h3 className='font-bold text-3xl'>{Number(buku.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}<span className='text-lg font-normal'>/pcs</span></h3>
                                 <div className='flex py-2'>
                                     <div className='bg-base-200 rounded-box flex font-bold'>
-                                        <button className="btn btn-sm btn-square btn-ghost">-</button>
-                                        <p className='text-lg pt-1 px-2'>1</p>
-                                        <button className="btn btn-sm btn-square btn-ghost">+</button>
+                                        <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah - 1)}>-</button>
+                                        <p className='text-lg pt-1 px-2'>{item.jumlah}</p>
+                                        <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah + 1)}>+</button>
                                     </div>
                                     {/* delete button */}
-                                    <button className="btn mx-2 btn-sm btn-square btn-ghost" onClick={() => handleDelete(buku.id)}>X</button>
+                                    <button className="btn mx-2 btn-sm btn-square btn-ghost" onClick={() => handleDelete(index)}>X</button>
                                 </div>
                             </div>
                         </div>
@@ -97,10 +117,6 @@ function CartPage() {
         });
     }
 
-    useEffect(() => {
-        // console.log('Daftar Buku:', daftarBuku);
-        // console.log('Cart:', cart);
-    }, [daftarBuku, cart]);
 
     return (
         <>
@@ -119,7 +135,7 @@ function CartPage() {
                         <div className="divider mt-1"></div>
                         <div className='text-neutral-600 text-sm mx-4'>
                             <div className="flex justify-between">
-                                <p className='text-lg'>Subtotal <span className='italic text-sm'>({cart?.length} items)</span></p>
+                                <p className='text-lg'>Subtotal <span className='italic text-sm'>({jumlahCart} items)</span></p>
                                 <p className='text-lg'>{calculateSubtotal()}</p>
                             </div>
                             <div className="flex justify-between">
