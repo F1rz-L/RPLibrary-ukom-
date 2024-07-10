@@ -4,6 +4,7 @@ import React, { lazy, useEffect, useRef, useState } from 'react'
 import { link } from '../Axios/link';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form"
+import axios from 'axios';
 
 
 function Book(props) {
@@ -78,7 +79,7 @@ function Book(props) {
         
         setTimeout(() => {
             window.location.reload()
-        }, 500);
+        }, 200);
     }
 
     useEffect(() => {
@@ -86,7 +87,8 @@ function Book(props) {
     }, [cart])
 
     function submitEdit(data) {
-        const formData = new URLSearchParams();
+        const token = sessionStorage.getItem('auth_token');
+        const formData = new FormData();
         formData.append('judul', data.judul);
         formData.append('pengarang', data.pengarang);
         formData.append('deskripsi', data.deskripsi);
@@ -98,13 +100,24 @@ function Book(props) {
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahunTerbit);
         formData.append('namafile', data.namaFile);
-        formData.append('cover', data.cover);
+        formData.append('cover', data.cover[0], data.cover[0].name);
 
-        link.put(`/buku/${id}`, formData).then(res => {
-            console.log(res.data, res.data.cover)
-            setModalIsEditing(false)
+        console.log(formData);
+
+        axios.post(`http://127.0.0.1:8000/api/buku/${id}?_method=PUT`, formData, { 
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }}
+        ).then(res => {
             window.location.reload()
         })
+
+        // link.put(`/buku/${id}`, formData).then(res => {
+        //     console.log(res.data, res.data.cover)
+        //     setModalIsEditing(false)
+        //     window.location.reload()
+        // })
     }
 
     function coverChecker(state) {
@@ -115,7 +128,7 @@ function Book(props) {
                 )
             } else {
                 return (
-                    <img src={cover} className=' overflow-hidden ' />
+                    <img src={cover} className='' />
                 )
             }
         } if (state == "modal") {
@@ -125,7 +138,7 @@ function Book(props) {
                 )
             } else {
                 return (
-                    <img src={cover} className='max-h-[75svh] ' />
+                    <img src={cover} className='h-[75svh] ' />
                 )
             }
         }
@@ -167,11 +180,10 @@ function Book(props) {
                                 <h2 className='text-4xl'>Rp <input type="text" defaultValue={harga} {...register("harga", { required: true })} className="input input-bordered w-28 h-10" /></h2>
                             </div>
                             <div className='col-6 flex gap-2'>
-                                {/* <input type="text" defaultValue={cover} {...register("cover", { required: true })} className="input input-bordered w-60" /> */}
-                                <input type="file" id="selectedIMG" className='' {...register("cover")} />
-                                {/* <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} /> */}
-                                {/* <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
-                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} /> */}
+                                <input type="file" id="selectedIMG" name='cover' className='hidden' {...register("cover")} />
+                                <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
+                                <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
+                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
                                 <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" />
                             </div>
@@ -207,7 +219,7 @@ function Book(props) {
                     </div>
                     <div className="mt-8 flex justify-between px-8 h-1/6">
                         <div className='flex flex-col'>
-                            <h2 className='font-bold text-5xl'>Rp{harga}</h2>
+                            <h2 className='font-bold text-5xl'>{Number(harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h2>
                         </div>
                         <div className='gap-1 flex mr-4'>
                             {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
@@ -261,7 +273,7 @@ function Book(props) {
                 document.getElementById(`bookInfoModal${id}`).showModal();
                 console.log(id, judul, namaFile, isNotAdmin);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
-                <div className="w-36 h-48 bg-base-300 row justify-center align-middle rounded-t-box">
+                <div className="bg-base-300 row overflow-hidden h-48 w-36 rounded-t-box">
                     {coverChecker("initial")}
                 </div>
                 <div className="row mt-2 flex justify-center">

@@ -39,21 +39,23 @@ function GBookApi() {
                     {/* <li key={book.id}>{isbn13 ? isbn13.identifier : 'ISBN Not available'}</li> */}
                     return (
                         <div>
-                            <li key={book.id}>{book.volumeInfo.title}</li><br />
-                            <li key={book.id}>{book.volumeInfo.authors}</li><br />
-                            <li key={book.id}>{book.volumeInfo.publishedDate}</li><br />
-                            <li key={book.id}>{book.volumeInfo.description}</li> <br />
-                            <li key={book.id}><img src={book.volumeInfo.imageLinks?.thumbnail} alt={book.volumeInfo.title} /></li>
-                            <li key={book.id}>{book.volumeInfo.pageCount}</li>
-                            <li key={book.id}>{book.volumeInfo.language}</li>
-                            <li key={book.id}>{book.volumeInfo.categories}</li>
-                            <li key={book.id}>{book.volumeInfo.publisher}</li>
-                            <li key={book.id}>{book.volumeInfo.averageRating}</li>
+                            <li key={book.id}>ttl: {book.volumeInfo.title}</li><br />
+                            <li key={book.id}>auth: {book.volumeInfo.authors}</li><br />
+                            <li key={book.id}>pubdate: {book.volumeInfo.publishedDate}</li><br />
+                            <li key={book.id}>desc: {book.volumeInfo.description}</li> <br />
+                            <li key={book.id}><img src={book.volumeInfo.imageLinks?.thumbnail} alt={"COVER NOT AVAILABLE"} /></li>
+                            <li key={book.id}>page: {book.volumeInfo.pageCount}</li>
+                            <li key={book.id}>lang: {book.volumeInfo.language}</li>
+                            {/* <li key={book.id}>{book.volumeInfo.categories}</li> */}
+                            <li key={book.id}>pub: {book.volumeInfo.publisher}</li>
+                            <li key={book.id}>rate: {book.volumeInfo.averageRating}</li>
                             <li key={book.id}>{book.volumeInfo.ratingsCount}</li>
-                            <li key={book.id}>{book.volumeInfo.maturityRating}</li>
+                            <li key={book.id}>isbn: {book.volumeInfo.industryIdentifiers?.find(identifier => identifier.type === 'ISBN_13').identifier}</li>
+
+                            {/* <li key={book.id}>{book.volumeInfo.maturityRating}</li>
                             <li key={book.id}>{book.volumeInfo.infoLink}</li>
                             <li key={book.id}>{book.volumeInfo.canonicalVolumeLink}</li>
-                            <li key={book.id}>{book.volumeInfo.previewLink}</li>
+                            <li key={book.id}>{book.volumeInfo.previewLink}</li> */}
                             {/* <li key={book.id}>{book.volumeInfo.industryIdentifiers.find(identifier => identifier.type === 'ISBN_13').identifier}</li> */}
                             <div className="divider"></div>
                         </div>

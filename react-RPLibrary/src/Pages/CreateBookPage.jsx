@@ -4,11 +4,13 @@ import { link } from '../Axios/link';
 import { Link, redirect, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 function CreateBookPage() {
     const {
         register,
         handleSubmit,
+        setValue,
         watch,
         formState: { errors },
     } = useForm()
@@ -16,10 +18,37 @@ function CreateBookPage() {
     const navigate = useNavigate()
     const [inputSubmitted, setInputSubmitted] = useState(false);
     const [query, setQuery] = useState('');
+    const [bookData, setBookData] = useState(null);
 
-    function handleChange(event) {
-        setQuery(event.target.value);
+    async function fetchBookData(event) {
+        event.preventDefault();
+        try {
+            const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
+                params: {
+                    q: `isbn:${query}`,
+                }
+            });
+            const book = response.data.items[0].volumeInfo;
+            setBookData(book);
+
+            // Set form values with fetched book data
+            setValue('judul', book.title);
+            setValue('pengarang', book.authors.join(', '));
+            setValue('deskripsi', book.description);
+            setValue('penerbit', book.publisher);
+            setValue('bahasa', book.language.toUpperCase());
+            setValue('tahun_terbit', book.publishedDate);
+            setValue('rating', book.averageRating);
+            setValue('page_number', book.pageCount);
+            setValue('cover', book.imageLinks?.thumbnail || '');
+        } catch (error) {
+            console.error('Error fetching books:', error);
+        }
     }
+
+    // function handleChange(event) {
+    //     setQuery(event.target.value);
+    // }
 
     async function GBook(event) {
         event.preventDefault();
@@ -37,7 +66,8 @@ function CreateBookPage() {
 
 
     function createBook(data) {
-        const formData = new URLSearchParams();
+        // console.log(data);
+        const formData = new FormData();
         formData.append('judul', data.judul);
         formData.append('pengarang', data.pengarang);
         formData.append('deskripsi', data.deskripsi);
@@ -48,7 +78,11 @@ function CreateBookPage() {
         formData.append('page_number', data.page_number);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahun_terbit);
-        formData.append('cover', '');
+        formData.append('cover', data.cover);
+        
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
         link.post(`/buku`, formData).then(res => {
             console.log(res.data)
@@ -66,8 +100,9 @@ function CreateBookPage() {
                     <label htmlFor="" className="form-control">
                         <span className="label-text">ISBN 13</span>
                         <div className='flex gap-1'>
-                            <input type="text" id='isbn13' {...register("isbn13", { required: true })} className="input input-bordered w-40" />
-                            <span><button className='btn btn-secondary' ><FontAwesomeIcon icon={faGlobe} />Import from Books API</button></span>
+                            <input type="text" id='isbn13' {...register("isbn13", { required: true })} value={query} onChange={(e) => setQuery(e.target.value)} className="input input-bordered w-40" />
+                            {/* <span><button className='btn btn-secondary' ><FontAwesomeIcon icon={faGlobe} />Import from Books API</button></span> */}
+                            <input type="button" className='btn btn-secondary' onClick={fetchBookData} value="Import from Books API" />
                         </div>
                         <span className="label-text text-red-700">{errors.isbn13 && "ISBN 13 harus diisi"}</span>
                     </label>
@@ -103,7 +138,7 @@ function CreateBookPage() {
                     </label>
                     <label htmlFor="" className="form-control">
                         <span className="label-text">Rating</span>
-                        <input type="text" id='rating' {...register("rating", { required: true })} className="input input-bordered w-10" />
+                        <input type="text" id='rating' {...register("rating", { required: true })} className="input input-bordered w-12" />
                         <span className="label-text text-red-700">{errors.rating && "Rating harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">

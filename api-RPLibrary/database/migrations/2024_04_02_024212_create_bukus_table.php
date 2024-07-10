@@ -17,7 +17,7 @@ return new class extends Migration
             // $table->integer('idgenre');
             $table->string('judul');
             $table->string('pengarang');
-            $table->string('deskripsi');
+            $table->string('deskripsi', 2160);
             $table->string('penerbit');
             $table->string('tahun_terbit');
             $table->string('isbn13', 13);
