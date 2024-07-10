@@ -76,7 +76,7 @@ function Book(props) {
             id: id,
             jumlah: 1
         }])
-        
+
         setTimeout(() => {
             window.location.reload()
         }, 200);
@@ -100,15 +100,18 @@ function Book(props) {
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahunTerbit);
         formData.append('namafile', data.namaFile);
-        formData.append('cover', data.cover[0], data.cover[0].name);
+        if (data.cover) {
+            formData.append('cover', data.cover?.[0]);
+        }
 
-        console.log(formData);
+        console.log(data.cover);
 
-        axios.post(`http://127.0.0.1:8000/api/buku/${id}?_method=PUT`, formData, { 
+        axios.post(`http://127.0.0.1:8000/api/buku/${id}?_method=PUT`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${token}`
-            }}
+            }
+        }
         ).then(res => {
             window.location.reload()
         })

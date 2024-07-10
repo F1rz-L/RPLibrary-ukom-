@@ -45,12 +45,12 @@ function GBookApi() {
                             <li key={book.id}>desc: {book.volumeInfo.description}</li> <br />
                             <li key={book.id}><img src={book.volumeInfo.imageLinks?.thumbnail} alt={"COVER NOT AVAILABLE"} /></li>
                             <li key={book.id}>page: {book.volumeInfo.pageCount}</li>
-                            <li key={book.id}>lang: {book.volumeInfo.language}</li>
+                            <li key={book.id}>lang: {book.volumeInfo?.language}</li>
                             {/* <li key={book.id}>{book.volumeInfo.categories}</li> */}
-                            <li key={book.id}>pub: {book.volumeInfo.publisher}</li>
-                            <li key={book.id}>rate: {book.volumeInfo.averageRating}</li>
-                            <li key={book.id}>{book.volumeInfo.ratingsCount}</li>
-                            <li key={book.id}>isbn: {book.volumeInfo.industryIdentifiers?.find(identifier => identifier.type === 'ISBN_13').identifier}</li>
+                            <li key={book.id}>pub: {book.volumeInfo?.publisher}</li>
+                            <li key={book.id}>rate: {book.volumeInfo?.averageRating}</li>
+                            <li key={book.id}>{book.volumeInfo?.ratingsCount}</li>
+                            <li key={book.id}>isbn: {book.volumeInfo?.industryIdentifiers?.find(identifier => identifier.type === 'ISBN_13')?.identifier}</li>
 
                             {/* <li key={book.id}>{book.volumeInfo.maturityRating}</li>
                             <li key={book.id}>{book.volumeInfo.infoLink}</li>

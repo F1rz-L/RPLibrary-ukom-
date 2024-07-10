@@ -80,9 +80,9 @@ function CreateBookPage() {
         formData.append('tahun_terbit', data.tahun_terbit);
         formData.append('cover', data.cover);
         
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(`${key}: ${value}`);
+        // }
 
         link.post(`/buku`, formData).then(res => {
             console.log(res.data)
