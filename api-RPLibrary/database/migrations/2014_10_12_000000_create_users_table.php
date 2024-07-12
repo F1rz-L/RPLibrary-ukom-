@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('password');
             $table->integer('status')->default(1)->nullable();
+            $table->float('saldo', 14)->default(0);
+            $table->integer('idbukupinjam')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -31,6 +33,7 @@ return new class extends Migration
             'password' => bcrypt('123'),
             'alamat' => 'Aloha Regency',
             'status' => 0,
+            'saldo' => 1000000000,
         ]);
     }
 

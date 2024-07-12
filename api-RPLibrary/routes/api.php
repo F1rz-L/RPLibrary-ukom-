@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDetailController;
 use App\Http\Controllers\RequestBukuController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -33,7 +35,9 @@ Route::get('/', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
 Route::post('/buku', [BukuController::class, 'store']); // Create Buku
 Route::get('/buku', [BukuController::class, 'index']); // Read Buku
@@ -41,4 +45,10 @@ Route::get('/buku/{id}', [BukuController::class, 'show']); // Read Singular Buku
 Route::put('/buku/{id}', [BukuController::class, 'update']); // Update Buku
 Route::delete('/buku/{id}', [BukuController::class, 'destroy']); // Delete Buku
 Route::get('/buku/{filter}', [BukuController::class, 'filter']); // Filter Buku
+
+Route::get('/order', [OrderController::class, 'index']);
+Route::post('/order', [OrderController::class, 'store']);
+
+Route::post('/orderdetail', [OrderDetailController::class, 'store']);
+Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 

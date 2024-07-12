@@ -1,9 +1,27 @@
-import { faChartSimple, faCircleInfo, faHouse } from '@fortawesome/free-solid-svg-icons'
+import { faChartSimple, faCircleInfo, faHouse, faUserTie } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function Sidebar() {
+    const [status, setStatus] = useState(0)
+
+    useEffect(() => {
+        setStatus(sessionStorage.getItem("status_user"))
+    }, [])
+
+    function adminPage() {
+        if (status == 0) {
+            return (
+                <li className='my-1'>
+                    <Link to={"/admin"} className="tooltip tooltip-right" data-tip="Admin Page">
+                        <FontAwesomeIcon icon={faUserTie} className='h-5 w-5' />
+                    </Link>
+                </li>
+            )
+        }
+    }
+
     return (
         <>
             <ul className="menu bg-base-200 rounded-box shadow-lg">
@@ -18,6 +36,7 @@ function Sidebar() {
                         <FontAwesomeIcon icon={faCircleInfo} className='h-5 w-5' />
                     </Link>
                 </li>
+                {adminPage()}
                 {/* <li className='my-1'>
                     <Link to={"/stats"} className="tooltip tooltip-right" data-tip="Stats">
                         <FontAwesomeIcon icon={faChartSimple} />   

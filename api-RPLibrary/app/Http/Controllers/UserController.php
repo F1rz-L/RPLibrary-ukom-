@@ -12,7 +12,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all();
+        return response()->json([
+            'message' => 'Success',
+            'data' => $users,
+        ]);
     }
 
     /**
@@ -46,8 +50,14 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($iduser)
     {
-        //
+        $data = User::where('id', $iduser)->delete();
+        if ($data) {
+            return response()->json([
+                'message' => 'Success deleting user data',
+                'data' => $data
+            ]);
+        }
     }
 }

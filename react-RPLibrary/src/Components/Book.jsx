@@ -222,10 +222,10 @@ function Book(props) {
                     </div>
                     <div className="mt-8 flex justify-between px-8 h-1/6">
                         <div className='flex flex-col'>
-                            <h2 className='font-bold text-5xl'>{Number(harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h2>
+                            <h2 className={namaFile ? "font-bold text-4xl" : "font-bold text-5xl"}>{Number(harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h2>
                         </div>
                         <div className='gap-1 flex mr-4'>
-                            {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 pl-12 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2 mr-28 fixed' />Read Now</button> : null}
+                            {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-3' />Borrow Book</button> : null}
                             {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
                             {isNotAdmin ? null :
                                 <div className="dropdown dropdown-top">

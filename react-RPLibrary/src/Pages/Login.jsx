@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import '../assets/pattern.css'
 import { useForm } from 'react-hook-form'
@@ -15,6 +15,7 @@ function Login() {
     } = useForm()
 
     const navigate = useNavigate()
+    const [passwordShown, setPasswordShown] = useState(false);
 
     function submitForm(data) {
         const formData = new URLSearchParams();
@@ -31,6 +32,10 @@ function Login() {
         })
     }
 
+    function showPassword() {
+        setPasswordShown(!passwordShown);
+    }
+
     return (
         <>
             <div className="grad"></div>
@@ -45,7 +50,12 @@ function Login() {
                         <span className="label-text text-red-700">{errors.email && "Kolom Email harus diisi"}</span>
                         <label className="input input-bordered flex items-center gap-2">
                             <FontAwesomeIcon icon={faKey} />
-                            <input type="password" {...register("password", { required: true })} className="grow placeholder-neutral" placeholder="Password" />
+                            {/* <input type="password" id="password" {...register("password", { required: true })} className="grow placeholder-neutral" placeholder="Password" /> */}
+                            <input type={passwordShown ? "text" : "password"} id="password" {...register("password", { required: true })} className="grow placeholder-neutral" placeholder="Password" />
+                        </label>
+                        <label className="label cursor-pointer">
+                            <span className="label-text font-semibold">Show Password</span>
+                            <input type="checkbox" className="toggle" onChange={showPassword} />
                         </label>
                         <span className="label-text text-red-700">{errors.password && "Kolom Password harus diisi"}</span>
                         <button type="submit" className="btn btn-primary mt-4">Login</button>

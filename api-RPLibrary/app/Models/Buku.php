@@ -22,5 +22,6 @@ class Buku extends Model
         'page_number',
         'bahasa',
         'harga',
+        'idpeminjam'
     ];
 }

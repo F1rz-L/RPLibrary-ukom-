@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import UseGet from '../Axios/UseGet'
 import { link } from '../Axios/link'
+import { useNavigate } from 'react-router-dom'
 
 function CartPage() {
+    const navigate = useNavigate()
     const [daftarBuku] = UseGet('/buku')
     const [cart, setCart] = useState([])
     const [total, setTotal] = useState(0)
@@ -44,18 +46,18 @@ function CartPage() {
             }
         });
 
-        return subtotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        return subtotal
     }
 
     function calculateTax() {
         taxation = subtotal * taxRate;
-        return taxation.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        return taxation
     }
 
     function calculateTotal() {
         const total = subtotal + taxation;
 
-        return total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+        return total
     }
 
     useEffect(() => {
@@ -65,6 +67,43 @@ function CartPage() {
         })
         setJumlahCart(jumlah);
     }, [cart]);
+
+    function handleCheckout() {
+        const tglorder = new Date().toISOString().slice(0, 10);
+        const formattedId = new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '');
+
+        const order = {
+            idorder: formattedId,
+            iduser: sessionStorage.getItem('iduser'),
+            tglorder: tglorder.toString(),
+            total: calculateTotal(),
+            status: 0,
+        }
+
+        const orderDetail = cart.map(item => {
+            return {
+                idorder: formattedId,
+                idbuku: item.id,
+                jumlah: item.jumlah
+            }
+        })
+
+        console.log(orderDetail);
+        orderDetail.forEach(item => {
+            link.post('/orderdetail', item
+            ).then(res => {
+                console.log(res.data);
+            })
+        })
+        link.post('/order', order
+        ).then(res => {
+            console.log(res.data);
+            setCart([]);
+            sessionStorage.setItem('cart', "[]");
+            navigate('/')
+            window.location.reload()
+        })
+    }
 
     function cartContent() {
         if (cart.length === 0) {
@@ -86,7 +125,7 @@ function CartPage() {
         return cart?.map((item, index) => {
             const buku = daftarBuku?.data?.[item?.id - 1]
             if (!buku) return null;
-            console.log(buku?.judul + " : " + index);
+            // console.log(buku?.judul + " : " + index);
 
             return (
                 <div key={index}>
@@ -136,19 +175,19 @@ function CartPage() {
                         <div className='text-neutral-600 text-sm mx-4'>
                             <div className="flex justify-between">
                                 <p className='text-lg'>Subtotal <span className='italic text-sm'>({jumlahCart} items)</span></p>
-                                <p className='text-lg'>{calculateSubtotal()}</p>
+                                <p className='text-lg'>{calculateSubtotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                             </div>
                             <div className="flex justify-between">
                                 <p className='text-lg'>Tax <span className='italic text-sm'>(11%)</span></p>
-                                <p className='text-lg'>{calculateTax()}</p>
+                                <p className='text-lg'>{calculateTax().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                             </div>
                             <div className="flex justify-between mt-4">
                                 <p className='text-lg'>Total</p>
-                                <p className='text-lg font-bold'>{calculateTotal()}</p>
+                                <p className='text-lg font-bold'>{calculateTotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                             </div>
                         </div>
                         <div className="row flex justify-center mx-8 my-4">
-                            <button className="btn btn-primary">Checkout</button>
+                            <button className="btn btn-primary" onClick={handleCheckout}>Checkout</button>
                         </div>
                     </div>
                 </div>

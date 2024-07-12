@@ -58,7 +58,7 @@ function CreateBookPage() {
                     q: query,
                 }
             });
-            return(response.data.items[0]);
+            return (response.data.items[0]);
         } catch (error) {
             console.error('Error fetching books:', error);
         }
@@ -67,6 +67,7 @@ function CreateBookPage() {
 
     function createBook(data) {
         // console.log(data);
+        const token = sessionStorage.getItem('auth_token');
         const formData = new FormData();
         formData.append('judul', data.judul);
         formData.append('pengarang', data.pengarang);
@@ -78,13 +79,21 @@ function CreateBookPage() {
         formData.append('page_number', data.page_number);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahun_terbit);
-        formData.append('cover', data.cover);
-        
+        if (data.cover) {
+            formData.append('cover', data.cover?.[0]);
+        }
+
         // for (let [key, value] of formData.entries()) {
         //     console.log(`${key}: ${value}`);
         // }
 
-        link.post(`/buku`, formData).then(res => {
+        axios.post(`http://127.0.0.1:8000/api/buku`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }
+        }
+        ).then(res => {
             console.log(res.data)
             navigate('/book-index')
         })
