@@ -3,7 +3,8 @@ import Skeleton from '../Components/Skeleton'
 import { link } from '../Axios/link'
 // import Book from '../Components/Book'
 import UseGet from '../Axios/UseGet'
-import { faFeather } from '@fortawesome/free-solid-svg-icons'
+import Fuse from 'fuse.js'
+import { faFeather, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -13,30 +14,41 @@ function BookIndex() {
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors },
     } = useForm()
 
-    function filterBooks(data) {
-        console.log(data);
+    const fuseOptions = {
+        // isCaseSensitive: false,
+        // includeScore: false,
+        // shouldSort: true,
+        // includeMatches: false,
+        // findAllMatches: false,
+        // minMatchCharLength: 1,
+        // location: 0,
+        // threshold: 0.6,
+        // distance: 100,
+        // useExtendedSearch: false,
+        // ignoreLocation: false,
+        // ignoreFieldNorm: false,
+        // fieldNormWeight: 1,
+        sortFn: (a, b) => a.score - b.score,
+        keys: [
+            "judul",
+            "pengarang",
+        ]
+    };
 
-        switch (data.sort) {
-            case "A-Z":
-                isi.sort()
-                break;
-            case "Z-A":
-                isi.reverse()
-                break;
-            default:
-                [isi] = UseGet('/buku')
-                break;
-        }
-    }
-
-    const [isi] = UseGet('/buku')
+    let [isi] = UseGet('/buku')
+    // console.log(isi);
     const [cart, setCart] = useState([])
     const [isLoading, setIsLoading] = useState(true);
     const [isNotAdmin, setIsNotAdmin] = useState(true)
     const LoadedBook = lazy(() => import('../Components/Book')) // Untuk menunggu buku diambil
+    const [filteredList, setFilteredList] = useState([]);
+    const searchValue = watch("search");
+
+    console.log(searchValue);
 
     useEffect(() => {
         if (sessionStorage.getItem('status_user') != 0) {
@@ -46,20 +58,24 @@ function BookIndex() {
         }
     }, []);
 
-    // useEffect(() => {
-    //     const storedCart = JSON.parse(sessionStorage.getItem('cart'));
-    //     if (storedCart) {
-    //       setCart(storedCart);
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (isi.data) {
+            setFilteredList(isi.data);
+        }
+    }, [isi]);
 
-    // useEffect(() => {
-    //     sessionStorage.setItem('cart', JSON.stringify(cart));
-    // }, [cart]);
-    
-    // function addToCart(product) {
-    //     setCart([...cart, product]);
-    // };
+    function filterBooks(data) {
+        console.log(data);
+        const fuse = new Fuse(isi?.data, fuseOptions);
+        const result = fuse.search(data?.search);
+        console.log(result);
+        setFilteredList(result.map(({ item }) => item));
+    }
+
+    function clearSearch() {
+        reset({ search: "" });
+        setFilteredList(isi.data);
+    }
 
     return (
         <>
@@ -68,8 +84,9 @@ function BookIndex() {
                 <div className="row justify-center ml-4">
                     <form className='flex gap-2' onSubmit={handleSubmit(filterBooks)}>
                         <label className="input input-bordered flex gap-2 items-center w-full max-w-xs">
-                            <input type="text" {...register("search")} className="grow placeholder-neutral" placeholder="Search" />
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4 opacity-70"><path fillRule="evenodd" d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z" clipRule="evenodd" /></svg>
+                            <input id='search' type="text" {...register("search")} className="grow placeholder-neutral" placeholder="Search" />
+                            {/* { ? <a href="#" onClick={clearSearch} className="btn btn-ghost"></a> : <FontAwesomeIcon icon={faMagnifyingGlass} />} */}
+                            {searchValue && <a type="button" className="btn btn-ghost" onClick={clearSearch}>X</a>}
                         </label>
                         <select {...register("sort")} defaultValue={"Newest"} className="select select-bordered w-full col-2 max-w-xs self-start">
                             <option value={"Newest"}>Newest</option>
@@ -85,7 +102,7 @@ function BookIndex() {
                 {/* memanggil semua buku yang ada di database table 'bukus' */}
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        isi.data?.map((data, index) => {
+                        filteredList?.map((data, index) => {
                             return (
                                 <Suspense key={index} fallback={<Skeleton />}>
                                     <LoadedBook {...data} />

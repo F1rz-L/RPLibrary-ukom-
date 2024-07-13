@@ -1,7 +1,7 @@
 import React from 'react'
 import UseGet from '../Axios/UseGet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faEdit, faMagnifyingGlassDollar, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 function AdminOrder() {
     const [orders] = UseGet('/order')
@@ -45,7 +45,7 @@ function AdminOrder() {
                             <td>{order?.tglorder}</td>
                             <td>{Number(order?.total).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
                             {getStatus(order?.status)}
-                            <td><button className="btn btn-primary">Detail</button></td>
+                            <td><button className="btn btn-primary" onClick={() => console.log(order?.idorder)}><FontAwesomeIcon icon={faMagnifyingGlassDollar} /></button></td>
                             <td>
                                 <div className="dropdown dropdown-right">
                                     <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>

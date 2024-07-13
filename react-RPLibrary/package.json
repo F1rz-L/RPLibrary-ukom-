@@ -18,6 +18,7 @@
     "@react-pdf/renderer": "^3.4.4",
     "@studio-freight/react-lenis": "^0.0.46",
     "axios": "^1.6.8",
+    "fuse.js": "^7.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "pdfjs-dist": "^4.2.67",

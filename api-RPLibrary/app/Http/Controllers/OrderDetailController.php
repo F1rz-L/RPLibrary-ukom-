@@ -6,6 +6,7 @@ use App\Models\OrderDetail;
 use App\Http\Requests\StoreOrderDetailRequest;
 use App\Http\Requests\UpdateOrderDetailRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetailController extends Controller
 {
@@ -46,9 +47,14 @@ class OrderDetailController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(OrderDetail $orderDetail)
+    public function show($idorder)
     {
-        //
+        $data = DB::table('order_details')->join('bukus', 'order_details.idbuku', '=', 'bukus.idbuku')->select('order_details.*', 'bukus.*')->where('idorder', $idorder)->get();
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
     }
 
     /**
