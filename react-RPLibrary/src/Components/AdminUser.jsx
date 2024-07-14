@@ -18,13 +18,10 @@ function AdminUser() {
         switch (status) {
             case 0:
                 return (<td><div className="badge badge-primary">Admin</div></td>)
-                break;
             case 1:
                 return (<td><div className="badge badge-outline">User</div></td>)
-                break;
             case 2:
                 return (<td><div className="badge badge-secondary">Bluemark</div></td>)
-                break;
             default:
                 break;
         }
@@ -43,6 +40,7 @@ function AdminUser() {
                         <th>Name</th>
                         <th>Email</th>
                         <th>Address</th>
+                        <th>Balance</th>
                         <th>Status</th>
                         <th>Interact</th>
                     </tr>
@@ -55,6 +53,7 @@ function AdminUser() {
                             <td>{user?.nama}</td>
                             <td>{user?.email}</td>
                             <td>{user?.alamat}</td>
+                            <td>{Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
                             {getStatus(user?.status)}
                             {/* <div></div> */}
                             <td>

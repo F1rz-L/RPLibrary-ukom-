@@ -50,5 +50,6 @@ Route::get('/order', [OrderController::class, 'index']);
 Route::post('/order', [OrderController::class, 'store']);
 
 Route::post('/orderdetail', [OrderDetailController::class, 'store']);
+Route::get('/orderdetail', [OrderDetailController::class, 'index']);
 Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 

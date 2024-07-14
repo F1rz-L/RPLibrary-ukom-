@@ -15,7 +15,12 @@ class OrderDetailController extends Controller
      */
     public function index()
     {
-        //
+        $data = DB::table('order_details')->join('bukus', 'order_details.idbuku', '=', 'bukus.idbuku')->select('order_details.*', 'bukus.*')->get();
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
     }
 
     /**

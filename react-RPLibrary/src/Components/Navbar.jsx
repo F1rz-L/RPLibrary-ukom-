@@ -74,6 +74,7 @@ function Navbar() {
                                 <p className='text-sm bg-base-300 mt-2 p-2 rounded-box'>{user.data?.alamat}</p>
                             </div>
                         </div>
+                        <li><Link to={"/"}>Your Balance: {Number(user.data?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</Link></li>
                         <li><Link to={"/transactions"}>Transactions</Link></li>
                         <li onClick={() => logout()} className=''><a>Logout</a></li>
                     </ul>

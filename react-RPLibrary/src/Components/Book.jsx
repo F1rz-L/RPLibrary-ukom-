@@ -272,7 +272,7 @@ function Book(props) {
             </dialog>
 
             {/* Tampilan buku saat modal belum dibuka */}
-            <div id='book' onClick={() => {
+            <div id={`book${id}`} onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
                 console.log(id, judul, namaFile, isNotAdmin);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>

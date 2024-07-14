@@ -1,13 +1,11 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react'
-import Skeleton from '../Components/Skeleton'
-import { link } from '../Axios/link'
-// import Book from '../Components/Book'
-import UseGet from '../Axios/UseGet'
-import Fuse from 'fuse.js'
-import { faFeather, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import React, { Suspense, lazy, useEffect, useState } from 'react';
+import Skeleton from '../Components/Skeleton';
+import UseGet from '../Axios/UseGet';
+import Fuse from 'fuse.js';
+import { faFeather } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 function BookIndex() {
     const {
@@ -16,45 +14,33 @@ function BookIndex() {
         watch,
         reset,
         formState: { errors },
-    } = useForm()
+    } = useForm();
 
     const fuseOptions = {
-        // isCaseSensitive: false,
-        // includeScore: false,
-        // shouldSort: true,
-        // includeMatches: false,
-        // findAllMatches: false,
-        // minMatchCharLength: 1,
-        // location: 0,
-        // threshold: 0.6,
-        // distance: 100,
-        // useExtendedSearch: false,
-        // ignoreLocation: false,
-        // ignoreFieldNorm: false,
-        // fieldNormWeight: 1,
-        sortFn: (a, b) => a.score - b.score,
+        shouldSort: true,
+        minMatchCharLength: 1,
         keys: [
             "judul",
             "pengarang",
-        ]
+            "penerbit",
+            "deskripsi",
+            "bahasa",
+            "isbn13",
+        ],
     };
 
-    let [isi] = UseGet('/buku')
-    // console.log(isi);
-    const [cart, setCart] = useState([])
-    const [isLoading, setIsLoading] = useState(true);
-    const [isNotAdmin, setIsNotAdmin] = useState(true)
-    const LoadedBook = lazy(() => import('../Components/Book')) // Untuk menunggu buku diambil
+    let [isi] = UseGet('/buku');
+    const [isNotAdmin, setIsNotAdmin] = useState(true);
+    const LoadedBook = lazy(() => import('../Components/Book'));
     const [filteredList, setFilteredList] = useState([]);
     const searchValue = watch("search");
-
-    console.log(searchValue);
+    const sortValue = watch("sort");
 
     useEffect(() => {
         if (sessionStorage.getItem('status_user') != 0) {
-            setIsNotAdmin(true)
+            setIsNotAdmin(true);
         } else {
-            setIsNotAdmin(false)
+            setIsNotAdmin(false);
         }
     }, []);
 
@@ -64,13 +50,30 @@ function BookIndex() {
         }
     }, [isi]);
 
+    useEffect(() => {
+        if (isi.data) {
+            filterBooks({ search: searchValue, sort: sortValue });
+        }
+    }, [searchValue, sortValue, isi]);
+
     function filterBooks(data) {
-        console.log(data);
-        const fuse = new Fuse(isi?.data, fuseOptions);
-        const result = fuse.search(data?.search);
+        const fuse = new Fuse(isi.data, fuseOptions);
+        let result = data.search ? fuse.search(data.search).map(({ item }) => item) : [...isi.data];
+
+        if (data.sort === "Newest") {
+            result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (data.sort === "Oldest") {
+            result.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else if (data.sort === "A-Z") {
+            result.sort((a, b) => a.judul.localeCompare(b.judul));
+        } else if (data.sort === "Z-A") {
+            result.sort((a, b) => b.judul.localeCompare(a.judul));
+        }
+
         console.log(result);
-        setFilteredList(result.map(({ item }) => item));
+        setFilteredList(result);
     }
+
 
     function clearSearch() {
         reset({ search: "" });
@@ -85,8 +88,7 @@ function BookIndex() {
                     <form className='flex gap-2' onSubmit={handleSubmit(filterBooks)}>
                         <label className="input input-bordered flex gap-2 items-center w-full max-w-xs">
                             <input id='search' type="text" {...register("search")} className="grow placeholder-neutral" placeholder="Search" />
-                            {/* { ? <a href="#" onClick={clearSearch} className="btn btn-ghost"></a> : <FontAwesomeIcon icon={faMagnifyingGlass} />} */}
-                            {searchValue && <a type="button" className="btn btn-ghost" onClick={clearSearch}>X</a>}
+                            {searchValue && <button type="button" className="btn btn-ghost" onClick={clearSearch}>X</button>}
                         </label>
                         <select {...register("sort")} defaultValue={"Newest"} className="select select-bordered w-full col-2 max-w-xs self-start">
                             <option value={"Newest"}>Newest</option>
@@ -94,37 +96,23 @@ function BookIndex() {
                             <option value={"A-Z"}>A - Z</option>
                             <option value={"Z-A"}>Z - A</option>
                         </select>
-                        {/* <input type="submit" value="Filter" /> */}
-                        {isNotAdmin ? null : <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>}
+                        {isNotAdmin ?
+                            null :
+                            <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>}
                     </form>
                 </div>
 
-                {/* memanggil semua buku yang ada di database table 'bukus' */}
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        filteredList?.map((data, index) => {
-                            return (
-                                <Suspense key={index} fallback={<Skeleton />}>
-                                    <LoadedBook {...data} />
-                                </Suspense> // Suspense digunakan untuk menunggu buku di load
-                            )
-                        })
-                    }
+                        filteredList?.map((data, index) => (
+                            <Suspense key={data?.idbuku} fallback={<Skeleton />}>
+                                <LoadedBook {...data} />
+                            </Suspense>
+                        ))}
                 </div>
-                {/* <div className="row">
-                    <div className="flex w-full justify-center">
-                        <div className="join">
-                            <button className="join-item btn">1</button>
-                            <button className="join-item btn btn-active">2</button>
-                            <button className="join-item btn">3</button>
-                            <button className="join-item btn">4</button>
-                        </div>
-                    </div>
-                </div> */}
-
             </div>
         </>
-    )
+    );
 }
 
-export default BookIndex
+export default BookIndex;
