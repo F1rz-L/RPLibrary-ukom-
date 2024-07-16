@@ -18,6 +18,7 @@ function BookIndex() {
 
     const fuseOptions = {
         shouldSort: true,
+        includeScore: true,
         minMatchCharLength: 1,
         keys: [
             "judul",
@@ -60,17 +61,17 @@ function BookIndex() {
         const fuse = new Fuse(isi.data, fuseOptions);
         let result = data.search ? fuse.search(data.search).map(({ item }) => item) : [...isi.data];
 
-        if (data.sort === "Newest") {
+        if (data.sort === "Uploaded Date") {
             result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        } else if (data.sort === "Oldest") {
-            result.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else if (data.sort === "Published Date") {
+            result.sort((a, b) => a.tahun_terbit.localeCompare(b.tahun_terbit));
         } else if (data.sort === "A-Z") {
             result.sort((a, b) => a.judul.localeCompare(b.judul));
         } else if (data.sort === "Z-A") {
             result.sort((a, b) => b.judul.localeCompare(a.judul));
         }
 
-        console.log(result);
+        // console.log(result);
         setFilteredList(result);
     }
 
@@ -90,9 +91,10 @@ function BookIndex() {
                             <input id='search' type="text" {...register("search")} className="grow placeholder-neutral" placeholder="Search" />
                             {searchValue && <button type="button" className="btn btn-ghost" onClick={clearSearch}>X</button>}
                         </label>
-                        <select {...register("sort")} defaultValue={"Newest"} className="select select-bordered w-full col-2 max-w-xs self-start">
-                            <option value={"Newest"}>Newest</option>
-                            <option value={"Oldest"}>Oldest</option>
+                        <select id='sort' {...register("sort")} defaultValue={"Relevance"} className="select select-bordered w-full col-2 max-w-xs self-start">
+                            <option value={"Relevance"}>Relevance</option>
+                            <option value={"Uploaded Date"}>Uploaded Date</option>
+                            <option value={"Published Date"}>Published Date</option>
                             <option value={"A-Z"}>A - Z</option>
                             <option value={"Z-A"}>Z - A</option>
                         </select>

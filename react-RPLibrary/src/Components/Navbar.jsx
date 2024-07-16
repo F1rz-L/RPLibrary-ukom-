@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import ThemeControl from './ThemeControl'
 import { Link, useNavigate } from 'react-router-dom'
 import UseGet from '../Axios/UseGet'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoins, faReceipt, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
 function Navbar() {
     const navigate = useNavigate()
@@ -49,6 +51,14 @@ function Navbar() {
                 }
             }
 
+            function balanceChecker() {
+                if(Math.sign(Number(user?.data?.saldo)) == -1) {
+                    return <li className='text-red-600'><Link><FontAwesomeIcon icon={faCoins}/>Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                } else {
+                    return <li><Link><FontAwesomeIcon icon={faCoins}/>Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                }
+            }
+
             return (
                 <div className="dropdown dropdown-end mx-2">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar placeholder">
@@ -74,9 +84,9 @@ function Navbar() {
                                 <p className='text-sm bg-base-300 mt-2 p-2 rounded-box'>{user.data?.alamat}</p>
                             </div>
                         </div>
-                        <li><Link to={"/"}>Your Balance: {Number(user.data?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</Link></li>
-                        <li><Link to={"/transactions"}>Transactions</Link></li>
-                        <li onClick={() => logout()} className=''><a>Logout</a></li>
+                        {balanceChecker()}
+                        <li><Link to={"/transactions"}><FontAwesomeIcon icon={faReceipt} />Transactions</Link></li>
+                        <li onClick={() => logout()} className=''><a><FontAwesomeIcon icon={faRightFromBracket} />Logout</a></li>
                     </ul>
                 </div>
             )

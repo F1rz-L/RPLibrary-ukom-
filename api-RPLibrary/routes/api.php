@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\OrderController;
@@ -48,8 +49,11 @@ Route::get('/buku/{filter}', [BukuController::class, 'filter']); // Filter Buku
 
 Route::get('/order', [OrderController::class, 'index']);
 Route::post('/order', [OrderController::class, 'store']);
+Route::delete('/order/{id}', [OrderController::class, 'destroy']);
 
 Route::post('/orderdetail', [OrderDetailController::class, 'store']);
 Route::get('/orderdetail', [OrderDetailController::class, 'index']);
 Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
+
+Route::get('/trending', [AlgorithmController::class, 'trending']);
 

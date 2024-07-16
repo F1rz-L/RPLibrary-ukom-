@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +45,17 @@ class OrderController extends Controller
             'total' => $request->total
         ];
 
+        $user = DB::table('users')->where('id', $data['iduser'])->first(['saldo']);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $saldoSekarang = $user->saldo - $data['total'];
+        DB::table('users')->where('id', $data['iduser'])->update(['saldo' => $saldoSekarang]);
+
         $order = Order::create($data);
         return response()->json([
             'message' => 'Success',
@@ -78,8 +90,15 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Order $order)
+    public function destroy($idorder)
     {
-        //
+        $order = Order::where('idorder', $idorder)->delete();
+
+        DB::table('order_details')->where('idorder', $idorder)->delete();
+
+        return response()->json([
+            'message' => 'Success',
+            'data' => $order
+        ], 200);
     }
 }

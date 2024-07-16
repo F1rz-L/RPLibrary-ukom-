@@ -10,6 +10,12 @@ function AdminOrder() {
     const [orderDetails] = UseGet('/orderdetail')
     // const [orderDetail, setOrderDetail] = useState([])
 
+    function deleteOrder(idorder){
+        link.delete(`/order/${idorder}`).then(() => {
+            window.location.reload();
+        })
+    }
+
     function getStatus(status) {
         switch (status) {
             case 0:
@@ -91,7 +97,7 @@ function AdminOrder() {
                                     <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
                                     <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
                                         <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                                        {/* <li><a><FontAwesomeIcon icon={faTrash} onClick={() => deleteUser()} /> Delete</a></li> */}
+                                        <li><a onClick={() => deleteOrder(order?.idorder)()}><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
                                     </ul>
                                 </div>
                             </td>

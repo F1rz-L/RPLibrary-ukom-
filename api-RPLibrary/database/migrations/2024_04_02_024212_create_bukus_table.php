@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('harga');
             $table->string('namafile')->nullable();
             $table->integer('idpeminjam')->nullable();
+            $table->integer('terjual')->default(0);
             $table->timestamps();
         });
 

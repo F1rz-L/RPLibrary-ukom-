@@ -17,6 +17,7 @@ class OrderDetailController extends Controller
     {
         $data = DB::table('order_details')->join('bukus', 'order_details.idbuku', '=', 'bukus.idbuku')->select('order_details.*', 'bukus.*')->get();
 
+
         return response()->json([
             'message' => 'Success',
             'data' => $data
@@ -41,6 +42,8 @@ class OrderDetailController extends Controller
             'idbuku' => $request->idbuku,
             'jumlah' => $request->jumlah
         ];
+
+        DB::table('bukus')->where('idbuku', $data['idbuku'])->increment('terjual', $data['jumlah']);
 
         OrderDetail::create($data);
         return response()->json([

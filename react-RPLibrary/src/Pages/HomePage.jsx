@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
 import Skeleton from '../Components/Skeleton'
 import Book from '../Components/Book'
+import UseGet from '../Axios/UseGet'
 
 function HomePage() {
     const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user') || 0)
+    const [trendingBooks] = UseGet('/trending')
+    const [books] = UseGet('/buku')
+    console.log(trendingBooks);
+    // console.log(books);
+
+    const trendingBookIds = trendingBooks?.data?.map(book => book.idbuku) || [];
 
     function heroChecker() {
         if (statusUser == 1) {
@@ -18,7 +25,7 @@ function HomePage() {
                             <button className="btn bg-transparent border-[#03A9F4] border-4 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-2' />Get Bluemark</button>
                         </div>
                     </div>
-                </div> )
+                </div>)
         }
     }
 
@@ -32,7 +39,11 @@ function HomePage() {
                 <h1 className='text-2xl ml-8 my-2 row justify-start font-bold'>Trending Books 📖</h1>
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
-                    <Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton />
+                    {
+                        books?.data?.filter(book => trendingBookIds.includes(book.idbuku)).map(book => (
+                                <Book key={book.idbuku} {...book} />
+                            ))
+                    }
                 </div>
             </div>
             <div className="container justify-start bg-base-200 rounded-box p-4 m-4">
