@@ -108,7 +108,7 @@ function Navbar() {
                 <Link to={"/"} className="btn btn-ghost text-xl w-1/12"
                 // style={{ backgroundImage: "url(/RPLibrary.png)", backgroundSize: "72px 72px", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
                 >
-                    <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10 -mt-2' />
+                    <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10' />
                 </Link>
             </div>
             <div className="flex-none">

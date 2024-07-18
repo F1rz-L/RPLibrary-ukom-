@@ -7,10 +7,11 @@ function HomePage() {
     const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user') || 0)
     const [trendingBooks] = UseGet('/trending')
     const [books] = UseGet('/buku')
-    console.log(trendingBooks);
+    // console.log(trendingBooks);
     // console.log(books);
 
     const trendingBookIds = trendingBooks?.data?.map(book => book.idbuku) || [];
+    console.log(trendingBookIds);
 
     function heroChecker() {
         if (statusUser == 1) {
@@ -40,9 +41,13 @@ function HomePage() {
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
                     {
-                        books?.data?.filter(book => trendingBookIds.includes(book.idbuku)).map(book => (
+                        books?.data && trendingBooks?.data ? (
+                            trendingBooks?.data?.map((book, index) => (
                                 <Book key={book.idbuku} {...book} />
                             ))
+                        ) : (
+                            <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                        )
                     }
                 </div>
             </div>

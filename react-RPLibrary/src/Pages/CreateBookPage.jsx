@@ -19,6 +19,7 @@ function CreateBookPage() {
     const [inputSubmitted, setInputSubmitted] = useState(false);
     const [query, setQuery] = useState('');
     const [bookData, setBookData] = useState(null);
+    const [cover, setCover] = useState(null);
 
     async function fetchBookData(event) {
         event.preventDefault();
@@ -40,7 +41,7 @@ function CreateBookPage() {
             setValue('tahun_terbit', book.publishedDate);
             setValue('rating', book.averageRating);
             setValue('page_number', book.pageCount);
-            setValue('cover', book.imageLinks?.thumbnail || '');
+            setCover(book.imageLinks?.thumbnail || '');
         } catch (error) {
             console.error('Error fetching books:', error);
         }
@@ -64,6 +65,11 @@ function CreateBookPage() {
         }
     }
 
+    function handleFileChange(event) {
+        const file = event.target.files[0];
+        setCover(URL.createObjectURL(file)); // Create a URL for the selected file
+        setValue('cover', event.target.files); // Update form value with the selected file
+    }
 
     function createBook(data) {
         // console.log(data);
@@ -155,6 +161,19 @@ function CreateBookPage() {
                         <input type="text" id='page_number' {...register("page_number", { required: true })} className="input input-bordered w-20" />
                         <span className="label-text text-red-700">{errors.page_number && "Page number harus diisi"}</span>
                     </label>
+                    {cover ? (
+                        <label htmlFor="" className="form-control">
+                            <span className="label-text">Cover</span>
+                        <div className="flex gap-2 glass rounded-box w-32 p-1">
+                            <img src={cover} className="rounded-box" alt="Book Cover" />
+                        </div>
+                        </label>
+                    ) : (<label htmlFor="" className="form-control">
+                        <span className="label-text">Cover</span>
+                        <div className="flex gap-2 glass rounded-box w-32 p-1">
+                            <img src="RPLibrary(placeholder).jpg" className="rounded-box" alt="Book Cover" />
+                        </div>
+                    </label>)}
                     <label htmlFor="" className="form-control">
                         <span className="label-text">Harga</span>
                         <div>
@@ -164,7 +183,7 @@ function CreateBookPage() {
                     </label>
 
                     <div className='flex gap-2 w-full justify-end'>
-                        <input type="file" id="selectedFile" className='hidden' {...register("cover")} />
+                        <input type="file" id="selectedFile" className='hidden' {...register("cover")} onChange={handleFileChange} />
                         <input type="button" value={"Add Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedFile').click()} />
                         <input type='submit' value={"Input Book"} className="btn btn-success text-white" />
                     </div>

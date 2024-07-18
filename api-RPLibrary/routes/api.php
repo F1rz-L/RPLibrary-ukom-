@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AlgorithmController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BluemarkController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
@@ -56,4 +57,4 @@ Route::get('/orderdetail', [OrderDetailController::class, 'index']);
 Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 
 Route::get('/trending', [AlgorithmController::class, 'trending']);
-
+Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);

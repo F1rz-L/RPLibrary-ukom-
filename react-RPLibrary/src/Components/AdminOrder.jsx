@@ -29,6 +29,15 @@ function AdminOrder() {
         }
     }
 
+    function calculateTotal(detail){
+        let total = 0
+
+        total += detail.harga * detail.jumlah
+        total += total * 0.11
+
+        return total;
+    }
+
     return (
         <>
             <table className="table">
@@ -67,7 +76,7 @@ function AdminOrder() {
                                                     <th>Book</th>
                                                     <th>Price</th>
                                                     <th>Quantity</th>
-                                                    <th>Total</th>
+                                                    <th>Total + Tax</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -77,7 +86,7 @@ function AdminOrder() {
                                                         <td>{detail?.judul}</td>
                                                         <td>{Number(detail?.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
                                                         <td>{detail?.jumlah}</td>
-                                                        <td>{Number(detail?.harga * detail?.jumlah).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
+                                                        <td>{Number(calculateTotal(detail)).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>

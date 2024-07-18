@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('penerbit');
             $table->string('tahun_terbit');
             $table->string('isbn13', 13);
-            $table->float('rating');
+            $table->float('rating')->nullable();
             $table->string('cover')->nullable();
             $table->string('page_number');
             $table->string('bahasa');

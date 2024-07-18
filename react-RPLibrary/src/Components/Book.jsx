@@ -48,7 +48,6 @@ function Book(props) {
         })
     }
 
-
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [modalIsEditing, setModalIsEditing] = useState(false)
     const [editContent, setEditContent] = useState()
@@ -69,6 +68,7 @@ function Book(props) {
     const [harga, setHarga] = useState(props.harga)
     const [pageNumber, setPageNumber] = useState(props.page_number)
     const [rating, setRating] = useState(props.rating)
+    const [idPeminjam, setIdPeminjam] = useState(props.idpeminjam)
     const [namaFile, setNamaFile] = useState(props.namafile)
 
     function addToCart() {
@@ -80,6 +80,24 @@ function Book(props) {
         setTimeout(() => {
             window.location.reload()
         }, 200);
+    }
+
+    function borrowBook() {
+        const idUser = sessionStorage.getItem('iduser');
+
+        const formData = new URLSearchParams();
+        formData.append('iduser', idUser);
+
+        if (idUser) {
+            link.post(`/pinjam/${idUser}`, formData).then((res) => {
+                console.log(res.data);
+                // window.location.reload();
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('You must login first');
+        }
     }
 
     useEffect(() => {
@@ -104,7 +122,7 @@ function Book(props) {
             formData.append('cover', data.cover?.[0]);
         }
 
-        console.log(data.cover);
+        // console.log(data.cover);
 
         axios.post(`http://127.0.0.1:8000/api/buku/${id}?_method=PUT`, formData, {
             headers: {
@@ -115,12 +133,6 @@ function Book(props) {
         ).then(res => {
             window.location.reload()
         })
-
-        // link.put(`/buku/${id}`, formData).then(res => {
-        //     console.log(res.data, res.data.cover)
-        //     setModalIsEditing(false)
-        //     window.location.reload()
-        // })
     }
 
     function coverChecker(state) {
@@ -220,12 +232,16 @@ function Book(props) {
                             <p>{penerbit}</p>
                         </div>
                     </div>
-                    <div className="mt-8 flex justify-between px-8 h-1/6">
+                    <div className="flex pl-8 -mt-3 justify-between">
                         <div className='flex flex-col'>
                             <h2 className={namaFile ? "font-bold text-4xl" : "font-bold text-5xl"}>{Number(harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</h2>
                         </div>
-                        <div className='gap-1 flex mr-4'>
-                            {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-9 mb-3' />Borrow Book</button> : null}
+                    </div>
+                    <div className="flex justify-end mt-3 w-full">
+                        <div className='gap-1 flex mr-12'>
+                            {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button> : null}
+                            {idPeminjam ? <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div> : 
+                            <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button> }
                             {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
                             {isNotAdmin ? null :
                                 <div className="dropdown dropdown-top">
@@ -247,9 +263,9 @@ function Book(props) {
         <>
             {/* Modal/Pop-up untuk buku */}
             <dialog id={`bookInfoModal${id}`} className="modal">
-                <div className="modal-box w-5/6 max-w-5xl h-5/6 overflow-hidden">
+                <div className="modal-box w-full max-w-5xl h-full overflow-hidden">
                     <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => {
+                        <button className="btn btn-lg btn-circle btn-ghost absolute right-2 top-2" onClick={() => {
                             setModalIsOpen(false)
                             setModalIsEditing(false)
                         }}>✕</button>
@@ -274,7 +290,7 @@ function Book(props) {
             {/* Tampilan buku saat modal belum dibuka */}
             <div id={`book${id}`} onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
-                console.log(id, judul, namaFile, isNotAdmin);
+                console.log(id, judul, namaFile, idPeminjam);
             }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
                 <div className="bg-base-300 row overflow-hidden h-48 w-36 rounded-t-box">
                     {coverChecker("initial")}
