@@ -56,23 +56,39 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->hasFile('cover')) {
-            $nama_cover = $request->file('cover')->getClientOriginalName();
-            $request->file('cover')->move(public_path('book_cover'), $nama_cover);
-            $data = [
-                'judul' => $request->judul,
-                'pengarang' => $request->pengarang,
-                'deskripsi' => $request->deskripsi,
-                'penerbit' => $request->penerbit,
-                'tahun_terbit' => $request->tahun_terbit,
-                'isbn13' => $request->isbn13,
-                'bahasa' => $request->bahasa,
-                'harga' => $request->harga,
-                'page_number' => $request->page_number,
-                'cover' => url('book_cover/' . $nama_cover),
-                'rating' => $request->rating,
-                'namafile' => $request->namafile,
-            ];
+        if ($request->cover) {
+            if ($request->hasFile('cover')) {
+                $nama_cover = $request->file('cover')->getClientOriginalName();
+                $request->file('cover')->move(public_path('book_cover'), $nama_cover);
+                $data = [
+                    'judul' => $request->judul,
+                    'pengarang' => $request->pengarang,
+                    'deskripsi' => $request->deskripsi,
+                    'penerbit' => $request->penerbit,
+                    'tahun_terbit' => $request->tahun_terbit,
+                    'isbn13' => $request->isbn13,
+                    'bahasa' => $request->bahasa,
+                    'harga' => $request->harga,
+                    'page_number' => $request->page_number,
+                    'cover' => url('book_cover/' . $nama_cover),
+                    'rating' => $request->rating,
+                    // 'namafile' => $request->namafile,
+                ];
+            } else {
+                $data = [
+                    'judul' => $request->judul,
+                    'pengarang' => $request->pengarang,
+                    'deskripsi' => $request->deskripsi,
+                    'penerbit' => $request->penerbit,
+                    'tahun_terbit' => $request->tahun_terbit,
+                    'isbn13' => $request->isbn13,
+                    'bahasa' => $request->bahasa,
+                    'harga' => $request->harga,
+                    'page_number' => $request->page_number,
+                    'cover' => $request->cover,
+                    'rating' => $request->rating,
+                ];
+            }
         } else {
             $data = [
                 'judul' => $request->judul,

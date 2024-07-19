@@ -52,10 +52,19 @@ function HomePage() {
                 </div>
             </div>
             <div className="container justify-start bg-base-200 rounded-box p-4 m-4">
-                <h1 className='text-2xl ml-8 my-2 row justify-start font-bold'>Book with genre you might like ✔️</h1>
+                <h1 className='text-2xl ml-8 my-2 row justify-start font-bold'>Books in your language 📚</h1>
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
-                    <Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton />
+                    {/* {
+                        // filter books by language
+                        books?.data && books?.data ? (
+                            books?.data?.map((book, index) => (
+                                <Book key={book.idbuku} {...book} />
+                            ))
+                        ) : ( */}
+                            <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                        {/* )
+                    } */}
                 </div>
             </div>
             <div className="container justify-start bg-base-200 rounded-box p-4 m-4">

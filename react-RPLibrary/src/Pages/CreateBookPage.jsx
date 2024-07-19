@@ -31,9 +31,11 @@ function CreateBookPage() {
             });
             const book = response.data.items[0].volumeInfo;
             setBookData(book);
+            console.log(book);
 
             // Set form values with fetched book data
             setValue('judul', book.title);
+            setValue('isbn13', book.industryIdentifiers[0].identifier);
             setValue('pengarang', book.authors.join(', '));
             setValue('deskripsi', book.description);
             setValue('penerbit', book.publisher);
@@ -41,6 +43,7 @@ function CreateBookPage() {
             setValue('tahun_terbit', book.publishedDate);
             setValue('rating', book.averageRating);
             setValue('page_number', book.pageCount);
+            setValue('cover', book.imageLinks?.thumbnail || '');
             setCover(book.imageLinks?.thumbnail || '');
         } catch (error) {
             console.error('Error fetching books:', error);
@@ -66,13 +69,14 @@ function CreateBookPage() {
     }
 
     function handleFileChange(event) {
+        console.log(event.target.files[0]);
         const file = event.target.files[0];
         setCover(URL.createObjectURL(file)); // Create a URL for the selected file
-        setValue('cover', event.target.files); // Update form value with the selected file
+        setValue('cover', file); // Update form value with the selected file
     }
 
     function createBook(data) {
-        // console.log(data);
+        console.log(data.cover);
         const token = sessionStorage.getItem('auth_token');
         const formData = new FormData();
         formData.append('judul', data.judul);
@@ -85,13 +89,7 @@ function CreateBookPage() {
         formData.append('page_number', data.page_number);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahun_terbit);
-        if (data.cover) {
-            formData.append('cover', data.cover?.[0]);
-        }
-
-        // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
+        formData.append('cover', data.cover);
 
         axios.post(`http://127.0.0.1:8000/api/buku`, formData, {
             headers: {
@@ -101,7 +99,7 @@ function CreateBookPage() {
         }
         ).then(res => {
             console.log(res.data)
-            navigate('/book-index')
+            // navigate('/book-index')
         })
     }
 
@@ -164,9 +162,9 @@ function CreateBookPage() {
                     {cover ? (
                         <label htmlFor="" className="form-control">
                             <span className="label-text">Cover</span>
-                        <div className="flex gap-2 glass rounded-box w-32 p-1">
-                            <img src={cover} className="rounded-box" alt="Book Cover" />
-                        </div>
+                            <div className="flex gap-2 glass rounded-box w-32 p-1">
+                                <img src={cover} className="rounded-box" alt="Book Cover" />
+                            </div>
                         </label>
                     ) : (<label htmlFor="" className="form-control">
                         <span className="label-text">Cover</span>

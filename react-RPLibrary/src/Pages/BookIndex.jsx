@@ -36,6 +36,7 @@ function BookIndex() {
     const [filteredList, setFilteredList] = useState([]);
     const searchValue = watch("search");
     const sortValue = watch("sort");
+    const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
 
     useEffect(() => {
         if (sessionStorage.getItem('status_user') != 0) {
@@ -108,7 +109,7 @@ function BookIndex() {
                     {
                         filteredList?.map((data, index) => (
                             <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                <LoadedBook {...data} />
+                                <LoadedBook {...data} iduser={idUser} />
                             </Suspense>
                         ))}
                 </div>

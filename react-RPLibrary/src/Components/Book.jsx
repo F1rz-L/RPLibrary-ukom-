@@ -51,13 +51,14 @@ function Book(props) {
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [modalIsEditing, setModalIsEditing] = useState(false)
     const [editContent, setEditContent] = useState()
-    const [id, setId] = useState(props.idbuku)
     const [shortJudul, setShortJudul] = useState(truncateString(props.judul, 9))
-    const [cover, setCover] = useState(props.cover)
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')))
-
+    const [idUser, setIdUser] = useState(props.idUser)
+    
+    const [cover, setCover] = useState(props.cover)
+    const [id, setId] = useState(props.idbuku)
     const [judul, setJudul] = useState(props.judul)
     const [pengarang, setPengarang] = useState(props.pengarang)
     const [deskripsi, setDeskripsi] = useState(props.deskripsi)
@@ -83,8 +84,6 @@ function Book(props) {
     }
 
     function borrowBook() {
-        const idUser = sessionStorage.getItem('iduser');
-
         const formData = new URLSearchParams();
         formData.append('iduser', idUser);
 
@@ -146,7 +145,7 @@ function Book(props) {
                     <img src={cover} className='' />
                 )
             }
-        } if (state == "modal") {
+        } else if (state == "modal") {
             if (!cover) {
                 return (
                     <img src={"RPLibrary(placeholder).jpg"} className='max-h-[75svh]' />
@@ -197,8 +196,10 @@ function Book(props) {
                             <div className='col-6 flex gap-2'>
                                 <input type="file" id="selectedIMG" name='cover' className='hidden' {...register("cover")} />
                                 <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
-                                <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
-                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
+                                {<>
+                                    <input type="file" id="selectedPDF" className='hidden' {...register("namafile")} />
+                                    <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
+                                </>}
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
                                 <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" />
                             </div>
@@ -240,8 +241,8 @@ function Book(props) {
                     <div className="flex justify-end mt-3 w-full">
                         <div className='gap-1 flex mr-12'>
                             {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button> : null}
-                            {idPeminjam ? <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div> : 
-                            <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button> }
+                            {idPeminjam ? <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div> :
+                                <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>}
                             {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
                             {isNotAdmin ? null :
                                 <div className="dropdown dropdown-top">
