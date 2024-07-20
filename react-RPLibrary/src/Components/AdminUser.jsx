@@ -14,6 +14,13 @@ function AdminUser() {
         })
     }
 
+    function switchuser(idUser, statusUser) {
+        link.get(`/user/switchUser/${idUser}`).then((res) => {
+            console.log(res.data)
+            window.location.reload()
+        })
+    }
+
     function getStatus(status) {
         switch (status) {
             case 0:
@@ -47,7 +54,9 @@ function AdminUser() {
                     {/* <div className='divider '></div> */}
                 </thead>
                 <tbody className='pb-4'>
-                    {user?.data?.map((user, index) => (
+                    {user?.data?.map((user, index) => {
+                        // console.log(user)
+                        return (
                         <tr key={index} className="text-center hover">
                             <th>{index + 1}</th>
                             <td>{user?.nama}</td>
@@ -60,13 +69,15 @@ function AdminUser() {
                                 <div className="dropdown dropdown-right">
                                     <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
                                     <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
-                                        <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                                        <li><a><FontAwesomeIcon icon={faTrash} onClick={() => deleteUser(user?.id)} /> Delete</a></li>
+                                        {user?.status == 0 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make Admin</a></li>}
+                                        {user?.status == 1 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make User</a></li>}
+                                        {/* <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li> */}
+                                        <li onClick={() => deleteUser(user?.id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
                                     </ul>
                                 </div>
                             </td>
                         </tr>
-                    ))}
+                    )})}
                 </tbody>
             </table>
         </>

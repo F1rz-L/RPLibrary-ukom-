@@ -39,6 +39,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+Route::get('/user/switchUser/{id}', [UserController::class, 'switchUser']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
 Route::post('/buku', [BukuController::class, 'store']); // Create Buku

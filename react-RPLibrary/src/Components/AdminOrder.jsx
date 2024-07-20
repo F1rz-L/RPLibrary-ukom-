@@ -6,6 +6,7 @@ import { link } from '../Axios/link'
 
 function AdminOrder() {
     const [orders] = UseGet('/order')
+    console.log(orders);
     const [users] = UseGet('/user')
     const [orderDetails] = UseGet('/orderdetail')
     // const [orderDetail, setOrderDetail] = useState([])
@@ -53,7 +54,7 @@ function AdminOrder() {
                     </tr>
                 </thead>
                 <tbody className='pb-4'>
-                    {orders?.data?.map((order, index) => (
+                    {orders?.data?.length > 0 ? orders?.data?.map((order, index) => (
                         // <>
                         <tr key={index} className="text-center hover">
 
@@ -112,7 +113,9 @@ function AdminOrder() {
                             </td>
                         </tr>
                         // </>
-                    ))}
+                    )) : (
+                        <th colSpan={7} className='text-xl text-center'>No Orders</th>
+                    )}
                 </tbody>
             </table>
         </>

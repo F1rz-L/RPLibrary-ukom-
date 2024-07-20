@@ -35,6 +35,14 @@ return new class extends Migration
             'status' => 0,
             'saldo' => 1000000000,
         ]);
+        User::create([
+            'nama' => 'Joni',
+            'email' => 'joni@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 1,
+            'saldo' => 0,
+        ]);
     }
 
     /**

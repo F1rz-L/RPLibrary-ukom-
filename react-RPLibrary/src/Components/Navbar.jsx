@@ -9,7 +9,21 @@ function Navbar() {
     const navigate = useNavigate()
     const [role, setRole] = useState('')
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')) || [])
-    // const [navProfile, setNavProfile] = useState('')
+    const [iduser, setIduser] = useState(sessionStorage.getItem('iduser') || '')
+    const [user] = UseGet(`user/${iduser}`);
+    const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user'))
+    const [bluemark, setBluemark] = useState(false)
+    // const [inisial, setInisial] = useState(user?.data?.nama?.slice(0, 1))
+
+    useEffect(() => {
+        if (statusUser == 2 || statusUser == 0) {
+            setBluemark(true)
+        } else {
+            setBluemark(false)
+        }
+    })
+
+    // console.log(user.data.nama.slice(0, 1));
 
     function calculateCart() {
         let jumlah = 0
@@ -21,22 +35,9 @@ function Navbar() {
 
 
     function getUser() {
-        if (sessionStorage.getItem('iduser')) {
-            const iduser = sessionStorage.getItem('iduser');
-            const [user] = UseGet(`user/${iduser}`);
-            // console.log(user.data?.status, sessionStorage.getItem('iduser'));
-
-            const inisial = user.data?.nama.slice(0, 1);
-            const statusUser = user.data?.status;
-            const [bluemark, setBluemark] = useState(async function () {
-                if (await statusUser == 2) {
-                    // console.log("Bluemark!");
-                    return true
-                } else {
-                    // console.log("!Bluemark");
-                    return false
-                }
-            });
+        if (iduser) {
+            const inisial = user?.data?.nama?.slice(0, 1)
+            const statusUser = user?.data?.status;
 
             function roleChecker() {
                 if (statusUser == 0) {
@@ -52,10 +53,10 @@ function Navbar() {
             }
 
             function balanceChecker() {
-                if(Math.sign(Number(user?.data?.saldo)) == -1) {
-                    return <li className='text-red-600'><Link><FontAwesomeIcon icon={faCoins}/>Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                if (Math.sign(Number(user?.data?.saldo)) == -1) {
+                    return <li className='text-red-600'><Link><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
                 } else {
-                    return <li><Link><FontAwesomeIcon icon={faCoins}/>Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                    return <li><Link><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
                 }
             }
 
@@ -84,6 +85,7 @@ function Navbar() {
                                 <p className='text-sm bg-base-300 mt-2 p-2 rounded-box'>{user.data?.alamat}</p>
                             </div>
                         </div>
+                        {bluemark ? null : <li><a className='bg-blue-200 border-l-[#03A9F4] border-l-4'><img src="bluemark.svg" className='w-5 -mt-2'/>Get Bluemark</a></li>}
                         {balanceChecker()}
                         <li><Link to={"/transactions"}><FontAwesomeIcon icon={faReceipt} />Transactions</Link></li>
                         <li onClick={() => logout()} className=''><a><FontAwesomeIcon icon={faRightFromBracket} />Logout</a></li>

@@ -109,7 +109,7 @@ function BookIndex() {
                     {
                         filteredList?.map((data, index) => (
                             <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                <LoadedBook {...data} iduser={idUser} />
+                                <LoadedBook {...data} idUser={idUser} />
                             </Suspense>
                         ))}
                 </div>

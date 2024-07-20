@@ -26,7 +26,8 @@ function CreateBookPage() {
         try {
             const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
                 params: {
-                    q: `isbn:${query}`,
+                    q: `isbn:${query},
+                    title:${query}`,
                 }
             });
             const book = response.data.items[0].volumeInfo;
@@ -53,20 +54,6 @@ function CreateBookPage() {
     // function handleChange(event) {
     //     setQuery(event.target.value);
     // }
-
-    async function GBook(event) {
-        event.preventDefault();
-        try {
-            const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-                params: {
-                    q: query,
-                }
-            });
-            return (response.data.items[0]);
-        } catch (error) {
-            console.error('Error fetching books:', error);
-        }
-    }
 
     function handleFileChange(event) {
         console.log(event.target.files[0]);

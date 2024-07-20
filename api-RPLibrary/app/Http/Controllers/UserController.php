@@ -60,4 +60,22 @@ class UserController extends Controller
             ]);
         }
     }
+
+    public function switchUser($iduser)
+    {
+        $user = User::find($iduser);
+        if ($user->status == 1 || $user->status == 2) {
+            $data = User::where('id', $iduser)->update(['status' => 0]);
+        }
+        if ($user->status == 0) {
+            $data = User::where('id', $iduser)->update(['status' => 1]);
+        }
+
+        if ($data) {
+            return response()->json([
+                'message' => 'Success changing role',
+                'data' => $data
+            ]);
+        }
+    }
 }

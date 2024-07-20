@@ -5,6 +5,7 @@ import UseGet from '../Axios/UseGet'
 
 function HomePage() {
     const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user') || 0)
+    const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
     const [trendingBooks] = UseGet('/trending')
     const [books] = UseGet('/buku')
     // console.log(trendingBooks);
@@ -43,7 +44,7 @@ function HomePage() {
                     {
                         books?.data && trendingBooks?.data ? (
                             trendingBooks?.data?.map((book, index) => (
-                                <Book key={book.idbuku} {...book} />
+                                <Book key={book.idbuku} idUser={idUser} {...book} />
                             ))
                         ) : (
                             <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>

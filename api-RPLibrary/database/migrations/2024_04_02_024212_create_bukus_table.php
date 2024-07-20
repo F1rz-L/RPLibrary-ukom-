@@ -44,7 +44,7 @@ return new class extends Migration
                 'rating' => $faker->numberBetween(0, 5),
                 'page_number' => $faker->numberBetween(0, 500),
                 'bahasa' => $faker->languageCode,
-                'harga' => $faker->numberBetween(10000, 100000),
+                'harga' => $faker->numberBetween(10, 200) * 1000,
                 'cover' => "https://picsum.photos/seed/".$faker->word."/360/480",
             ]);
         }
