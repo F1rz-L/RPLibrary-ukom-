@@ -1,18 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Skeleton from '../Components/Skeleton'
 import Book from '../Components/Book'
 import UseGet from '../Axios/UseGet'
+import { link } from '../Axios/link'
 
 function HomePage() {
     const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user') || 0)
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
     const [trendingBooks] = UseGet('/trending')
+    const [user, setUser] = useState('')
     const [books] = UseGet('/buku')
-    // console.log(trendingBooks);
-    // console.log(books);
 
-    const trendingBookIds = trendingBooks?.data?.map(book => book.idbuku) || [];
-    console.log(trendingBookIds);
+    useEffect(() => {
+        async function getUser() {
+            const userdata = await link.get(`/user/${idUser}`)
+            setUser(userdata.data.data)
+        } getUser()
+    }, [idUser])
+
+    // console.log(user);
 
     function heroChecker() {
         if (statusUser == 1) {
@@ -42,9 +48,9 @@ function HomePage() {
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
                     {
-                        books?.data && trendingBooks?.data ? (
-                            trendingBooks?.data?.map((book, index) => (
-                                <Book key={book.idbuku} idUser={idUser} {...book} />
+                        books?.data && trendingBooks?.data && user ? (
+                            trendingBooks.data.map((book, index) => (
+                                <Book key={book.idbuku} idUser={user?.id} idbukupinjam={user.idbukupinjam} {...book} />
                             ))
                         ) : (
                             <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
@@ -63,8 +69,8 @@ function HomePage() {
                                 <Book key={book.idbuku} {...book} />
                             ))
                         ) : ( */}
-                            <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
-                        {/* )
+                    <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                    {/* )
                     } */}
                 </div>
             </div>

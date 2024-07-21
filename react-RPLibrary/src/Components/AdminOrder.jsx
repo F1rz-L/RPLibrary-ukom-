@@ -1,15 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import UseGet from '../Axios/UseGet'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faEdit, faMagnifyingGlassDollar, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { link } from '../Axios/link'
 
-function AdminOrder() {
-    const [orders] = UseGet('/order')
-    console.log(orders);
-    const [users] = UseGet('/user')
-    const [orderDetails] = UseGet('/orderdetail')
-    // const [orderDetail, setOrderDetail] = useState([])
+function AdminOrder(props) {
+    const [orders, setOrders] = useState(props.orders)
+    const [users, setUsers] = useState(props.users)
+    const [orderDetails, setOrderDetails] = useState(props.orderDetails)
+
+    useEffect(() => {
+        setUsers(props.users)
+        setOrderDetails(props.orderDetails)
+        setOrders(props.orders)
+    }, [props.users, props.orderDetails, props.orders])
 
     function deleteOrder(idorder){
         link.delete(`/order/${idorder}`).then(() => {

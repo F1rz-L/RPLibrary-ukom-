@@ -6,6 +6,8 @@ import { faFeather } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { link } from '../Axios/link';
+import Book from '../Components/Book';
 
 function BookIndex() {
     const {
@@ -37,6 +39,7 @@ function BookIndex() {
     const searchValue = watch("search");
     const sortValue = watch("sort");
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
+    const [user, setUser] = useState('')
 
     useEffect(() => {
         if (sessionStorage.getItem('status_user') != 0) {
@@ -45,6 +48,16 @@ function BookIndex() {
             setIsNotAdmin(false);
         }
     }, []);
+
+    useEffect(() => {
+        async function getUser() {
+            if (idUser) {
+                const userdata = await link.get(`/user/${idUser}`);
+                setUser(userdata?.data?.data);
+            }
+        } 
+        getUser()
+    }, [idUser])
 
     useEffect(() => {
         if (isi.data) {
@@ -104,13 +117,12 @@ function BookIndex() {
                             <Link to={"/create-book"} className='btn btn-success text-white'><FontAwesomeIcon icon={faFeather} className='w-5 h-5' />Input Book</Link>}
                     </form>
                 </div>
-
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
                         filteredList?.map((data, index) => (
-                            <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                <LoadedBook {...data} idUser={idUser} />
-                            </Suspense>
+                            // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
+                                <Book key={data?.idbuku} {...data} idUser={user.id} idbukupinjam={user.idbukupinjam} />
+                            // </Suspense>
                         ))}
                 </div>
             </div>

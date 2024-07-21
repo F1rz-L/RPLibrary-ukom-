@@ -47,7 +47,6 @@ Route::get('/buku', [BukuController::class, 'index']); // Read Buku
 Route::get('/buku/{id}', [BukuController::class, 'show']); // Read Singular Buku
 Route::put('/buku/{id}', [BukuController::class, 'update']); // Update Buku
 Route::delete('/buku/{id}', [BukuController::class, 'destroy']); // Delete Buku
-Route::get('/buku/{filter}', [BukuController::class, 'filter']); // Filter Buku
 
 Route::get('/order', [OrderController::class, 'index']);
 Route::post('/order', [OrderController::class, 'store']);
@@ -58,4 +57,5 @@ Route::get('/orderdetail', [OrderDetailController::class, 'index']);
 Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 
 Route::get('/trending', [AlgorithmController::class, 'trending']);
+Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
 Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);

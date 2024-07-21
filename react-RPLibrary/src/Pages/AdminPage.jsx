@@ -1,9 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdminUser from '../Components/AdminUser'
 import AdminOrder from '../Components/AdminOrder'
+import AdminBorrow from '../Components/AdminBorrow'
+import UseGet from '../Axios/UseGet'
+import { link } from '../Axios/link'
 
 function AdminPage() {
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
+    const [orderDetails] = UseGet('/orderdetail')
+    const [users] = UseGet('/user')
+    const [orders] = UseGet('/order')
 
     return (
         <>
@@ -15,18 +21,18 @@ function AdminPage() {
                     <div role="tablist" className="tabs tabs-lifted bg-base-300 p-1 rounded-box m-4">
                         <input type="radio" name="my_tabs_2" role="tab" defaultChecked className="tab" aria-label="Users" />
                         <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <AdminUser />
+                            <AdminUser users={users} />
                         </div>
 
                         <input
                             type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Orders" />
                         <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <AdminOrder />
+                            <AdminOrder users={users} orders={orders} orderDetails={orderDetails} />
                         </div>
 
                         <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Borrowment" />
                         <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            Borrowment
+                            <AdminBorrow users={users} />
                         </div>
                     </div></>}
         </>

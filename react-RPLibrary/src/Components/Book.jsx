@@ -48,6 +48,8 @@ function Book(props) {
         })
     }
 
+    // console.log(props);
+
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [modalIsEditing, setModalIsEditing] = useState(false)
     const [editContent, setEditContent] = useState()
@@ -55,7 +57,9 @@ function Book(props) {
     const [shortPengarang, setShortPengarang] = useState(truncateString(props.pengarang, 10))
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')))
+
     const [idUser, setIdUser] = useState(props.idUser)
+    const [idBukuPinjam, setIdBukuPinjam] = useState(props.idbukupinjam)
 
     const [cover, setCover] = useState(props.cover)
     const [id, setId] = useState(props.idbuku)
@@ -72,6 +76,12 @@ function Book(props) {
     const [idPeminjam, setIdPeminjam] = useState(props.idpeminjam)
     const [namaFile, setNamaFile] = useState(props.namafile)
 
+
+    useEffect(() => {
+        setIdUser(props.idUser)
+        setIdBukuPinjam(props.idbukupinjam)
+    }, [props.idbukupinjam, props.idUser])
+
     function addToCart() {
         setCart([...cart, {
             id: id,
@@ -83,10 +93,10 @@ function Book(props) {
         }, 200);
     }
 
-    console.log(props.idUser);
-
+    // console.log(idUser);
     function bookInteraction() {
         let a, b, c, d = null
+        console.log(idBukuPinjam);
         if (idUser) {
             if (namaFile) {
                 a = (
@@ -95,6 +105,10 @@ function Book(props) {
             }
             if (idPeminjam) {
                 b = <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>
+            } if (idPeminjam == idUser) {
+                b = <div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>
+            } else if (idBukuPinjam) {
+                b = <div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>
             } else {
                 b = <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>
             }
@@ -129,9 +143,9 @@ function Book(props) {
         formData.append('iduser', idUser);
 
         if (idUser) {
-            link.post(`/pinjam/${idUser}`, formData).then((res) => {
+            link.post(`/pinjam/${id}`, formData).then((res) => {
                 console.log(res.data);
-                // window.location.reload();
+                window.location.reload();
             }).catch((error) => {
                 console.error('Error:', error);
             });
@@ -281,19 +295,6 @@ function Book(props) {
                     </div>
                     <div className="flex justify-end mt-3 w-full">
                         <div className='gap-1 flex mr-12'>
-                            {/* {namaFile ? <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button> : null}
-                            {idPeminjam ? <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div> :
-                                <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>}
-                            {sessionStorage.getItem("auth_token") ? <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button> : <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>}
-                            {isNotAdmin ? null :
-                                <div className="dropdown dropdown-top">
-                                    <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
-                                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
-                                        <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                                        <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
-                                    </ul>
-                                </div>
-                            } */}
                             {bookInteraction()}
                         </div>
                     </div>

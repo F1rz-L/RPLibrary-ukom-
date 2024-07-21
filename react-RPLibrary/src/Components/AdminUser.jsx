@@ -1,11 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import UseGet from '../Axios/UseGet'
 import { faBars, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { link } from '../Axios/link'
 
-function AdminUser() {
-    const [user] = UseGet('/user')
+function AdminUser(props) {
+
+    const [users, setUsers] = useState(props.users)
+
+    useEffect(() => {
+        setUsers(props.users)
+    }, [props.users])
 
     function deleteUser(id) {
         link.delete(`/user/${id}`).then(() => {
@@ -54,30 +59,31 @@ function AdminUser() {
                     {/* <div className='divider '></div> */}
                 </thead>
                 <tbody className='pb-4'>
-                    {user?.data?.map((user, index) => {
+                    {users?.data?.map((user, index) => {
                         // console.log(user)
                         return (
-                        <tr key={index} className="text-center hover">
-                            <th>{index + 1}</th>
-                            <td>{user?.nama}</td>
-                            <td>{user?.email}</td>
-                            <td>{user?.alamat}</td>
-                            <td>{Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>
-                            {getStatus(user?.status)}
-                            {/* <div></div> */}
-                            <td>
-                                <div className="dropdown dropdown-right">
-                                    <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
-                                    <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
-                                        {user?.status == 0 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make Admin</a></li>}
-                                        {user?.status == 1 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make User</a></li>}
-                                        {/* <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li> */}
-                                        <li onClick={() => deleteUser(user?.id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    )})}
+                            <tr key={index} className="text-center hover">
+                                <th>{index + 1}</th>
+                                <td>{user?.nama}</td>
+                                <td>{user?.email}</td>
+                                <td>{user?.alamat}</td>
+                                {Math.sign(Number(user?.saldo)) == -1 ? <td className='text-red-600'>{Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td> : <td>{Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</td>}
+                                {getStatus(user?.status)}
+                                {/* <div></div> */}
+                                <td>
+                                    <div className="dropdown dropdown-right">
+                                        <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
+                                        <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
+                                            {user?.status == 0 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make Admin</a></li>}
+                                            {user?.status == 1 ? null : <li onClick={() => switchuser(user?.id, user?.status)}><a><FontAwesomeIcon icon={faEdit} />Make User</a></li>}
+                                            {/* <li><a><FontAwesomeIcon icon={faEdit} /> Edit</a></li> */}
+                                            <li onClick={() => deleteUser(user?.id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </table>
         </>
