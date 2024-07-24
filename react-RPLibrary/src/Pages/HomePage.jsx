@@ -13,11 +13,13 @@ function HomePage() {
 
     useEffect(() => {
         async function getUser() {
-            const userdata = await link.get(`/user/${idUser}`)
-            setUser(userdata.data.data)
+            if (idUser) {
+                const userdata = await link.get(`/user/${idUser}`)
+                setUser(userdata.data.data)
+            }
         } getUser()
     }, [idUser])
-
+    
     // console.log(user);
 
     function heroChecker() {
@@ -48,9 +50,9 @@ function HomePage() {
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
                     {
-                        books?.data && trendingBooks?.data && user ? (
+                        books?.data && trendingBooks?.data ? (
                             trendingBooks.data.map((book, index) => (
-                                <Book key={book.idbuku} idUser={user?.id} idbukupinjam={user.idbukupinjam} {...book} />
+                                <Book key={book.idbuku} idUser={String(user.id)} idBukuPinjam={String(user.idbukupinjam)} {...book} />
                             ))
                         ) : (
                             <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>

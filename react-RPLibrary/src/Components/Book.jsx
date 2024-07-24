@@ -59,7 +59,7 @@ function Book(props) {
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')))
 
     const [idUser, setIdUser] = useState(props.idUser)
-    const [idBukuPinjam, setIdBukuPinjam] = useState(props.idbukupinjam)
+    const [idBukuPinjam, setIdBukuPinjam] = useState(props.idBukuPinjam)
 
     const [cover, setCover] = useState(props.cover)
     const [id, setId] = useState(props.idbuku)
@@ -79,7 +79,10 @@ function Book(props) {
 
     useEffect(() => {
         setIdUser(props.idUser)
+        // console.log(idUser);
         setIdBukuPinjam(props.idbukupinjam)
+        console.log(props.idBukuPinjam);
+        bookInteraction()
     }, [props.idbukupinjam, props.idUser])
 
     function addToCart() {
@@ -96,24 +99,24 @@ function Book(props) {
     // console.log(idUser);
     function bookInteraction() {
         let a, b, c, d = null
-        console.log(idBukuPinjam);
+        // console.log(idBukuPinjam);
         if (idUser) {
             if (namaFile) {
                 a = (
                     <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>
                 )
             }
-            if (idPeminjam) {
+            // if (idPeminjam) {
                 b = <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>
-            } if (idPeminjam == idUser) {
+            // } if (idPeminjam == idUser) {
                 b = <div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>
-            } else if (idBukuPinjam) {
+            // } else if (idBukuPinjam) {
                 b = <div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>
-            } else {
+            // } else {
                 b = <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>
-            }
+            // }
             c = <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>
-            if (!isNotAdmin) {
+            // if (!isNotAdmin) {
                 d = (
                     <div className="dropdown dropdown-top">
                         <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
@@ -123,7 +126,7 @@ function Book(props) {
                         </ul>
                     </div>
                 )
-            }
+            // }
 
             return [a, b, c, d]
         } else {

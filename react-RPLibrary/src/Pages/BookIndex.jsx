@@ -55,7 +55,7 @@ function BookIndex() {
                 const userdata = await link.get(`/user/${idUser}`);
                 setUser(userdata?.data?.data);
             }
-        } 
+        }
         getUser()
     }, [idUser])
 
@@ -95,6 +95,7 @@ function BookIndex() {
         setFilteredList(isi.data);
     }
 
+    // console.log(user);
     return (
         <>
             <div className='h-full w-full'>
@@ -119,11 +120,15 @@ function BookIndex() {
                 </div>
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        filteredList?.map((data, index) => (
-                            // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                <Book key={data?.idbuku} {...data} idUser={user.id} idbukupinjam={user.idbukupinjam} />
-                            // </Suspense>
-                        ))}
+                        filteredList?.map((data, index) => {
+                            // console.log(user?.idbukupinjam);
+                            return (
+                                // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
+                                <Book key={data?.idbuku} {...data} idUser={String(user.id)} idBukuPinjam={String(user.idbukupinjam)} />
+                                // </Suspense>
+                            )
+                        }
+                        )}
                 </div>
             </div>
         </>
