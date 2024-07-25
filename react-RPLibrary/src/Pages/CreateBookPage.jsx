@@ -26,8 +26,7 @@ function CreateBookPage() {
         try {
             const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
                 params: {
-                    q: `isbn:${query},
-                    title:${query}`,
+                    q: `isbn:${query}`,
                 }
             });
             const book = response.data.items[0].volumeInfo;
@@ -86,7 +85,7 @@ function CreateBookPage() {
         }
         ).then(res => {
             console.log(res.data)
-            // navigate('/book-index')
+            navigate('/book-index')
         })
     }
 

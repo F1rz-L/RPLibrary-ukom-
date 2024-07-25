@@ -137,50 +137,35 @@ class BukuController extends Controller
      */
     public function update(Request $request, $idbuku)
     {
-        // $this->validate($request, [
-        //     'judul' => 'required',
-        //     'pengarang' => 'required',
-        //     'deskripsi' => 'required',
-        //     'penerbit' => 'required',
-        //     'tahun_terbit' => 'required',
-        //     'isbn13' => 'required',
-        //     'bahasa' => 'required',
-        //     'harga' => 'required',
-        //     'page_number' => 'required',
-        //     'cover' => 'required',
-        // ]);
+        $data = [
+            'judul' => $request->judul,
+            'pengarang' => $request->pengarang,
+            'deskripsi' => $request->deskripsi,
+            'penerbit' => $request->penerbit,
+            'tahun_terbit' => $request->tahun_terbit,
+            'isbn13' => $request->isbn13,
+            'bahasa' => $request->bahasa,
+            'harga' => $request->harga,
+            'page_number' => $request->page_number,
+            'rating' => $request->rating
+        ];
 
         if ($request->hasFile('cover')) {
             $nama_cover = $request->file('cover')->getClientOriginalName();
             $request->file('cover')->move(public_path('book_cover'), $nama_cover);
-            $data = [
-                'judul' => $request->judul,
-                'pengarang' => $request->pengarang,
-                'deskripsi' => $request->deskripsi,
-                'penerbit' => $request->penerbit,
-                'tahun_terbit' => $request->tahun_terbit,
-                'isbn13' => $request->isbn13,
-                'bahasa' => $request->bahasa,
-                'harga' => $request->harga,
-                'page_number' => $request->page_number,
-                'cover' => url('book_cover/' . $nama_cover),
-                'rating' => $request->rating,
-                'namafile' => $request->namafile,
-            ];
+            $data['cover'] = url('book_cover/' . $nama_cover);
+        }
+
+        if ($request->hasFile('namafile')) {
+            $nama_file = $request->file('namafile')->getClientOriginalName();
+            $request->file('namafile')->move(public_path('book_files'), $nama_file);
+            $data['namafile'] = url('book_files/' . $nama_file);
+        }
+
+        if ($request->hasFile('namafile')) {
+            error_log('namafile received: ' . $request->file('namafile')->getClientOriginalName());
         } else {
-            $data = [
-                'judul' => $request->judul,
-                'pengarang' => $request->pengarang,
-                'deskripsi' => $request->deskripsi,
-                'penerbit' => $request->penerbit,
-                'tahun_terbit' => $request->tahun_terbit,
-                'isbn13' => $request->isbn13,
-                'bahasa' => $request->bahasa,
-                'harga' => $request->harga,
-                'page_number' => $request->page_number,
-                'rating' => $request->rating,
-                // 'namafile' => $request->namafile,
-            ];
+            error_log('namafile not received');
         }
 
 

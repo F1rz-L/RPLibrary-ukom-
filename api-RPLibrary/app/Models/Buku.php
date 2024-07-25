@@ -20,6 +20,7 @@ class Buku extends Model
         'isbn13',
         'rating',
         'page_number',
+        'namafile',
         'bahasa',
         'harga',
         'idpeminjam',
