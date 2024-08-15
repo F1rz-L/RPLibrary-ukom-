@@ -17,7 +17,9 @@ function HomePage() {
                 const userdata = await link.get(`/user/${idUser}`)
                 setUser(userdata.data.data)
             }
-        } getUser()
+        } 
+        
+        getUser()
     }, [idUser])
     
     // console.log(user);
@@ -51,7 +53,7 @@ function HomePage() {
                 <div className="row my-4 flex justify-center">
                     {
                         books?.data && trendingBooks?.data ? (
-                            trendingBooks.data.map((book, index) => (
+                            trendingBooks.data.map((book) => (
                                 <Book key={book.idbuku} idUser={String(user.id)} idBukuPinjam={String(user.idbukupinjam)} {...book} />
                             ))
                         ) : (

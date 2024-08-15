@@ -12,6 +12,7 @@ import CartPage from './Pages/CartPage';
 import ReadPage from './Pages/ReadPage';
 import CreateBookPage from './Pages/CreateBookPage';
 import AdminPage from './Pages/AdminPage';
+import TransactionsPage from './Pages/TransactionsPage';
 
 function FrontPage() {
   return (
@@ -33,6 +34,7 @@ function FrontPage() {
               <Route path='/cart' element={<CartPage />} />
               <Route path="/create-book" element={<CreateBookPage />} />
               <Route path='/admin' element={<AdminPage />} />
+              <Route path='/transactions' element={<TransactionsPage />} />
               {/* <Route path="/read" element={<ReadPage />} /> */}
             </Routes>
           </div>

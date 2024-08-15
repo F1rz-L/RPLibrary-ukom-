@@ -49,7 +49,8 @@ Route::put('/buku/{id}', [BukuController::class, 'update']); // Update Buku
 Route::delete('/buku/{id}', [BukuController::class, 'destroy']); // Delete Buku
 
 Route::get('/order', [OrderController::class, 'index']);
-Route::post('/order', [OrderController::class, 'store']);
+Route::get('/order/{id}', [OrderController::class, 'show']);
+Route::post('/order', [OrderController::class, 'store']);   
 Route::delete('/order/{id}', [OrderController::class, 'destroy']);
 
 Route::post('/orderdetail', [OrderDetailController::class, 'store']);

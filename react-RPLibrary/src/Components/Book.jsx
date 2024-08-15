@@ -58,8 +58,13 @@ function Book(props) {
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')))
 
+    // const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser'))
     const [idUser, setIdUser] = useState(props.idUser)
     const [idBukuPinjam, setIdBukuPinjam] = useState(props.idBukuPinjam)
+    const [btnRead, setBtnRead] = useState()
+    const [btnPinjam, setBtnPinjam] = useState()
+    const [btnAddToCart, setBtnAddToCart] = useState()
+    const [btnEdit, setBtnEdit] = useState()
 
     const [cover, setCover] = useState(props.cover)
     const [id, setId] = useState(props.idbuku)
@@ -79,11 +84,53 @@ function Book(props) {
 
     useEffect(() => {
         setIdUser(props.idUser)
-        // console.log(idUser);
         setIdBukuPinjam(props.idbukupinjam)
-        console.log(props.idBukuPinjam);
-        bookInteraction()
-    }, [props.idbukupinjam, props.idUser])
+        // console.log(btnPinjam);
+        console.log("idUser1:", idUser, props.idUser);
+    }, [props.idbukupinjam, props.idUser])  
+
+    useEffect(() => {
+
+        console.log("idUser2:", idUser, props.idUser);
+        // console.log("idBukuPinjam:", idBukuPinjam);
+        // console.log("idPeminjam:", idPeminjam);
+        if (idUser) {
+            if (namaFile) {
+                setBtnRead(
+                    <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>
+                )
+            }
+            if (idPeminjam) {
+                setBtnPinjam(<div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } if (idPeminjam == idUser) {
+                setBtnPinjam(<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } else if (idBukuPinjam !== "undefined" && idBukuPinjam !== null) {
+                setBtnPinjam(<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } else {
+                setBtnPinjam(<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
+            }
+
+            setBtnAddToCart(<button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>)
+            if (!isNotAdmin) {
+                setBtnEdit(
+                    <div className="dropdown dropdown-top">
+                        <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
+                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
+                            <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
+                            <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                        </ul>
+                    </div>
+                )
+            }
+        } else {
+            setBtnPinjam(<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            setBtnAddToCart(<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Add to cart</button></div>)
+        }
+    }, [idUser, idBukuPinjam, idPeminjam]) 
+
+    function bookInteractionChecker() {
+
+    }
 
     function addToCart() {
         setCart([...cart, {
@@ -96,54 +143,11 @@ function Book(props) {
         }, 200);
     }
 
-    // console.log(idUser);
-    function bookInteraction() {
-        let a, b, c, d = null
-        // console.log(idBukuPinjam);
-        if (idUser) {
-            if (namaFile) {
-                a = (
-                    <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>
-                )
-            }
-            // if (idPeminjam) {
-            b = <div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>
-            // } if (idPeminjam == idUser) {
-            b = <div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>
-            // } else if (idBukuPinjam) {
-            b = <div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>
-            // } else {
-            b = <button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>
-            // }
-            c = <button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>
-            // if (!isNotAdmin) {
-            d = (
-                <div className="dropdown dropdown-top">
-                    <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
-                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
-                        <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                        <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
-                    </ul>
-                </div>
-            )
-            // }
 
-            return [a, b, c, d]
-        } else {
-            return (
-                <>
-                    {namaFile ? <div className="tooltip" data-tip={`You must be logged in`}><button className="btn btn-disabled">Read Book</button></div> : null}
-                    <div className="tooltip" data-tip={`You must be logged in`}><button className="btn btn-disabled">Borrow Book</button></div>
-
-                    <div className="tooltip" data-tip="You must be logged in"><button className="btn btn-disabled">Add to cart</button></div>
-                </>
-            )
-        }
-    }
 
     function borrowBook() {
         const formData = new URLSearchParams();
-        formData.append('iduser', idUser);
+        formData.append('iduser', 1);
 
         if (idUser) {
             link.post(`/pinjam/${id}`, formData).then((res) => {
@@ -175,8 +179,9 @@ function Book(props) {
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahunTerbit);
         if (data.namafile) {
-            formData.append('namafile', data.namaFile?.[0]);
+            console.log("Appending file buku:", data.namaFile?.[0]);
         }
+        formData.append('namafile', data.namaFile?.[0]);
         if (data.cover) {
             formData.append('cover', data.cover?.[0]);
         }
@@ -192,7 +197,7 @@ function Book(props) {
         ).then(res => {
             console.log(res.data);
             console.log(data);
-            // window.location.reload()
+            window.location.reload()
         })
     }
 
@@ -301,7 +306,10 @@ function Book(props) {
                     </div>
                     <div className="flex justify-end mt-3 w-full">
                         <div className='gap-1 flex mr-12'>
-                            {bookInteraction()}
+                            {btnRead}
+                            {btnPinjam}
+                            {btnAddToCart}
+                            {btnEdit}
                         </div>
                     </div>
                 </>

@@ -174,11 +174,11 @@ function CartPage() {
                         <div className="divider mt-1"></div>
                         <div className='text-neutral-600 text-sm mx-4'>
                             <div className="flex justify-between">
-                                <p className='text-lg'>Subtotal <span className='italic text-sm'>({jumlahCart} items)</span></p>
+                                <p className='text-lg'>Subtotal <span className='italic text-sm opacity-80'>({jumlahCart} items)</span></p>
                                 <p className='text-lg'>{calculateSubtotal().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                             </div>
                             <div className="flex justify-between">
-                                <p className='text-lg'>Tax <span className='italic text-sm'>(11%)</span></p>
+                                <p className='text-lg'>Tax <span className='italic text-sm opacity-80'>(11%)</span></p>
                                 <p className='text-lg'>{calculateTax().toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                             </div>
                             <div className="flex justify-between mt-4">

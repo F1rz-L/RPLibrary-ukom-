@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('idorder')->primary();
             $table->integer('iduser');
             $table->date('tglorder');
-            $table->float('total');
+            $table->float('total', 20);
             $table->integer('status');
             $table->timestamps();
         });

@@ -128,9 +128,7 @@ class BukuController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($idbuku, StoreBukuRequest $request)
-    {
-    }
+    public function edit($idbuku, StoreBukuRequest $request) {}
 
     /**
      * Update the specified resource in storage.
@@ -158,16 +156,14 @@ class BukuController extends Controller
 
         if ($request->hasFile('namafile')) {
             $nama_file = $request->file('namafile')->getClientOriginalName();
+            error_log('namafile received: ' . $nama_file); // Add this for more specific logging
             $request->file('namafile')->move(public_path('book_files'), $nama_file);
             $data['namafile'] = url('book_files/' . $nama_file);
-        }
-
-        if ($request->hasFile('namafile')) {
-            error_log('namafile received: ' . $request->file('namafile')->getClientOriginalName());
         } else {
-            error_log('namafile not received');
+            error_log('namafile not received'); // If the file isn't detected
         }
 
+        error_log(print_r($request->all(), true));
 
         $buku = Buku::where('idbuku', $idbuku)->update($data);
 

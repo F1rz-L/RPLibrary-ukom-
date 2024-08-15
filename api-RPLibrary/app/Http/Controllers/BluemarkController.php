@@ -15,8 +15,8 @@ class BluemarkController extends Controller
         $datapinjam = [
             'idbuku' => $idbuku,
             'idpeminjam' => $request->iduser,
-            'tglpinjam' => date('Y-m-d H:i:s'),
-            'tglkembali' => date('Y-m-d H:i:s', strtotime('+7 days')),
+            'tglpinjam' => date('Y-m-d'),
+            'tglkembali' => date('Y-m-d', strtotime('+7 days')),
             'status' => 0,
         ];
         Pinjaman::create($datapinjam);

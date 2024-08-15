@@ -66,9 +66,13 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show($iduser)
     {
-        //
+        $order = Order::where('iduser', $iduser)->get();
+        return response()->json([
+            'message' => 'Success',
+            'data' => $order
+        ]);
     }
 
     /**
