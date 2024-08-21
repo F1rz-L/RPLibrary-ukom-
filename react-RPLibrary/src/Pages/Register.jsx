@@ -17,15 +17,16 @@ function Register() {
     const navigate = useNavigate()
 
     function submitForm(data) {
-        const formData = new URLSearchParams();
+        const formData = new URLSearchParams();x
         formData.append('email', data.email);
         formData.append('nama', data.nama);
         formData.append('alamat', data.alamat);
         formData.append('password', data.password);
 
         link.post(`/register`, formData).then(res => {
+            sessionStorage.setItem('email', data.email)
             console.log(res.data)
-            navigate('/login')
+            navigate('/verification')
         })
     }
 

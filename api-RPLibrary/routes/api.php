@@ -34,6 +34,8 @@ Route::get('/', function () {
 })->name('login');
 
 // Route::get('/requestbuku', [RequestBukuController::class, 'index'])->middleware('auth:sanctum');
+
+Route::post('/otp', [AuthController::class, 'checkOTP']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -47,6 +49,7 @@ Route::get('/buku', [BukuController::class, 'index']); // Read Buku
 Route::get('/buku/{id}', [BukuController::class, 'show']); // Read Singular Buku
 Route::put('/buku/{id}', [BukuController::class, 'update']); // Update Buku
 Route::delete('/buku/{id}', [BukuController::class, 'destroy']); // Delete Buku
+Route::get('/getPdf/{id}', [BukuController::class, 'getPdf']);
 
 Route::get('/order', [OrderController::class, 'index']);
 Route::get('/order/{id}', [OrderController::class, 'show']);
@@ -60,3 +63,10 @@ Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 Route::get('/trending', [AlgorithmController::class, 'trending']);
 Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
 Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);
+Route::get('/test-cors', function () {
+    return response('CORS headers set')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+});
+

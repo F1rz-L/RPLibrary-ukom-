@@ -9,6 +9,8 @@ function HomePage() {
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
     const [trendingBooks] = UseGet('/trending')
     const [user, setUser] = useState('')
+    console.log(user);
+    
     const [books] = UseGet('/buku')
 
     useEffect(() => {
@@ -54,7 +56,7 @@ function HomePage() {
                     {
                         books?.data && trendingBooks?.data ? (
                             trendingBooks.data.map((book) => (
-                                <Book key={book.idbuku} idUser={String(user.id)} idBukuPinjam={String(user.idbukupinjam)} {...book} />
+                                <Book key={book.idbuku} idUser={String(user.id)} idBukuPinjam={Number(user.idbukupinjam)} {...book} />
                             ))
                         ) : (
                             <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>

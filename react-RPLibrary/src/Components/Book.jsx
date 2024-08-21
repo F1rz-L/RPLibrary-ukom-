@@ -61,10 +61,6 @@ function Book(props) {
     // const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser'))
     const [idUser, setIdUser] = useState(props.idUser)
     const [idBukuPinjam, setIdBukuPinjam] = useState(props.idBukuPinjam)
-    const [btnRead, setBtnRead] = useState()
-    const [btnPinjam, setBtnPinjam] = useState()
-    const [btnAddToCart, setBtnAddToCart] = useState()
-    const [btnEdit, setBtnEdit] = useState()
 
     const [cover, setCover] = useState(props.cover)
     const [id, setId] = useState(props.idbuku)
@@ -86,50 +82,49 @@ function Book(props) {
         setIdUser(props.idUser)
         setIdBukuPinjam(props.idbukupinjam)
         // console.log(btnPinjam);
-        console.log("idUser1:", idUser, props.idUser);
+        // console.log("idUser1:", idUser, props.idUser);
     }, [props.idbukupinjam, props.idUser])  
 
-    useEffect(() => {
-
-        console.log("idUser2:", idUser, props.idUser);
+    // useEffect(() => {
+        // console.log("idUser2:", idUser, props.idUser);
         // console.log("idBukuPinjam:", idBukuPinjam);
         // console.log("idPeminjam:", idPeminjam);
-        if (idUser) {
-            if (namaFile) {
-                setBtnRead(
-                    <button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>
-                )
-            }
-            if (idPeminjam) {
-                setBtnPinjam(<div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            } if (idPeminjam == idUser) {
-                setBtnPinjam(<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            } else if (idBukuPinjam !== "undefined" && idBukuPinjam !== null) {
-                setBtnPinjam(<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            } else {
-                setBtnPinjam(<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
+    // }, [idUser, idBukuPinjam, idPeminjam]) 
+    
+    function bookInteractionChecker(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin) {
+        console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
+        let a, b, c, d;
+        if (id_user) {
+            if (book_pdf) { 
+                a = (<button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>)
             }
 
-            setBtnAddToCart(<button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>)
-            if (!isNotAdmin) {
-                setBtnEdit(
-                    <div className="dropdown dropdown-top">
+            if (peminjam_id) {
+                b = (<div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } if (peminjam_id == id_user) {
+                b = (<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } else if (buku_dipinjam != "undefined" && peminjam_id != null) {
+                b = (<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            } else {
+                b = (<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
+            }
+    
+            c = (<button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>
+)
+            if (!is_not_admin) {
+                d = (<div className="dropdown dropdown-top">
                         <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
                         <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
                             <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
                             <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
                         </ul>
-                    </div>
-                )
+                    </div>)
             }
         } else {
-            setBtnPinjam(<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            setBtnAddToCart(<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Add to cart</button></div>)
+            b = (<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Borrow Book</button></div>)
+            c = (<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Add to cart</button></div>)
         }
-    }, [idUser, idBukuPinjam, idPeminjam]) 
-
-    function bookInteractionChecker() {
-
+        return [a, b, c, d];
     }
 
     function addToCart() {
@@ -306,11 +301,8 @@ function Book(props) {
                     </div>
                     <div className="flex justify-end mt-3 w-full">
                         <div className='gap-1 flex mr-12'>
-                            {btnRead}
-                            {btnPinjam}
-                            {btnAddToCart}
-                            {btnEdit}
-                        </div>
+                            {bookInteractionChecker(idUser, namaFile, idPeminjam, idBukuPinjam, isNotAdmin)}
+                        </div> 
                     </div>
                 </>
             )

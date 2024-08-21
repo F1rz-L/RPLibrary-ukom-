@@ -35,7 +35,7 @@ function FrontPage() {
               <Route path="/create-book" element={<CreateBookPage />} />
               <Route path='/admin' element={<AdminPage />} />
               <Route path='/transactions' element={<TransactionsPage />} />
-              {/* <Route path="/read" element={<ReadPage />} /> */}
+              <Route path="/read/:bookId" element={<ReadPage />} />
             </Routes>
           </div>
         </div>
