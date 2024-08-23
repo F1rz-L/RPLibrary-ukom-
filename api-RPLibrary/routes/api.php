@@ -63,10 +63,10 @@ Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 Route::get('/trending', [AlgorithmController::class, 'trending']);
 Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
 Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);
-Route::get('/test-cors', function () {
-    return response('CORS headers set')
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-});
+// Route::get('/test-cors', function () {
+//     return response('CORS headers set')
+//         ->header('Access-Control-Allow-Origin', '*')
+//         ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+//         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// });
 

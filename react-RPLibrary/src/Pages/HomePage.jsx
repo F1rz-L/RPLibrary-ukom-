@@ -8,22 +8,23 @@ function HomePage() {
     const [statusUser, setStatusUser] = useState(sessionStorage.getItem('status_user') || 0)
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
     const [trendingBooks] = UseGet('/trending')
-    const [user, setUser] = useState('')
-    console.log(user);
-    
-    const [books] = UseGet('/buku')
+    // const [user, setUser] = useState('')
 
-    useEffect(() => {
-        async function getUser() {
-            if (idUser) {
-                const userdata = await link.get(`/user/${idUser}`)
-                setUser(userdata.data.data)
-            }
-        } 
-        
-        getUser()
-    }, [idUser])
-    
+    const [books] = UseGet('/buku')
+    const [user] = UseGet(`/user/${idUser}`)
+    console.log(user);
+
+    // useEffect(() => {
+    //     async function getUser() {
+    //         if (idUser) {
+    //             const userdata = await link.get(`/user/${idUser}`)
+    //             setUser(userdata.data.data)
+    //         }
+    //     } 
+
+    //     getUser()
+    // }, [idUser])
+
     // console.log(user);
 
     function heroChecker() {
@@ -54,12 +55,22 @@ function HomePage() {
                 <div className="divider"></div>
                 <div className="row my-4 flex justify-center">
                     {
-                        books?.data && trendingBooks?.data ? (
-                            trendingBooks.data.map((book) => (
-                                <Book key={book.idbuku} idUser={String(user.id)} idBukuPinjam={Number(user.idbukupinjam)} {...book} />
-                            ))
+                        idUser ? (
+                            books?.data && trendingBooks?.data && user?.data ? (
+                                trendingBooks.data.map((book) => (
+                                    <Book key={book.idbuku} idUser={user?.data?.id} idBukuPinjam={user?.data?.idbukupinjam} {...book} />
+                                ))
+                            ) : (
+                                <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                            )
                         ) : (
-                            <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                            books?.data && trendingBooks?.data ? (
+                                trendingBooks.data.map((book) => (
+                                    <Book key={book.idbuku} idUser={user?.data?.id} idBukuPinjam={user?.data?.idbukupinjam} {...book} />
+                                ))
+                            ) : (
+                                <><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /><Skeleton /></>
+                            )
                         )
                     }
                 </div>

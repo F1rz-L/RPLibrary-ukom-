@@ -81,9 +81,8 @@ function Book(props) {
     useEffect(() => {
         setIdUser(props.idUser)
         setIdBukuPinjam(props.idbukupinjam)
-        // console.log(btnPinjam);
-        // console.log("idUser1:", idUser, props.idUser);
-    }, [props.idbukupinjam, props.idUser])  
+        setIdPeminjam(props.idpeminjam) 
+    }, [props.idbukupinjam, props.idUser, props.idpeminjam])  
 
     // useEffect(() => {
         // console.log("idUser2:", idUser, props.idUser);
@@ -96,14 +95,14 @@ function Book(props) {
         let a, b, c, d;
         if (id_user) {
             if (book_pdf) { 
-                a = (<button className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group"><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book</button>)
+                a = (<Link className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" to={`/read/${id}`}><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book </Link>)
             }
 
             if (peminjam_id) {
                 b = (<div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>)
             } if (peminjam_id == id_user) {
                 b = (<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            } else if (buku_dipinjam != "undefined" && peminjam_id != null) {
+            } else if (buku_dipinjam !== null) {
                 b = (<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
             } else {
                 b = (<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
@@ -142,7 +141,7 @@ function Book(props) {
 
     function borrowBook() {
         const formData = new URLSearchParams();
-        formData.append('iduser', 1);
+        formData.append('iduser', idUser);
 
         if (idUser) {
             link.post(`/pinjam/${id}`, formData).then((res) => {

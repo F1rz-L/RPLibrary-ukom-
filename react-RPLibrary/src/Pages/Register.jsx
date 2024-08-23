@@ -17,7 +17,7 @@ function Register() {
     const navigate = useNavigate()
 
     function submitForm(data) {
-        const formData = new URLSearchParams();x
+        const formData = new URLSearchParams();
         formData.append('email', data.email);
         formData.append('nama', data.nama);
         formData.append('alamat', data.alamat);

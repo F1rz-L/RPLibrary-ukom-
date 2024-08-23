@@ -4,7 +4,7 @@ import '../assets/pattern.css'
 import { useForm } from 'react-hook-form'
 import { link } from '../Axios/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope, faIdCard, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faIdCard, faKey, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 
 function Login() {
     const {
@@ -16,6 +16,7 @@ function Login() {
 
     const navigate = useNavigate()
     const [passwordShown, setPasswordShown] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('')
 
     function submitForm(data) {
         const formData = new URLSearchParams();
@@ -29,6 +30,8 @@ function Login() {
             sessionStorage.setItem('cart', "[]")
             console.log(res)
             navigate('/')
+        }).catch(error => {
+            setErrorMessage(error.response.data.message)
         })
     }
 
@@ -40,7 +43,23 @@ function Login() {
         <>
             <div className="grad"></div>
             <div id='bg-pattern' className='w-svw h-svh flex justify-center align-middle'>
-                <div className='flex justify-center items-center flex-col w-2/6 h-4/5 shadow-xl m-auto bg-base-200 z-10 rounded-2xl'>
+                <div className='absolute z-[3]'>
+                    {errorMessage && (
+                        <div role="alert" className="alert alert-error mt-10">
+                            <FontAwesomeIcon icon={faTriangleExclamation} />
+                            <span className="ml-2">
+                                {errorMessage === 'Email Not Verified' ? (
+                                    <>
+                                        Email not verified. <Link to="/verification" className="link">Verify now?</Link>
+                                    </>
+                                ) : (
+                                    errorMessage
+                                )}
+                            </span>
+                        </div>
+                    )}
+                </div>
+                <div className='flex justify-center items-center flex-col w-2/6 h-4/5 shadow-xl m-auto bg-base-200 z-[2] rounded-2xl'>
                     <h1 className='text-5xl font-bold mb-4'>Login</h1>
                     <form onSubmit={handleSubmit(submitForm)} className="flex justify-center gap-1 flex-col mt-4">
                         <label className="input input-bordered flex items-center gap-2">

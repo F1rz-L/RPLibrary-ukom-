@@ -75,14 +75,21 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->first();
             $token = $user->createToken('auth_token')->plainTextToken;
 
-
-            return response()->json([
-                'status' => true,
-                'user' => $user,
-                'iduser' => $user->id,
-                'token_type' => 'Bearer',
-                'auth_token' => $token,
-            ], 200);
+            if ($user->otp == 0) {
+                return response()->json([
+                    'message' => 'Email Verified',
+                    'status' => true,
+                    'user' => $user,
+                    'iduser' => $user->id,
+                    'token_type' => 'Bearer',
+                    'auth_token' => $token,
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Email Not Verified',
+                    'status' => false
+                ], 400);
+            }
         }
     }
 

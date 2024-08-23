@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { link } from '../Axios/link';
+import { useParams } from 'react-router-dom';
 
 // Set the worker URL for PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -10,9 +11,11 @@ function ReadPage() {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageInput, setPageInput] = useState(pageNumber); // State for page input
+    // let bookId = useParams().bookId;
+    const [bookId, setBookId] = useState(useParams().bookId);   
 
     useEffect(() => {
-        link.get('/getPdf/1').then((res) => {
+        link.get(`/getPdf/${bookId}`).then((res) => {
             const pdfUrl = res?.data?.data?.[0]?.namafile; // Adjust if necessary
             console.log('PDF URL:', pdfUrl); // Log the URL for debugging
             setFile(pdfUrl);
@@ -56,11 +59,11 @@ function ReadPage() {
             {file ? (
                 <div>
                     <Document
-                        file={"/books/Bumi_TereLiye.pdf"}
+                        file={file}
+                        // file={"http://www.pdf995.com/samples/pdf.pdf"}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={(error) => console.error('Error loading PDF:', error)}
-                        className="w-1/2 bg-gray-100 border rounded-lg"
-                    >
+                        className="w-1/2 bg-gray-100 border rounded-lg">
                         <Page
                             renderTextLayer={false}
                             renderAnnotationLayer={false}
@@ -76,7 +79,7 @@ function ReadPage() {
 
                         <div className="dropdown dropdown-top join-item flex justify-center w-max ">
                             <div tabIndex={0} role="button" className="join-item btn">Page {pageNumber} of {numPages}</div>
-                            <ul tabIndex={0} className="dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                            <ul tabIndex={0} className="dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
                                 <li>
                                     <label className="form-control flex">
                                         <div className="label">
@@ -102,7 +105,7 @@ function ReadPage() {
                     </div>
                 </div>
             ) : (
-                <p className="text-center text-gray-500">Loading PDF...</p>
+                <p className="text-center opacity-50">Loading PDF...</p>
             )}
         </div>
     );

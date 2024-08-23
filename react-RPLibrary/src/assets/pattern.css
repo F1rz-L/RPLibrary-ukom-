@@ -7,15 +7,15 @@ body{
     width: 100svw;
     height: 100svh;
     position: absolute;
-    z-index: 1;
-    background: radial-gradient(circle, transparent, grey 100%);
+    z-index: 0;
+    background: radial-gradient(circle, transparent, lightgray 100%);
 }
 
 #bg-pattern{
     width: 100svw;
     height: 100svh;
     background-image: url("./RPLibrary(pattern).png");
-    background-size: 7.5%;
+    background-size: 6%;
     background-position: 0% 0%;
     animation: pan 180s infinite linear forwards;
 }

@@ -32,14 +32,18 @@ function BookIndex() {
         ],
     };
 
-    let [isi] = UseGet('/buku');
+
+
     const [isNotAdmin, setIsNotAdmin] = useState(true);
     const LoadedBook = lazy(() => import('../Components/Book'));
     const [filteredList, setFilteredList] = useState([]);
     const searchValue = watch("search");
     const sortValue = watch("sort");
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
-    const [user, setUser] = useState('')
+
+    let [isi] = UseGet('/buku');
+    const [user] = UseGet(`/user/${idUser}`);
+    console.log(user);
 
     useEffect(() => {
         if (sessionStorage.getItem('status_user') != 0) {
@@ -49,15 +53,15 @@ function BookIndex() {
         }
     }, []);
 
-    useEffect(() => {
-        async function getUser() {
-            if (idUser) {
-                const userdata = await link.get(`/user/${idUser}`);
-                setUser(userdata?.data?.data);
-            }
-        }
-        getUser()
-    }, [idUser])
+    // useEffect(() => {
+    //     async function getUser() {
+    //         if (idUser) {
+    //             const userdata = await link.get(`/user/${idUser}`);
+    //             setUser(userdata?.data?.data);
+    //         }
+    //     }
+    //     getUser()
+    // }, [idUser])
 
     useEffect(() => {
         if (isi.data) {
@@ -120,15 +124,22 @@ function BookIndex() {
                 </div>
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        filteredList?.map((data, index) => {
-                            // console.log(user?.idbukupinjam);
-                            return (
-                                // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                <Book key={data?.idbuku} {...data} idUser={String(user.id)} idBukuPinjam={String(user.idbukupinjam)} />
-                                // </Suspense>
+                        idUser ? (filteredList && user.data &&
+                            filteredList?.map((data, index) => {
+                                // console.log(user?.idbukupinjam);
+                                return (
+                                    // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
+                                    <Book key={data?.idbuku} {...data} idUser={user?.data?.id} idBukuPinjam={user?.data?.idbukupinjam} />
+                                    // </Suspense>
+                                )
+                            }
+                            )) : filteredList?.map((data, index) => {
+                                return (
+                                    <Book key={data?.idbuku} {...data} />
+                                )
+                            }
                             )
-                        }
-                        )}
+                    }
                 </div>
             </div>
         </>
