@@ -22,6 +22,8 @@ function Login() {
         const formData = new URLSearchParams();
         formData.append('email', data.email);
         formData.append('password', data.password);
+        sessionStorage.setItem('email', data.email)
+
 
         link.post(`/login`, formData).then(res => {
             sessionStorage.setItem('iduser', res.data.user.id)

@@ -1,4 +1,4 @@
-import { faBars, faEdit, faEllipsis, faImage, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCheck, faEdit, faEllipsis, faImage, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { lazy, useEffect, useRef, useState } from 'react'
 import { link } from '../Axios/link';
@@ -81,45 +81,49 @@ function Book(props) {
     useEffect(() => {
         setIdUser(props.idUser)
         setIdBukuPinjam(props.idbukupinjam)
-        setIdPeminjam(props.idpeminjam) 
-    }, [props.idbukupinjam, props.idUser, props.idpeminjam])  
+        setIdPeminjam(props.idpeminjam)
+    }, [props.idbukupinjam, props.idUser, props.idpeminjam])
 
     // useEffect(() => {
-        // console.log("idUser2:", idUser, props.idUser);
-        // console.log("idBukuPinjam:", idBukuPinjam);
-        // console.log("idPeminjam:", idPeminjam);
+    // console.log("idUser2:", idUser, props.idUser);
+    // console.log("idBukuPinjam:", idBukuPinjam);
+    // console.log("idPeminjam:", idPeminjam);
     // }, [idUser, idBukuPinjam, idPeminjam]) 
-    
+
     function bookInteractionChecker(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin) {
         console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
         let a, b, c, d;
         if (id_user) {
-            if (book_pdf) { 
-                a = (<Link className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" to={`/read/${id}`}><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book </Link>)
+            if (book_pdf) {
+                a = (<Link className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" to={`/check/read/${id}`}><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Read Book </Link>)
             }
 
             if (peminjam_id) {
                 b = (<div className="tooltip" data-tip={`Not Available. Try again later`}><button className="btn btn-disabled">Borrow Book</button></div>)
-            } if (peminjam_id == id_user) {
-                b = (<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
+                if (peminjam_id == id_user) {
+                    b = (<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
+                }
             } else if (buku_dipinjam !== null) {
                 b = (<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
             } else {
                 b = (<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
             }
-    
+
             c = (<button className="btn btn-secondary" onClick={() => { addToCart() }}>Add to cart</button>
-)
+            )
             if (!is_not_admin) {
                 d = (<div className="dropdown dropdown-top">
-                        <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
-                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
-                            <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                            <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
-                        </ul>
-                    </div>)
+                    <div tabIndex={0} role="button" className="btn btn-accent"><FontAwesomeIcon icon={faBars} /></div>
+                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 mb-2 shadow bg-base-100 rounded-box">
+                        <li><a onClick={() => setModalIsEditing(true)}><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
+                        <li onClick={() => deleteBook(id)}><a><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                    </ul>
+                </div>)
             }
         } else {
+            if (book_pdf) {
+                a = (<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Read Book</button></div>)
+            }
             b = (<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Borrow Book</button></div>)
             c = (<div className="tooltip" data-tip={`You must login first`}><button className="btn btn-disabled">Add to cart</button></div>)
         }
@@ -140,18 +144,22 @@ function Book(props) {
 
 
     function borrowBook() {
-        const formData = new URLSearchParams();
-        formData.append('iduser', idUser);
-
-        if (idUser) {
-            link.post(`/pinjam/${id}`, formData).then((res) => {
-                console.log(res.data);
-                window.location.reload();
-            }).catch((error) => {
-                console.error('Error:', error);
-            });
+        if (sessionStorage.getItem('status_user') == 1) {
+            navigate(`/getbluemark`)
         } else {
-            console.error('You must login first');
+            const formData = new URLSearchParams();
+            formData.append('iduser', idUser);
+
+            if (idUser) {
+                link.post(`/pinjam/${id}`, formData).then((res) => {
+                    console.log(res.data);
+                    window.location.reload();
+                }).catch((error) => {
+                    console.error('Error:', error);
+                });
+            } else {
+                console.error('You must login first');
+            }
         }
     }
 
@@ -258,8 +266,11 @@ function Book(props) {
                                 <input type="file" id="selectedIMG" name='cover' className='hidden' {...register("cover")} />
                                 <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
 
-                                <input type="file" id="selectedPDF" name='namaFile' className='hidden' {...register("namaFile")} />
-                                <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
+                                <div className='relative'>
+                                    {/* { && <div className='badge badge-success badge-md absolute -mr-1 -mt-1 right-0 text-white'><FontAwesomeIcon icon={faCheck} /></div>} */}
+                                    <input type="file" id="selectedPDF" name='namaFile' className='hidden' {...register("namaFile")} />
+                                    <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
+                                </div>
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}
                                 <input type='submit' value={"Confirm Edit"} className="btn btn-success text-white" />
                             </div>
@@ -301,7 +312,7 @@ function Book(props) {
                     <div className="flex justify-end mt-3 w-full">
                         <div className='gap-1 flex mr-12'>
                             {bookInteractionChecker(idUser, namaFile, idPeminjam, idBukuPinjam, isNotAdmin)}
-                        </div> 
+                        </div>
                     </div>
                 </>
             )

@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { link } from '../Axios/link';
 import Book from '../Components/Book';
+import LoadingAnimation from '../Components/LoadingAnimation';
 
 function BookIndex() {
     const {
@@ -124,16 +125,16 @@ function BookIndex() {
                 </div>
                 <div className="container row justify-center bg-base-200 rounded-box p-4 m-4">
                     {
-                        idUser ? (filteredList && user.data &&
-                            filteredList?.map((data, index) => {
+                        idUser ? (filteredList && user.data ?
+                            (filteredList?.map((data, index) => {
                                 // console.log(user?.idbukupinjam);
                                 return (
                                     // <Suspense key={data?.idbuku} fallback={<Skeleton />}>
-                                    <Book key={data?.idbuku} {...data} idUser={user?.data?.id} idBukuPinjam={user?.data?.idbukupinjam} />
+                                    <Book key={data?.idbuku} {...data} idUser={user.data.id} idBukuPinjam={user.data.idbukupinjam} />
                                     // </Suspense>
                                 )
-                            }
-                            )) : filteredList?.map((data, index) => {
+                            })
+                            ) : (<LoadingAnimation />)) : filteredList?.map((data, index) => {
                                 return (
                                     <Book key={data?.idbuku} {...data} />
                                 )

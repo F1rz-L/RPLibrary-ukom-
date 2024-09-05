@@ -200,7 +200,8 @@ class BukuController extends Controller
         }
     }
 
-    public function getPdf($idbuku){
+    public function getPdf($idbuku)
+    {
         $data = Buku::where('idbuku', $idbuku)->select('namafile')->get();
         return response()->json([
             'message' => 'Success',

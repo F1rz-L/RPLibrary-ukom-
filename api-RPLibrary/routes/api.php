@@ -42,6 +42,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
 Route::get('/user/switchUser/{id}', [UserController::class, 'switchUser']);
+Route::post('/topup/{iduser}', [UserController::class, 'topup']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
 
 Route::post('/buku', [BukuController::class, 'store']); // Create Buku
@@ -61,12 +62,10 @@ Route::get('/orderdetail', [OrderDetailController::class, 'index']);
 Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 
 Route::get('/trending', [AlgorithmController::class, 'trending']);
-Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
-Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);
-// Route::get('/test-cors', function () {
-//     return response('CORS headers set')
-//         ->header('Access-Control-Allow-Origin', '*')
-//         ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-//         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-// });
 
+Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
+Route::get('/showpinjam/{iduser}', [BluemarkController::class, 'showPinjam']);
+Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);
+Route::get('/kembalikan/{idpinjaman}', [BluemarkController::class, 'kembali']);
+Route::post('/subscribe', [BluemarkController::class, 'subscribe']);
+Route::get('/checksubscription/{iduser}', [BluemarkController::class, 'checkSubscription']);

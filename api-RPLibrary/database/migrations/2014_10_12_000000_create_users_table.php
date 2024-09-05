@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -27,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        $faker = Faker\Factory::create();
         User::create([
             'nama' => 'admin',
             'email' => 'adm@g.cc',
@@ -36,12 +36,22 @@ return new class extends Migration
             'status' => 0,
             'saldo' => 1000000000,
         ]);
+
         User::create([
             'nama' => 'Joni',
             'email' => 'joni@g.cc',
             'password' => bcrypt('123'),
             'alamat' => 'Bangah Regency',
             'status' => 1,
+            'saldo' => 0,
+        ]);
+
+        User::create([
+            'nama' => 'Tejo',
+            'email' => 'tejo@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 2,
             'saldo' => 0,
         ]);
     }

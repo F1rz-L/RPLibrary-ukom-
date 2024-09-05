@@ -13,6 +13,9 @@ import ReadPage from './Pages/ReadPage';
 import CreateBookPage from './Pages/CreateBookPage';
 import AdminPage from './Pages/AdminPage';
 import TransactionsPage from './Pages/TransactionsPage';
+import GetBluemark from './Pages/GetBluemark';
+import CheckBluemark from './Pages/CheckBluemark';
+import Payment from './Pages/Payment';
 
 function FrontPage() {
   return (
@@ -36,6 +39,9 @@ function FrontPage() {
               <Route path='/admin' element={<AdminPage />} />
               <Route path='/transactions' element={<TransactionsPage />} />
               <Route path="/read/:bookId" element={<ReadPage />} />
+              <Route path="/check/:route/:id" element={<CheckBluemark />} />
+              <Route path="/getbluemark" element={<GetBluemark />} />
+              <Route path="/payment" element={<Payment />} />
             </Routes>
           </div>
         </div>

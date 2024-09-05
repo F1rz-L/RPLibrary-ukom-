@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react'
 import UseGet from '../Axios/UseGet'
+import { link } from '../Axios/link'
+import LoadingAnimation from './LoadingAnimation'
 
 function AdminBorrow(props) {
-    const [borrows] = UseGet('/pinjam/index')
+    const [borrows, setBorrows] = useState(props.borrows)
     const [users, setUsers] = useState(props.users)
 
     useEffect(() => {
         setUsers(props.users)
-    }, [props.users])
+        setBorrows(props.borrows)
+    }, [props.users, props.borrows])
 
     function statusChecker(status) {
         if (status == 0) {
             return <div className="badge badge-success py-5 text-white">OnTime</div>
         } else if (status == 1) {
             return <div className="badge badge-error py-5 text-white">Late</div>
-        }else {
+        } else {
             return <div className="badge badge-unknown">Unknown</div>
         }
+    }
+
+    function returnBook(idPinjaman) {
+        link.get(`/kembalikan/${idPinjaman}`).then((res) => {
+            console.log(res.data);
+            window.location.reload();
+        }).catch((error) => {
+            console.error('Error:', error);
+        })
     }
 
     return (
@@ -36,7 +48,7 @@ function AdminBorrow(props) {
                 </thead>
                 <tbody>
 
-                    {borrows?.data?.map((borrow, index) => {
+                    {borrows?.data?.length > 0 ? borrows.data.map((borrow, index) => {
                         return (
                             <tr className="text-center hover" key={index}>
                                 <td>{index + 1}</td>
@@ -48,13 +60,16 @@ function AdminBorrow(props) {
                                 <td>{new Date(borrow?.tglpinjam).toLocaleDateString("id-ID")}</td>
                                 <td>{new Date(borrow?.tglkembali).toLocaleDateString("id-ID")}</td>
                                 <td>{statusChecker(borrow?.status)}</td>
-                                <td>{borrow?.denda}</td>
+                                <td>{Number(borrow?.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
                                 <td>
-                                    <button className="btn btn-success btn-sm">Return</button>
+                                    <button onClick={() => returnBook(borrow?.idpinjaman)} className="btn btn-success text-white btn-sm">Return</button>
                                 </td>
                             </tr>
                         )
-                    })}
+                    }) : <th colSpan={9} className='text-center text-xl'>
+                        No Borrowments
+                    </th>
+                    }
                 </tbody>
             </table>
         </>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendOTPMail;
 use App\Models\Pelanggan;
+use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,8 +65,6 @@ class AuthController extends Controller
             ], 400);
         }
 
-        // return "Email Sent";
-
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => 'Invalid login details',
@@ -73,6 +72,15 @@ class AuthController extends Controller
             ], 401);
         } else {
             $user = User::where('email', $request->email)->first();
+
+            if ($user->status == 2) {
+                $subscription = Subscription::where('iduser', $user->id)->first();
+                if ($subscription->tglakhir < date('Y-m-d')) {
+                    $user->status = 1;
+                    $user->save();
+                }
+            }
+
             $token = $user->createToken('auth_token')->plainTextToken;
 
             if ($user->otp == 0) {

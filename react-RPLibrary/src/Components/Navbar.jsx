@@ -54,9 +54,9 @@ function Navbar() {
 
             function balanceChecker() {
                 if (Math.sign(Number(user?.data?.saldo)) == -1) {
-                    return <li className='text-red-600'><Link><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                    return <li className='text-red-600'><Link to={'/payment'}><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
                 } else {
-                    return <li><Link><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
+                    return <li><Link to={'/payment'}><FontAwesomeIcon icon={faCoins} />Your Balance: {Number(user.data?.saldo).toLocaleString("id", { style: "currency", currency: "IDR" })}</Link></li>
                 }
             }
 
@@ -85,7 +85,7 @@ function Navbar() {
                                 <p className='text-sm bg-base-300 mt-2 p-2 rounded-box'>{user.data?.alamat}</p>
                             </div>
                         </div>
-                        {bluemark ? null : <li><a className='bg-blue-200 border-l-[#03A9F4] border-l-4'><img src="bluemark.svg" className='w-5 -mt-2'/>Get Bluemark</a></li>}
+                        {bluemark ? null : <li><Link to={"/getbluemark"} className='bg-blue-200 border-l-[#03A9F4] border-l-4'><img src="bluemark.svg" className='w-5 -mt-2'/>Get Bluemark</Link></li>}
                         {balanceChecker()}
                         <li><Link to={"/transactions"}><FontAwesomeIcon icon={faReceipt} />Transactions</Link></li>
                         <li onClick={() => logout()} className=''><a><FontAwesomeIcon icon={faRightFromBracket} />Logout</a></li>

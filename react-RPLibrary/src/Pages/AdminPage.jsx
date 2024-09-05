@@ -8,6 +8,7 @@ import { link } from '../Axios/link'
 function AdminPage() {
     const [isNotAdmin, setIsNotAdmin] = useState(sessionStorage.getItem('status_user') == 0 ? false : true)
     const [orderDetails] = UseGet('/orderdetail')
+    const [borrows] = UseGet('/pinjam/index')
     const [users] = UseGet('/user')
     const [orders] = UseGet('/order')
 
@@ -30,9 +31,9 @@ function AdminPage() {
                             <AdminOrder users={users} orders={orders} orderDetails={orderDetails} />
                         </div>
 
-                        <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Borrowment" />
+                        <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Borrowments" />
                         <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <AdminBorrow users={users} />
+                            <AdminBorrow users={users} borrows={borrows} />
                         </div>
                     </div></>}
         </>
