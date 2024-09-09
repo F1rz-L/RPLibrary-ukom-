@@ -96,7 +96,7 @@ class UserController extends Controller
                 'gross_amount' => $topupAmount,
             ],
             'customer_details' => [
-                'first_name' => $user->name,
+                'first_name' => $user->nama,
                 'email' => $user->email,
             ]
         ];
@@ -118,12 +118,16 @@ class UserController extends Controller
         }
     }
 
-    public function confirmPayment(Request $request)
+    public function confirmTopup($iduser, Request $request)
     {
-        $data = \Midtrans\Transaction::status($request->transaction_id);
-        return response()->json([
-            'message' => 'Success',
-            'data' => $data
-        ], 200);
+        $user = User::find($iduser);
+        $currentamount = $user->saldo + $request->topupamount;
+        $data = User::where('id', $iduser)->update(['saldo' => $currentamount]);
+        if ($data) {
+            return response()->json([
+                'message' => 'Success topup balance',
+                'data' => $data
+            ]);
+        }
     }
 }

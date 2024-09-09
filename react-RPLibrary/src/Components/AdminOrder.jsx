@@ -24,11 +24,11 @@ function AdminOrder(props) {
     function getStatus(status) {
         switch (status) {
             case 0:
-                return (<td><div className="badge badge-error text-white">Pesanan Diproses</div></td>)
+                return (<td><div className="badge badge-error text-white">On Process</div></td>)
             case 1:
-                return (<td><div className="badge badge-outline">Dalam Perjalanan</div></td>)
+                return (<td><div className="badge badge-outline">On Delivery</div></td>)
             case 2:
-                return (<td><div className="badge badge-secondary">Pesanan Sampai</div></td>)
+                return (<td><div className="badge badge-secondary">Completed</div></td>)
             default:
                 return <td><div className="badge badge-unknown">Unknown</div></td>;
         }

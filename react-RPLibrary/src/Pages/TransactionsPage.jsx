@@ -10,6 +10,18 @@ function TransactionsPage() {
     const [orderDetails] = UseGet(`/orderdetail`)
     console.log(orders);
 
+    function getStatus(status) {
+        switch (status) {
+            case 0:
+                return (<td><div className="badge badge-error text-white">On Process</div></td>)
+            case 1:
+                return (<td><div className="badge badge-outline">On Delivery</div></td>)
+            case 2:
+                return (<td><div className="badge badge-secondary">Completed</div></td>)
+            default:
+                return <td><div className="badge badge-unknown">Unknown</div></td>;
+        }
+    }
 
     return (
         <>
@@ -26,7 +38,12 @@ function TransactionsPage() {
                                 return (
                                     <div className="collapse collapse-plus bg-base-100 w-full my-2" key={order.idorder}>
                                         <input type="checkbox" />
-                                        <div className="collapse-title text-xl font-medium">Order<span className='text-sm ml-2 opacity-50'>#{order.tglorder}</span></div>
+                                        <div className="collapse-title text-xl font-medium flex justify-between">
+                                            <div>
+                                                Order
+                                                <span className='text-sm ml-2 opacity-50'>#{order.tglorder}</span>
+                                            </div>
+                                            <span>{getStatus(order.status)}</span></div>
                                         <div className="collapse-content w-full flex">
                                             <div className="col-8 my-4">
                                                 {orderDetails.data?.filter((orderDetail) => orderDetail.idorder == order.idorder).map((orderDetail, index) => {
@@ -59,7 +76,7 @@ function TransactionsPage() {
                                                     <p className='text-lg'>Total</p>
                                                     <p className='text-lg font-bold'>{order.total.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                                                 </div>
-                                                {}
+                                                { }
                                             </div>
                                         </div>
                                     </div>

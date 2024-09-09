@@ -12,7 +12,8 @@ function Payment() {
         formState: { errors },
     } = useForm();
 
-    const [user] = UseGet(`/user/${sessionStorage.getItem('iduser')}`);
+    const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
+    const [user] = UseGet(`/user/${idUser}`);
     const [snapToken, setSnapToken] = useState(null);
 
     useEffect(() => {
@@ -35,8 +36,9 @@ function Payment() {
         const formData = new FormData();
         formData.append('topupamount', data.topup);
 
-        await link.post(`/topup/${sessionStorage.getItem('iduser')}`, formData).then(res => {
+        await link.post(`/topup/${idUser}`, formData).then(res => {
             setSnapToken(res.data.snapToken); // Set the Snap token for triggering payment
+            sessionStorage.setItem('topupamount', data.topup);
         }).catch(error => {
             console.error(error.response.data);
         });
@@ -48,7 +50,16 @@ function Payment() {
             window.snap.pay(snapToken, {
                 onSuccess: function(result) {
                     console.log(result);
-                    window.location.reload();
+
+                    const formData = new FormData();
+
+                    formData.append('topupamount', sessionStorage.getItem('topupamount'));
+                    link.post(`/confirmTopup/${idUser}`, formData).then(res => { 
+                        sessionStorage.removeItem('topupamount');
+                        window.location.reload();
+                    }).catch(error => {
+                        console.error(error.response.data);
+                    });
                     // Handle successful payment, e.g., update balance or redirect
                 },
                 onPending: function(result) {

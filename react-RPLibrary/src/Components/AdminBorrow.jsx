@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import UseGet from '../Axios/UseGet'
-import { link } from '../Axios/link'
-import LoadingAnimation from './LoadingAnimation'
+import React, { useEffect, useState } from 'react';
+import DataTable from 'react-data-table-component';
+import { link } from '../Axios/link';
+import LoadingAnimation from './LoadingAnimation';
 
 function AdminBorrow(props) {
-    const [borrows, setBorrows] = useState(props.borrows)
-    const [users, setUsers] = useState(props.users)
+    const [borrows, setBorrows] = useState(props.borrows);
+    const [users, setUsers] = useState(props.users);
 
     useEffect(() => {
-        setUsers(props.users)
-        setBorrows(props.borrows)
-    }, [props.users, props.borrows])
+        setUsers(props.users);
+        setBorrows(props.borrows);
+    }, [props.users, props.borrows]);
 
     function statusChecker(status) {
-        if (status == 0) {
-            return <div className="badge badge-success py-5 text-white">OnTime</div>
-        } else if (status == 1) {
-            return <div className="badge badge-error py-5 text-white">Late</div>
+        if (status === 0) {
+            return <div className="badge badge-success py-5 text-white">OnTime</div>;
+        } else if (status === 1) {
+            return <div className="badge badge-error py-5 text-white">Late</div>;
         } else {
-            return <div className="badge badge-unknown">Unknown</div>
+            return <div className="badge badge-unknown">Unknown</div>;
         }
     }
 
@@ -28,52 +28,105 @@ function AdminBorrow(props) {
             window.location.reload();
         }).catch((error) => {
             console.error('Error:', error);
-        })
+        });
     }
+
+    // Define columns for DataTable
+    const columns = [
+        {
+            name: '#',
+            selector: (row, index) => index + 1,
+            center: true,
+        },
+        {
+            name: 'Cover',
+            selector: row => <img className='w-18 rounded-box my-2' src={row.cover} alt="Cover" />,
+            center: true,
+        },
+        {
+            name: 'Book',
+            selector: row => row.judul,
+            center: true,
+            sortable: true,
+
+        },
+        {
+            name: 'Lender',
+            selector: row => users?.data?.find(user => user.id === row.idpeminjam)?.nama || 'Unknown',
+            center: true,
+            sortable: true,
+        },
+        {
+            name: 'Borrowing Timespan',
+            selector: row => (
+                <>
+                    <div>{new Date(row.tglpinjam).toLocaleDateString("id-ID")}</div>
+                    <div>{new Date(row.tglkembali).toLocaleDateString("id-ID")}</div>
+                </>
+            ),
+            center: true,
+        },
+        {
+            name: 'Status',
+            selector: row => row.status,
+            center: true,
+            cell: row => statusChecker(row.status),
+            sortable: true,
+        },
+        {
+            name: 'Penalty',
+            selector: row => Number(row.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" }),
+            center: true,
+        },
+        {
+            name: 'Interact',
+            cell: row => (
+                <button onClick={() => returnBook(row.idpinjaman)} className="btn btn-success text-white btn-sm">Return</button>
+            ),
+            center: true,
+        },
+    ];
 
     return (
         <>
-            <table className="table">
-                <thead>
-                    <tr className="text-center">
-                        <th>#</th>
-                        <th>Cover</th>
-                        <th>Book</th>
-                        <th>Lender</th>
-                        <th colSpan={2}>Borrowing Timespan</th>
-                        <th>Status</th>
-                        <th>Penalty</th>
-                        <th>Interact</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {borrows?.data?.length > 0 ? borrows.data.map((borrow, index) => {
-                        return (
-                            <tr className="text-center hover" key={index}>
-                                <td>{index + 1}</td>
-                                <td>
-                                    <img className='max-w-28 max-h-32 rounded-box' src={borrow?.cover} />
-                                </td>
-                                <td>{borrow?.judul}</td>
-                                <td>{users?.data?.find(user => user?.id === borrow?.idpeminjam)?.nama}</td>
-                                <td>{new Date(borrow?.tglpinjam).toLocaleDateString("id-ID")}</td>
-                                <td>{new Date(borrow?.tglkembali).toLocaleDateString("id-ID")}</td>
-                                <td>{statusChecker(borrow?.status)}</td>
-                                <td>{Number(borrow?.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</td>
-                                <td>
-                                    <button onClick={() => returnBook(borrow?.idpinjaman)} className="btn btn-success text-white btn-sm">Return</button>
-                                </td>
-                            </tr>
-                        )
-                    }) : <th colSpan={9} className='text-center text-xl'>
-                        No Borrowments
-                    </th>
-                    }
-                </tbody>
-            </table>
+            <DataTable
+                columns={columns}
+                data={borrows?.data || []}
+                pagination
+                highlightOnHover
+                responsive
+                dense
+                paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                className="table"
+                customStyles={{
+                    rows: {
+                        style: {
+                            backgroundColor: "#ece3ca", // Base background color
+                            transition: "background-color 0.15s ease-in-out",
+                        },
+                        highlightOnHoverStyle: {
+                            backgroundColor: "#e4d8b4",
+                            transitionDuration: '0.15s',
+                            borderBottomColor: "#e4d8b4",
+                            outlineStyle: 'none',
+                            outlineWidth: '0px',
+                        },
+                    },
+                    headCells: {
+                        style: {
+                            backgroundColor: "#ece3ca",
+                            fontWeight: "bold",
+                        },
+                    },
+                    pagination: {
+                        style: {
+                            backgroundColor: "#ece3ca",
+                        },
+                    },
+                }}
+            />
         </>
-    )
+    );
 }
 
-export default AdminBorrow
+export default AdminBorrow;

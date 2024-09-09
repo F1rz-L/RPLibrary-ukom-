@@ -42,8 +42,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
 Route::get('/user/switchUser/{id}', [UserController::class, 'switchUser']);
-Route::post('/topup/{iduser}', [UserController::class, 'topup']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
+Route::post('/topup/{iduser}', [UserController::class, 'topup']);
+Route::post('/confirmTopup/{iduser}', [UserController::class, 'confirmTopup']);
 
 Route::post('/buku', [BukuController::class, 'store']); // Create Buku
 Route::get('/buku', [BukuController::class, 'index']); // Read Buku
@@ -64,7 +65,7 @@ Route::get('/orderdetail/{id}', [OrderDetailController::class, 'show']);
 Route::get('/trending', [AlgorithmController::class, 'trending']);
 
 Route::get('/pinjam/index', [BluemarkController::class, 'indexPinjam']);
-Route::get('/showpinjam/{iduser}', [BluemarkController::class, 'showPinjam']);
+Route::get('/pinjam/{iduser}', [BluemarkController::class, 'showPinjam']);
 Route::post('/pinjam/{idbuku}', [BluemarkController::class, 'pinjam']);
 Route::get('/kembalikan/{idpinjaman}', [BluemarkController::class, 'kembali']);
 Route::post('/subscribe', [BluemarkController::class, 'subscribe']);

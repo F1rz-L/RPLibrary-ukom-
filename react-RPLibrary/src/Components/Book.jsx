@@ -19,12 +19,12 @@ function Book(props) {
 
     // Untuk menyesuaikan panjang judul
     function truncateString(str, num) {
-        if (str.length > num) {
-            let truncStr = str.toString().slice(0, num) + "...";
-            return truncStr;
-        } else {
+        // if (str.length > num) {
+        //     let truncStr = str.toString().slice(0, num) + "...";
+        //     return truncStr;
+        // } else {
             return str;
-        }
+        // }
     }
 
     // Untuk menyesuaikan ukuran judul
@@ -91,7 +91,7 @@ function Book(props) {
     // }, [idUser, idBukuPinjam, idPeminjam]) 
 
     function bookInteractionChecker(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin) {
-        console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
+        // console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
         let a, b, c, d;
         if (id_user) {
             if (book_pdf) {
@@ -357,8 +357,8 @@ function Book(props) {
                 </div>
                 <div className="row mt-2 flex justify-center">
                     {namaFile ? <img src="bluemark.svg" alt="" className='w-16 absolute -mt-2 ml-24 z-10' /> : null}
-                    <h2 className='text-xl font-semibold z-20'>{shortJudul}</h2>
-                    <p className='text-sm text-gray-600'>{shortPengarang}</p>
+                    <h2 className='text-xl font-semibold z-20 truncate'>{shortJudul}</h2>
+                    <p className='text-sm text-gray-600 truncate'>{shortPengarang}</p>
                 </div>
             </div>
         </>

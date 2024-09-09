@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import UseGet from '../Axios/UseGet';
 import { faBars, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { link } from '../Axios/link';
 import LoadingAnimation from './LoadingAnimation';
-import DataTable from 'datatables.net-dt';
-// import 'datatables.net-dt/css/dataTables.min.css'; // Import DataTables CSS
+import DataTable from 'react-data-table-component';
 
 function AdminUser(props) {
     const [users, setUsers] = useState(props.users);
@@ -14,20 +12,78 @@ function AdminUser(props) {
         setUsers(props.users);
     }, [props.users]);
 
-    useEffect(() => {
-        // Initialize DataTable
-        const table = new DataTable('#adminUserTable', {
-            // Customize your DataTable options here
-            // e.g., responsive: true
-        });
+    const columns = [
+        {
+            name: '#',
+            selector: (row, index) => index + 1,
+            center: true,
 
-        // Clean up DataTable on component unmount
-        return () => {
-            if (table) {
-                table.destroy();
-            }
-        };
-    }, [users.data]); // Reinitialize DataTable when users data changes
+        },
+        {
+            name: 'Name',
+            selector: row => row.nama,
+            sortable: true,
+            center: true,
+            wrap: true
+        },
+        {
+            name: 'Email',
+            selector: row => row.email,
+            sortable: true,
+            center: true,
+            wrap: true
+        },
+        {
+            name: 'Address',
+            selector: row => row.alamat,
+            sortable: true,
+            center: true,
+        },
+        {
+            name: 'Balance',
+            selector: row => row?.saldo,
+            center: true,
+            sortable: true,
+            // grow: 2,
+            cell: row => Math.sign(Number(row?.saldo)) === -1 ? 
+            <span className='text-red-600 text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>
+                : <span className=' text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span> ,
+        },
+        {
+            name: 'Status',
+            selector: row => row.status,
+            center: true,
+            sortable: true,
+            cell: row => getStatus(row.status),
+        },
+        {
+            name: 'Interact',
+            compact: true,
+            cell: (row) => (
+                <div className="dropdown dropdown-right">
+                    <div tabIndex={0} role="button" className="btn btn-accent my-2">
+                        <FontAwesomeIcon icon={faBars} />
+                    </div>
+                    <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
+                        {row.status !== 0 &&
+                            <li onClick={() => switchuser(row.id, row.status)}>
+                                <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make Admin</a>
+                            </li>
+                        }
+                        {row.status !== 1 &&
+                            <li onClick={() => switchuser(row.id, row.status)}>
+                                <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make User</a>
+                            </li>
+                        }
+                        <li onClick={() => deleteUser(row.id)}>
+                            <a className='text-nowrap'><FontAwesomeIcon icon={faTrash} /> Delete</a>
+                        </li>
+                    </ul>
+                </div>
+            ),
+            center: true,
+        }
+    ];
 
     function deleteUser(id) {
         link.delete(`/user/${id}`).then(() => {
@@ -46,11 +102,11 @@ function AdminUser(props) {
     function getStatus(status) {
         switch (status) {
             case 0:
-                return (<td><div className="badge badge-primary">Admin</div></td>);
+                return <div className="badge badge-primary">Admin</div>;
             case 1:
-                return (<td><div className="badge badge-outline">User</div></td>);
+                return <div className="badge badge-outline">User</div>;
             case 2:
-                return (<td><div className="badge badge-secondary">Bluemark</div></td>);
+                return <div className="badge badge-secondary">Bluemark</div>;
             default:
                 return null;
         }
@@ -58,70 +114,47 @@ function AdminUser(props) {
 
     return (
         <>
-            <table id="adminUserTable" className="table">
-                <thead>
-                    <tr className="text-center">
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Balance</th>
-                        <th>Status</th>
-                        <th>Interact</th>
-                    </tr>
-                </thead>
-                <tbody className='pb-4'>
-                    {
-                        users.data ? (users.data.map((user, index) => {
-                            return (
-                                <tr key={index} className="text-center hover">
-                                    <td>{index + 1}</td>
-                                    <td>{user?.nama}</td>
-                                    <td>{user?.email}</td>
-                                    <td>{user?.alamat}</td>
-                                    {Math.sign(Number(user?.saldo)) === -1 ? 
-                                        <td className='text-red-600'>
-                                            {Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
-                                        </td> 
-                                        : 
-                                        <td>
-                                            {Number(user?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
-                                        </td>
-                                    }
-                                    {getStatus(user?.status)}
-                                    <td>
-                                        <div className="dropdown dropdown-right">
-                                            <div tabIndex={0} role="button" className="btn btn-accent">
-                                                <FontAwesomeIcon icon={faBars} />
-                                            </div>
-                                            <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
-                                                {user?.status === 0 ? null : 
-                                                    <li onClick={() => switchuser(user?.id, user?.status)}>
-                                                        <a><FontAwesomeIcon icon={faEdit} /> Make Admin</a>
-                                                    </li>
-                                                }
-                                                {user?.status === 1 ? null : 
-                                                    <li onClick={() => switchuser(user?.id, user?.status)}>
-                                                        <a><FontAwesomeIcon icon={faEdit} /> Make User</a>
-                                                    </li>
-                                                }
-                                                <li onClick={() => deleteUser(user?.id)}>
-                                                    <a><FontAwesomeIcon icon={faTrash} /> Delete</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        }))
-                        : (
-                            <tr colSpan={7} className='flex justify-center text-center'>
-                                <LoadingAnimation />
-                            </tr>
-                        )
-                    }
-                </tbody>
-            </table>
+            {users.data ? (
+                <DataTable
+                    columns={columns}
+                    data={users.data}
+                    pagination
+                    highlightOnHover
+                    dense
+                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                    className="table"
+                    customStyles={{
+                        rows: {
+                            style: {
+                                backgroundColor: "#ece3ca", // Base background color
+                                transition: "background-color 0.15s ease-in-out",
+                            },
+                            highlightOnHoverStyle: {
+                                backgroundColor: "#e4d8b4",
+                                transitionDuration: '0.15s',
+                                borderBottomColor: "#e4d8b4",
+                                outlineStyle: 'none',
+                                outlineWidth: '0px',
+                            },
+                        },
+                        headCells: {
+                            style: {
+                                backgroundColor: "#ece3ca",
+                                fontWeight: "bold",
+                            },
+                        },
+                        pagination: {
+                            style: {
+                                backgroundColor: "#ece3ca",
+                            },
+                        },
+                    }}
+                />
+            ) : (
+                <div className='w-full flex justify-center'>
+                    <LoadingAnimation />
+                </div>
+            )}
         </>
     );
 }

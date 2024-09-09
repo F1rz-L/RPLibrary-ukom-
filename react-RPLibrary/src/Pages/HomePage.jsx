@@ -49,17 +49,37 @@ function HomePage() {
             )
         } else if (statusUser == 2) {
             const [subscription] = UseGet(`/checksubscription/${idUser}`);
+            const [pinjaman] = UseGet(`/pinjam/${idUser}`);
+
+            const [buku, setBuku] = useState(null);
+
+            useEffect(() => {
+                // Fetch book details only when pinjaman's idbuku is available
+                if (pinjaman?.data?.idbuku) {
+                    link.get(`/buku/${pinjaman?.data?.idbuku}`).then((response) => {
+                        setBuku(response.data.data[0]);
+                    });
+                }
+            }, [pinjaman]);
 
             const tglakhir = new Date(subscription?.data?.tglakhir);
             const tglsekarang = new Date();
 
-            const timeDifference = tglakhir - tglsekarang;
+            const timeDifferenceSubscription = tglakhir - tglsekarang;
+            const remainingDaysSubscription = Math.ceil(timeDifferenceSubscription / (1000 * 60 * 60 * 24) - 1);
+            const percentageRemainingSubscription = (remainingDaysSubscription / 30) * 100;
+            const daysSubscription = Math.floor(timeDifferenceSubscription / (1000 * 60 * 60 * 24));
 
-            const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24) - 1);
-            const percentageRemaining = (remainingDays / 30) * 100;
-            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            // Assuming pinjaman has a `tglkembali` property (adjust accordingly)
+            const tglkembali = new Date(pinjaman?.data?.tglkembali);
+            const timeDifferencePinjaman = tglkembali - tglsekarang;
 
-            console.log(remainingDays, percentageRemaining);
+            const remainingDaysPinjaman = Math.ceil(timeDifferencePinjaman / (1000 * 60 * 60 * 24) - 1);
+            const percentageRemainingPinjaman = (remainingDaysPinjaman / 7) * 100;
+            const daysPinjaman = Math.floor(timeDifferencePinjaman / (1000 * 60 * 60 * 24));
+
+            console.log(pinjaman);
+            console.log(buku); // This will log the book details if fetched correctly
 
             return (
                 <div className="hero bg-base-200 justify-center p-2 m-4 rounded-box">
@@ -73,8 +93,25 @@ function HomePage() {
 
                         <div className="stat">
                             <div className="stat-title">Borrowed book</div>
-                            <div className="stat-value text-secondary"></div>
-                            <div className="stat-desc">Return before...</div>
+                            <div className='bg-base-200 p-4 my-2 rounded-box flex'>
+                                <img src={buku?.cover} className='w-20 rounded-box glass mr-2' alt="" />
+                                <div>
+                                    <p className='stat-value text-sm'>{buku?.judul || '...'}</p>
+                                    <p className='stat-desc '>By {buku?.pengarang || '...'}</p>
+                                </div>
+                            </div>
+                            {remainingDaysPinjaman < 0 ?
+                                <div className="stat-desc">You're late for {-remainingDaysPinjaman} day(s). Return immediately</div>
+                                :
+                                <div className="stat-desc">Return in {remainingDaysPinjaman} days</div>
+                            }
+                            <div className="stat-value flex justify-center mt-1">
+                                {remainingDaysPinjaman < 0 ?
+                                    <progress className="progress w-56 progress-error" value={100} max="100"></progress>
+                                    :
+                                    <progress className="progress w-56" value={percentageRemainingPinjaman} max="100"></progress>
+                                }
+                            </div>
                         </div>
 
                         <div className="stat">
@@ -82,17 +119,17 @@ function HomePage() {
                             <div className="stat-value flex justify-center my-2">
                                 <div
                                     className="radial-progress bg-base-200 text-primary-content text-sm border-base-200 border-4"
-                                    style={{ "--value": percentageRemaining }}
+                                    style={{ "--value": percentageRemainingSubscription }}
                                     role="progressbar">
                                     <span className="countdown font-mono text-lg">
-                                        <span style={{ "--value": days }}></span>d
+                                        <span style={{ "--value": daysSubscription }}></span>d
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div >
-            )
+                </div>
+            );
         }
     }
 

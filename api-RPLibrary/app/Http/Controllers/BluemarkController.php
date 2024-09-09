@@ -40,9 +40,13 @@ class BluemarkController extends Controller
         ], 200);
     }
 
-    // public function showPinjam($idpeminjam) {
-    //     $data = Pinjaman::where('')
-    // }
+    public function showPinjam($idpeminjam) {
+        $data = Pinjaman::where('idpeminjam', $idpeminjam)->first();
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
+    }
 
     public function kembali($idpinjaman)
     {
