@@ -43,7 +43,7 @@ class OrderController extends Controller
             'status' => $request->status,
             'tglorder' => $request->tglorder,
             'total' => $request->total
-        ];
+        ];  
 
         $user = DB::table('users')->where('id', $data['iduser'])->first(['saldo']);
 

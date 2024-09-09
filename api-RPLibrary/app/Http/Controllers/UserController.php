@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+\Midtrans\Config::$serverKey = 'SB-Mid-server-ud1bJoG_t5XDEvIiS0lX5IMv';
+\Midtrans\Config::$isProduction = false; // Set to true for production
+\Midtrans\Config::$isSanitized = true;
+\Midtrans\Config::$is3ds = true;
+
 class UserController extends Controller
 {
     /**
@@ -79,15 +84,46 @@ class UserController extends Controller
         }
     }
 
-    public function topup($iduser, Request $request){
+    public function topup($iduser, Request $request)
+    {
         $user = User::find($iduser);
-        $currentamount = $user->saldo + $request->topupamount;
-        $data = User::where('id', $iduser)->update(['saldo' => $currentamount]);
-        if ($data) {
+        $topupAmount = $request->topupamount;
+
+        // Midtrans transaction details
+        $params = [
+            'transaction_details' => [
+                'order_id' => 'TOPUP-' . time() . '-' . $iduser,
+                'gross_amount' => $topupAmount,
+            ],
+            'customer_details' => [
+                'first_name' => $user->name,
+                'email' => $user->email,
+            ]
+        ];
+
+        // Create transaction using Midtrans API
+        try {
+            $transaction = \Midtrans\Snap::createTransaction($params);
+
+            // Return Snap Token to the frontend
             return response()->json([
-                'message' => 'Success topup balance',
-                'data' => $data
-            ]);
+                'snapToken' => $transaction->token,
+                'redirectUrl' => $transaction->redirect_url,
+                'message' => 'Proceed to payment'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Midtrans error: ' . $e->getMessage(),
+            ], 500);
         }
+    }
+
+    public function confirmPayment(Request $request)
+    {
+        $data = \Midtrans\Transaction::status($request->transaction_id);
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ], 200);
     }
 }
