@@ -106,7 +106,7 @@ function AdminBorrow(props) {
                         },
                         highlightOnHoverStyle: {
                             backgroundColor: "#e4d8b4",
-                            transitionDuration: '0.15s',
+                            transitionDuration: '0.15s',                
                             borderBottomColor: "#e4d8b4",
                             outlineStyle: 'none',
                             outlineWidth: '0px',

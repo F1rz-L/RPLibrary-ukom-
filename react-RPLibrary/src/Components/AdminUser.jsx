@@ -121,8 +121,8 @@ function AdminUser(props) {
                     pagination
                     highlightOnHover
                     dense
-                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
                     className="table"
+                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
                     customStyles={{
                         rows: {
                             style: {

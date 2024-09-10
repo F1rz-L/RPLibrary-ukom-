@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form'
 import { link } from '../Axios/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faIdCard, faKey, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import ReCAPTCHA from "react-google-recaptcha";
+
 
 function Login() {
     const {
@@ -17,6 +19,7 @@ function Login() {
     const navigate = useNavigate()
     const [passwordShown, setPasswordShown] = useState(false);
     const [errorMessage, setErrorMessage] = useState('')
+    const [captcha, setCaptcha] = useState('');
 
     function submitForm(data) {
         const formData = new URLSearchParams();
@@ -35,6 +38,11 @@ function Login() {
         }).catch(error => {
             setErrorMessage(error.response.data.message)
         })
+    }
+
+    function onChange(value) {
+        console.log("Captcha value:", value);
+
     }
 
     function showPassword() {
@@ -79,6 +87,10 @@ function Login() {
                             <input type="checkbox" className="toggle" onChange={showPassword} />
                         </label>
                         <span className="label-text text-red-700">{errors.password && "Kolom Password harus diisi"}</span>
+                        <ReCAPTCHA
+                            sitekey="6LfbEjsqAAAAAPwP-Q5VhlU3-K-qC9dGM7BXZHke"
+                            onChange={onChange}
+                        />
                         <button type="submit" className="btn btn-primary mt-4">Login</button>
                     </form>
                     <p className='text-sm text-center'>Don't have an account? <Link to={"/register"} className="link">Register</Link>.</p>
