@@ -37,6 +37,7 @@ function AdminBorrow(props) {
             name: '#',
             selector: (row, index) => index + 1,
             center: true,
+            compact: true
         },
         {
             name: 'Cover',
@@ -48,6 +49,7 @@ function AdminBorrow(props) {
             selector: row => row.judul,
             center: true,
             sortable: true,
+            wrap: true
 
         },
         {
@@ -75,8 +77,10 @@ function AdminBorrow(props) {
         },
         {
             name: 'Penalty',
-            selector: row => Number(row.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" }),
+            selector: row => row.denda,
             center: true,
+            sortable: true,
+            cell: row => <div>{row.denda > 0 ? <span className='text-error font-bold'>{Number(row.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span> : <span className=''>{Number(row.denda).toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>}</div>,
         },
         {
             name: 'Interact',
@@ -89,7 +93,7 @@ function AdminBorrow(props) {
 
     return (
         <>
-            <DataTable
+            {borrows.data ? <DataTable
                 columns={columns}
                 data={borrows?.data || []}
                 pagination
@@ -106,7 +110,7 @@ function AdminBorrow(props) {
                         },
                         highlightOnHoverStyle: {
                             backgroundColor: "#e4d8b4",
-                            transitionDuration: '0.15s',                
+                            transitionDuration: '0.15s',
                             borderBottomColor: "#e4d8b4",
                             outlineStyle: 'none',
                             outlineWidth: '0px',
@@ -124,7 +128,11 @@ function AdminBorrow(props) {
                         },
                     },
                 }}
-            />
+            /> : (
+                <div className='w-full flex justify-center'>
+                    <LoadingAnimation />
+                </div>
+            )}
         </>
     );
 }

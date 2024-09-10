@@ -79,7 +79,7 @@ function HomePage() {
             const daysPinjaman = Math.floor(timeDifferencePinjaman / (1000 * 60 * 60 * 24));
 
             console.log(pinjaman);
-            console.log(buku); // This will log the book details if fetched correctly
+            // console.log(buku); // This will log the book details if fetched correctly
 
             return (
                 <div className="hero bg-base-200 justify-center p-2 m-4 rounded-box">
@@ -90,8 +90,7 @@ function HomePage() {
                                 {Number(user?.data?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
                             </div>
                         </div>
-
-                        <div className="stat">
+                        {pinjaman ? <div className="stat">
                             <div className="stat-title">Borrowed book</div>
                             <div className='bg-base-200 p-4 my-2 rounded-box flex'>
                                 <img src={buku?.cover} className='w-20 rounded-box glass mr-2' alt="" />
@@ -113,7 +112,12 @@ function HomePage() {
                                 }
                             </div>
                         </div>
-
+                            :
+                            <div className="stat">
+                                <div className="stat-title">Your Subscription</div>
+                                <div className="stat-value">No Subscription</div>
+                            </div>
+                        }
                         <div className="stat">
                             <div className="stat-desc">Your subscription ends in..</div>
                             <div className="stat-value flex justify-center my-2">

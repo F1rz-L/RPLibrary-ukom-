@@ -7,6 +7,7 @@ use App\Models\Pinjaman;
 use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class BluemarkController extends Controller
@@ -34,14 +35,37 @@ class BluemarkController extends Controller
     public function indexPinjam()
     {
         $data = DB::table('pinjamen')->join('bukus', 'pinjamen.idbuku', '=', 'bukus.idbuku')->where('status', 0)->select('pinjamen.*', 'bukus.*')->get();
+
+        // calculate denda
+        $currentDate = Carbon::now();
+        $data->transform(function ($item) use ($currentDate) {
+            $tglkembali = Carbon::parse($item->tglkembali);
+
+            // Check if the book is returned late
+            if ($currentDate->greaterThan($tglkembali)) {
+                // Calculate days overdue
+                $daysLate = $currentDate->diffInDays($tglkembali);
+                // Calculate the fine (500 per day)
+                $item->denda = $daysLate * 500;
+                $item->status = 1;
+            } else {
+                // No fine if returned on time
+                $item->denda = 0;
+            }
+
+            return $item;
+        });
+
         return response()->json([
             'message' => 'Success',
             'data' => $data
         ], 200);
     }
 
-    public function showPinjam($idpeminjam) {
+    public function showPinjam($idpeminjam)
+    {
         $data = Pinjaman::where('idpeminjam', $idpeminjam)->first();
+
         return response()->json([
             'message' => 'Success',
             'data' => $data

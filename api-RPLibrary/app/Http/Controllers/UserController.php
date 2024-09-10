@@ -118,16 +118,15 @@ class UserController extends Controller
         }
     }
 
-    public function confirmTopup($iduser, Request $request)
+    public function confirmTopup(Request $request, $idUser)
     {
-        $user = User::find($iduser);
-        $currentamount = $user->saldo + $request->topupamount;
-        $data = User::where('id', $iduser)->update(['saldo' => $currentamount]);
-        if ($data) {
-            return response()->json([
-                'message' => 'Success topup balance',
-                'data' => $data
-            ]);
-        }
+        $topupAmount = $request->topupamount;
+        $user = User::find($idUser);
+
+        // Add the top-up amount to the user's balance
+        $user->saldo += $topupAmount;
+        $user->save();
+
+        return response()->json(['message' => 'Topup successful']);
     }
 }

@@ -22,27 +22,32 @@ function Login() {
     const [captcha, setCaptcha] = useState('');
 
     function submitForm(data) {
-        const formData = new URLSearchParams();
-        formData.append('email', data.email);
-        formData.append('password', data.password);
-        sessionStorage.setItem('email', data.email)
+        if (!captcha) {
+            setErrorMessage('Please verify that you are not a robot')
+        } else {
+            const formData = new URLSearchParams();
+            formData.append('email', data.email);
+            formData.append('password', data.password);
+            sessionStorage.setItem('email', data.email)
 
 
-        link.post(`/login`, formData).then(res => {
-            sessionStorage.setItem('iduser', res.data.user.id)
-            sessionStorage.setItem('status_user', res.data.user.status)
-            sessionStorage.setItem('auth_token', res.data.auth_token)
-            sessionStorage.setItem('cart', "[]")
-            console.log(res)
-            navigate('/')
-        }).catch(error => {
-            setErrorMessage(error.response.data.message)
-        })
+            link.post(`/login`, formData).then(res => {
+                sessionStorage.setItem('iduser', res.data.user.id)
+                sessionStorage.setItem('status_user', res.data.user.status)
+                sessionStorage.setItem('auth_token', res.data.auth_token)
+                sessionStorage.setItem('cart', "[]")
+                console.log(res)
+                navigate('/')
+            }).catch(error => {
+                setErrorMessage(error.response.data.message)
+            })
+        }
     }
 
     function onChange(value) {
         console.log("Captcha value:", value);
-
+        setCaptcha(value)
+        setErrorMessage('')
     }
 
     function showPassword() {

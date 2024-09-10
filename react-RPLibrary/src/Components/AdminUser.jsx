@@ -17,7 +17,7 @@ function AdminUser(props) {
             name: '#',
             selector: (row, index) => index + 1,
             center: true,
-
+            compact: true
         },
         {
             name: 'Name',

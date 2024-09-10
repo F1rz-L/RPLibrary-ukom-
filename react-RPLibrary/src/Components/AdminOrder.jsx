@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faEdit, faMagnifyingGlassDollar, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCheckToSlot, faEdit, faMagnifyingGlassDollar, faTrash, faTruck } from '@fortawesome/free-solid-svg-icons';
 import { link } from '../Axios/link';
 import DataTable from 'react-data-table-component';
+import LoadingAnimation from './LoadingAnimation';
 
 function AdminOrder(props) {
     const [orders, setOrders] = useState(props.orders);
@@ -24,13 +25,13 @@ function AdminOrder(props) {
     function getStatus(status) {
         switch (status) {
             case 0:
-                return (<td><div className="badge badge-error text-white text-nowrap">On Process</div></td>)
+                return (<div className="badge badge-error text-white text-nowrap">On Process</div>)
             case 1:
-                return (<td><div className="badge badge-outline text-nowrap">On Delivery</div></td>)
+                return (<div className="badge badge-outline text-nowrap">On Delivery</div>)
             case 2:
-                return (<td><div className="badge badge-secondary text-nowrap">Completed</div></td>)
+                return (<div className="badge badge-secondary text-nowrap">Completed</div>)
             default:
-                return <td><div className="badge badge-unknown text-nowrap">Unknown</div></td>;
+                return <div className="badge badge-unknown text-nowrap">Unknown</div>;
         }
     }
 
@@ -41,12 +42,35 @@ function AdminOrder(props) {
         return total;
     }
 
+    function submitInteract(idorder, status) {
+        link.get(`/order/${idorder}/${status}`).then(() => {
+            window.location.reload();
+        });
+    }
+
+    function checkInteraction(idorder, status) {
+        switch (status) {
+            case 0:
+                return (
+                    <li><a className='text-nowrap' onClick={() => submitInteract(idorder, 1)}><FontAwesomeIcon icon={faTruck} />Deliver</a></li>
+                );
+            case 1:
+                return (
+                    <li><a className='text-nowrap' onClick={() => submitInteract(idorder, 2)}><FontAwesomeIcon icon={faCheckToSlot} />Complete</a></li>
+                );
+            default:
+                return null;
+        }
+    }
+    
+
     const columns = [
         {
             name: '#',
             selector: (row, index) => index + 1,
             sortable: true,
             center: true,
+            compact: true
         },
         {
             name: 'Buyer',
@@ -55,7 +79,7 @@ function AdminOrder(props) {
             center: true,
         },
         {
-            name: 'Date',
+            name: 'Order Date',
             selector: row => row.tglorder,
             sortable: true,
             center: true,
@@ -125,18 +149,23 @@ function AdminOrder(props) {
                         <FontAwesomeIcon icon={faBars} />
                     </div>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
-                        <li><a className="text-nowrap"><FontAwesomeIcon icon={faEdit} /> Edit</a></li>
-                        <li><a className="text-nowrap" onClick={() => deleteOrder(row?.idorder)}><FontAwesomeIcon icon={faTrash} /> Delete</a></li>
+                        {checkInteraction(row.idorder, row.status)}
+                        <li>
+                            <a className="text-nowrap" onClick={() => deleteOrder(row?.idorder)}>
+                                <FontAwesomeIcon icon={faTrash} /> Delete
+                            </a>
+                        </li>
                     </ul>
                 </div>
             ),
             center: true,
         }
+
     ];
 
     return (
         <>
-            <DataTable
+            {orders.data ? <DataTable
                 columns={columns}
                 data={orders?.data || []}
                 pagination
@@ -170,7 +199,11 @@ function AdminOrder(props) {
                         },
                     },
                 }}
-            />
+            /> : (
+                <div className='w-full flex justify-center'>
+                    <LoadingAnimation />
+                </div>
+            )}
         </>
     );
 }

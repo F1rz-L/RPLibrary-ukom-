@@ -105,4 +105,13 @@ class OrderController extends Controller
             'data' => $order
         ], 200);
     }
+
+    public function changeStatus($idorder, $status)
+    {
+        $order = Order::where('idorder', $idorder)->update(['status' => $status]);
+        return response()->json([
+            'message' => 'Success',
+            'data' => $order
+        ], 200);
+    }
 }

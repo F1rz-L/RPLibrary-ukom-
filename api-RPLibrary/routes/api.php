@@ -55,8 +55,9 @@ Route::get('/getPdf/{id}', [BukuController::class, 'getPdf']);
 
 Route::get('/order', [OrderController::class, 'index']);
 Route::get('/order/{id}', [OrderController::class, 'show']);
-Route::post('/order', [OrderController::class, 'store']);   
+Route::post('/order', [OrderController::class, 'store']);
 Route::delete('/order/{id}', [OrderController::class, 'destroy']);
+Route::get('/order/{id}/{status}', [OrderController::class, 'changeStatus']);
 
 Route::post('/orderdetail', [OrderDetailController::class, 'store']);
 Route::get('/orderdetail', [OrderDetailController::class, 'index']);
