@@ -62,7 +62,7 @@ function AdminOrder(props) {
                 return null;
         }
     }
-    
+
 
     const columns = [
         {
@@ -165,6 +165,24 @@ function AdminOrder(props) {
 
     return (
         <>
+            <div className="stats shadow-lg mb-4 w-full">
+                <div className="stat">
+                    <div className="stat-title">Order Count</div>
+                    <div className="stat-value">{orders.data?.length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">On Process</div>
+                    <div className="stat-value">{orders.data?.filter(order => order.status === 0).length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">On Delivery</div>
+                    <div className="stat-value">{orders.data?.filter(order => order.status === 1).length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">Completed</div>
+                    <div className="stat-value">{orders.data?.filter(order => order.status === 2).length}</div>
+                </div>
+            </div>
             {orders.data ? <DataTable
                 columns={columns}
                 data={orders?.data || []}

@@ -13,7 +13,6 @@ function AdminPage() {
     const [orders] = UseGet('/order')
 
     console.log(orders);
-    
 
     return (
         <>

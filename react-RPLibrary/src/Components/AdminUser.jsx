@@ -45,9 +45,9 @@ function AdminUser(props) {
             center: true,
             sortable: true,
             // grow: 2,
-            cell: row => Math.sign(Number(row?.saldo)) === -1 ? 
-            <span className='text-red-600 text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>
-                : <span className=' text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span> ,
+            cell: row => Math.sign(Number(row?.saldo)) === -1 ?
+                <span className='text-red-600 text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>
+                : <span className=' text-nowrap'>{Number(row?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</span>,
         },
         {
             name: 'Status',
@@ -114,6 +114,20 @@ function AdminUser(props) {
 
     return (
         <>
+            <div className="stats shadow-lg mb-4 w-full">
+                <div className="stat">
+                    <div className="stat-title">All Users</div>
+                    <div className="stat-value">{users.data?.length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">Bluemark Count</div>
+                    <div className="stat-value">{users.data?.filter(user => user.status === 2).length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">Total Balance</div>
+                    <div className="stat-value">{users.data?.reduce((acc, user) => acc + Number(user.saldo), 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</div>
+                </div>
+            </div>
             {users.data ? (
                 <DataTable
                     columns={columns}

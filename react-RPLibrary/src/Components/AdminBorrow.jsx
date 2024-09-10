@@ -93,6 +93,20 @@ function AdminBorrow(props) {
 
     return (
         <>
+            <div className="stats shadow-lg mb-4 w-full">
+                <div className="stat">
+                    <div className="stat-title">Borrowment Count</div>
+                    <div className="stat-value">{borrows.data?.length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">On Time</div>
+                    <div className="stat-value">{borrows.data?.filter(borrow => borrow.status === 0).length}</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-title">Late</div>
+                    <div className="stat-value">{borrows.data?.filter(borrow => borrow.status === 1).length}</div>
+                </div>
+            </div>
             {borrows.data ? <DataTable
                 columns={columns}
                 data={borrows?.data || []}
