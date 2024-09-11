@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('status')->default(1)->nullable();
             $table->integer('otp')->default(0);
-            $table->float('saldo', 14)->default(0);
+            $table->decimal('saldo', 14, 2)->default(0); // Decimal with 14 digits, 2 of which are after the decimal point
             $table->integer('idbukupinjam')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import UseGet from '../Axios/UseGet';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMoneyBillTransfer, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faMoneyBillTransfer } from '@fortawesome/free-solid-svg-icons';
 import { link } from '../Axios/link';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Payment() {
     const {
@@ -15,13 +16,48 @@ function Payment() {
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
     const [user] = UseGet(`/user/${idUser}`);
     const [snapToken, setSnapToken] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('')
+    const [paymentStatus, setPaymentStatus] = useState(null);
+    const confirmedRef = useRef(false);
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Handle payment status from query parameters
+    useEffect(() => {
+        if (confirmedRef.current) return; // Skip if already confirmed
+
+        const params = new URLSearchParams(location.search);
+        const orderId = params.get('order_id');
+        const statusCode = params.get('status_code');
+        const transactionStatus = params.get('transaction_status');
+
+        if (transactionStatus) {
+            // Set payment status
+            setPaymentStatus(transactionStatus);
+            if (transactionStatus === 'settlement') {
+                const topupfix = sessionStorage.getItem('topupamount') / 2 // karena useeffect nya ke run 2x hehe
+
+                const formData = new FormData();
+                formData.append('topupamount', topupfix);
+
+                link.post(`/confirmTopup/${sessionStorage.getItem('iduser')}`, formData)
+                    .then(res => {
+                        console.log('Top-up confirmed:', res.data);
+                        confirmedRef.current = true; // Mark as confirmed
+                        navigate('/payment');
+                    })
+                    .catch(error => {
+                        console.error('Error confirming top-up:', error.response.data);
+                    });
+            }
+        }
+    }, [location.search, navigate]);
+
+    // Dynamically load Snap.js script
     useEffect(() => {
         const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';
         const myMidtransClientKey = 'SB-Mid-client-GWcpAF3I4bKLr5aE';
 
-        // Dynamically load Snap.js script
         let scriptTag = document.createElement('script');
         scriptTag.src = midtransScriptUrl;
         scriptTag.setAttribute('data-client-key', myMidtransClientKey);
@@ -32,54 +68,38 @@ function Payment() {
         };
     }, []);
 
-    // Function to handle form submission
-    function submitForm(data) {
-        setErrorMessage('');
-        if (data.topup < 0) {
-            setErrorMessage('Top up amount cannot be negative');
-        } else {
-            const formData = new FormData();
-            formData.append('topupamount', data.topup);
+    // Submit form and get Snap token
+    const submitForm = async (data) => {
+        const formData = new FormData();
+        formData.append('topupamount', data.topup);
 
-            link.post(`/topup/${idUser}`, formData).then(res => {
-                setSnapToken(res.data.snapToken); // Set the Snap token for triggering payment
+        await link.post(`/topup/${idUser}`, formData)
+            .then(res => {
                 sessionStorage.setItem('topupamount', data.topup);
-            }).catch(error => {
+                setSnapToken(res.data.snapToken); // Set Snap token
+            })
+            .catch(error => {
                 console.error(error.response.data);
             });
-        }
     };
 
-    // Trigger the Midtrans payment interface
+    // Trigger Midtrans payment interface
     const triggerPayment = () => {
         if (window.snap && snapToken) {
             window.snap.pay(snapToken, {
                 onSuccess: function (result) {
-                    console.log(result);
-
-                    const formData = new FormData();
-
-                    formData.append('topupamount', sessionStorage.getItem('topupamount'));
-                    link.post(`/confirmTopup/${idUser}`, formData).then(res => {
-                        sessionStorage.removeItem('topupamount');
-                        // window.location.reload();
-                    }).catch(error => {
-                        console.error(error.response.data);
-                    });
-                    // Handle successful payment, e.g., update balance or redirect
+                    console.log(result);    
+                    // Handle success on client side if necessary
                 },
                 onPending: function (result) {
                     console.log(result);
-                    window.location.reload();
                 },
                 onError: function (result) {
                     console.error(result);
-                    window.location.reload();
                 },
                 onClose: function () {
                     console.log('Customer closed the popup without finishing the payment');
-                    window.location.reload();
-                }
+                },
             });
         }
     };
@@ -92,23 +112,13 @@ function Payment() {
 
     return (
         <>
-            <div className=''>
+            <div>
                 <div className="flex justify-center">
-                <div className='absolute z-[3]'>
-                    {errorMessage && (
-                        <div role="alert" className="alert alert-error">
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                            <span className="ml-2">
-                                {errorMessage}
-                            </span>
-                        </div>
-                    )}
-                </div>
-                    <div className='bg-base-200 p-4 rounded-box'>
+                    <div className="bg-base-200 p-4 rounded-box">
                         <div className="flex justify-center">
-                            <h1 className='text-3xl font-bold'>Your Balance</h1>
+                            <h1 className="text-3xl font-bold">Your Balance</h1>
                         </div>
-                        <h1 className='text-3xl mx-2 my-4'>
+                        <h1 className="text-3xl mx-2 my-4">
                             {Number(user.data?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
                         </h1>
                     </div>

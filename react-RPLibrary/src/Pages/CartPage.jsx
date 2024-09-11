@@ -108,7 +108,7 @@ function CartPage() {
     function cartContent() {
         if (cart.length === 0) {
             return (
-                <div className="text-3xl font-bold text-center">
+                <div className="text-3xl opacity-50 text-center">
                     Your cart is empty
                 </div>
             );

@@ -108,8 +108,8 @@ class UserController extends Controller
             // Return Snap Token to the frontend
             return response()->json([
                 'snapToken' => $transaction->token,
-                'redirectUrl' => $transaction->redirect_url,
-                'message' => 'Proceed to payment'
+                // 'redirectUrl' => $transaction->redirect_url,
+                // 'message' => 'Proceed to payment'
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -127,6 +127,9 @@ class UserController extends Controller
         $user->saldo += $topupAmount;
         $user->save();
 
-        return response()->json(['message' => 'Topup successful']);
+        return response()->json([
+            'message' => 'Topup successful',
+            'data' => $user
+        ]);
     }
 }

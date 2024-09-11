@@ -183,45 +183,51 @@ function AdminOrder(props) {
                     <div className="stat-value">{orders.data?.filter(order => order.status === 2).length}</div>
                 </div>
             </div>
-            {orders.data ? <DataTable
-                columns={columns}
-                data={orders?.data || []}
-                pagination
-                highlightOnHover
-                responsive
-                className="table table-zebra w-full"
-                paginationRowsPerPageOptions={[10, 25, 50, 100]}
-                customStyles={{
-                    rows: {
-                        style: {
-                            backgroundColor: "#ece3ca", // Base background color
-                            transition: "background-color 0.15s ease-in-out",
+            {orders.data ?
+                orders.data.length > 0 ?
+                <DataTable
+                    columns={columns}
+                    data={orders?.data || []}
+                    pagination
+                    highlightOnHover
+                    responsive
+                    className="table table-zebra w-full"
+                    paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                    customStyles={{
+                        rows: {
+                            style: {
+                                backgroundColor: "#ece3ca", // Base background color
+                                transition: "background-color 0.15s ease-in-out",
+                            },
+                            highlightOnHoverStyle: {
+                                backgroundColor: "#e4d8b4",
+                                transitionDuration: '0.15s',
+                                borderBottomColor: "#e4d8b4",
+                                outlineStyle: 'none',
+                                outlineWidth: '0px',
+                            },
                         },
-                        highlightOnHoverStyle: {
-                            backgroundColor: "#e4d8b4",
-                            transitionDuration: '0.15s',
-                            borderBottomColor: "#e4d8b4",
-                            outlineStyle: 'none',
-                            outlineWidth: '0px',
+                        headCells: {
+                            style: {
+                                backgroundColor: "#ece3ca",
+                                fontWeight: "bold",
+                            },
                         },
-                    },
-                    headCells: {
-                        style: {
-                            backgroundColor: "#ece3ca",
-                            fontWeight: "bold",
+                        pagination: {
+                            style: {
+                                backgroundColor: "#ece3ca",
+                            },
                         },
-                    },
-                    pagination: {
-                        style: {
-                            backgroundColor: "#ece3ca",
-                        },
-                    },
-                }}
-            /> : (
-                <div className='w-full flex justify-center'>
-                    <LoadingAnimation />
+                    }}
+                /> :    
+                <div className='font-bold w-full flex justify-center text-xl'>
+                    No Data
                 </div>
-            )}
+                 : (
+                    <div className='w-full flex justify-center'>
+                        <LoadingAnimation />
+                    </div>
+                )}
         </>
     );
 }

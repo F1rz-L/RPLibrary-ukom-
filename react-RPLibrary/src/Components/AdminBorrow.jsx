@@ -107,46 +107,52 @@ function AdminBorrow(props) {
                     <div className="stat-value">{borrows.data?.filter(borrow => borrow.status === 1).length}</div>
                 </div>
             </div>
-            {borrows.data ? <DataTable
-                columns={columns}
-                data={borrows?.data || []}
-                pagination
-                highlightOnHover
-                responsive
-                dense
-                paginationRowsPerPageOptions={[10, 25, 50, 100]}
-                className="table"
-                customStyles={{
-                    rows: {
-                        style: {
-                            backgroundColor: "#ece3ca", // Base background color
-                            transition: "background-color 0.15s ease-in-out",
-                        },
-                        highlightOnHoverStyle: {
-                            backgroundColor: "#e4d8b4",
-                            transitionDuration: '0.15s',
-                            borderBottomColor: "#e4d8b4",
-                            outlineStyle: 'none',
-                            outlineWidth: '0px',
-                        },
-                    },
-                    headCells: {
-                        style: {
-                            backgroundColor: "#ece3ca",
-                            fontWeight: "bold",
-                        },
-                    },
-                    pagination: {
-                        style: {
-                            backgroundColor: "#ece3ca",
-                        },
-                    },
-                }}
-            /> : (
-                <div className='w-full flex justify-center'>
-                    <LoadingAnimation />
-                </div>
-            )}
+            {borrows.data ?
+                borrows.data.length > 0 ?
+                    <DataTable
+                        columns={columns}
+                        data={borrows?.data || []}
+                        pagination
+                        highlightOnHover
+                        responsive
+                        dense
+                        paginationRowsPerPageOptions={[10, 25, 50, 100]}
+                        className="table"
+                        customStyles={{
+                            rows: {
+                                style: {
+                                    backgroundColor: "#ece3ca", // Base background color
+                                    transition: "background-color 0.15s ease-in-out",
+                                },
+                                highlightOnHoverStyle: {
+                                    backgroundColor: "#e4d8b4",
+                                    transitionDuration: '0.15s',
+                                    borderBottomColor: "#e4d8b4",
+                                    outlineStyle: 'none',
+                                    outlineWidth: '0px',
+                                },
+                            },
+                            headCells: {
+                                style: {
+                                    backgroundColor: "#ece3ca",
+                                    fontWeight: "bold",
+                                },
+                            },
+                            pagination: {
+                                style: {
+                                    backgroundColor: "#ece3ca",
+                                },
+                            },
+                        }}
+                    /> :
+                    <div className='font-bold w-full flex justify-center text-xl'>
+                        No Data
+                    </div>
+                : (
+                    <div className='w-full flex justify-center'>
+                        <LoadingAnimation />
+                    </div>
+                )}
         </>
     );
 }
