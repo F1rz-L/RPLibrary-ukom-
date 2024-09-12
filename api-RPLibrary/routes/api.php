@@ -43,6 +43,7 @@ Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
 Route::get('/user/switchUser/{id}', [UserController::class, 'switchUser']);
 Route::delete('/user/{id}', [UserController::class, 'destroy']);
+Route::get('/user/{id}/ban', [UserController::class, 'banUser']);
 Route::post('/topup/{iduser}', [UserController::class, 'topup']);
 Route::post('/confirmTopup/{iduser}', [UserController::class, 'confirmTopup']);
 

@@ -132,4 +132,13 @@ class UserController extends Controller
             'data' => $user
         ]);
     }
+
+    public function banUser($iduser)
+    {
+        $data = User::where('id', $iduser)->update(['status' => 5]);
+        return response()->json([
+            'message' => 'Success',
+            'data' => $data
+        ]);     
+    }
 }

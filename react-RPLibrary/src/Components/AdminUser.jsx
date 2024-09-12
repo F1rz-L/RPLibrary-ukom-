@@ -78,6 +78,9 @@ function AdminUser(props) {
                         <li onClick={() => deleteUser(row.id)}>
                             <a className='text-nowrap'><FontAwesomeIcon icon={faTrash} /> Delete</a>
                         </li>
+                        <li onClick={() => banUser(row.id)}>
+                            <a className='text-nowrap'>Ban</a>
+                        </li>
                     </ul>
                 </div>
             ),
@@ -88,6 +91,13 @@ function AdminUser(props) {
     function deleteUser(id) {
         link.delete(`/user/${id}`).then(() => {
             console.log(`deleted ${id}`);
+            window.location.reload();
+        });
+    }
+
+    function banUser(id) {
+        link.get(`/user/${id}/ban`).then(() => {
+            console.log(`Banned ${id}`);
             window.location.reload();
         });
     }
@@ -107,6 +117,8 @@ function AdminUser(props) {
                 return <div className="badge badge-outline">User</div>;
             case 2:
                 return <div className="badge badge-secondary">Bluemark</div>;
+                case 5:
+                    return <div className="badge badge-error">Banned</div>;
             default:
                 return null;
         }
