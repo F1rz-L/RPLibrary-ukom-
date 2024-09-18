@@ -126,7 +126,7 @@ class UserController extends Controller
         // Add the top-up amount to the user's balance
         $user->saldo += $topupAmount;
         $user->save();
-
+        
         return response()->json([
             'message' => 'Topup successful',
             'data' => $user
@@ -135,7 +135,12 @@ class UserController extends Controller
 
     public function banUser($iduser)
     {
-        $data = User::where('id', $iduser)->update(['status' => 5]);
+        $data = User::where('id', $iduser)->first();
+        if ($data->status == 5) {
+            $data = User::where('id', $iduser)->update(['status' => 1]);
+        } else {
+            $data = User::where('id', $iduser)->update(['status' => 5]);
+        }
         return response()->json([
             'message' => 'Success',
             'data' => $data

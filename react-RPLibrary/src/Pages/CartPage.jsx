@@ -2,13 +2,18 @@ import React, { useEffect, useState } from 'react'
 import UseGet from '../Axios/UseGet'
 import { link } from '../Axios/link'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 
 function CartPage() {
     const navigate = useNavigate()
     const [daftarBuku] = UseGet('/buku')
+    const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser') || null);
+    const [user] = UseGet(`/user/${idUser}`)
     const [cart, setCart] = useState([])
     const [total, setTotal] = useState(0)
     const [jumlahCart, setJumlahCart] = useState(0)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const taxRate = 0.11; // 11% tax rate
     let subtotal = 0;
@@ -70,39 +75,44 @@ function CartPage() {
 
     function handleCheckout() {
         const tglorder = new Date().toISOString().slice(0, 10);
+        const totalOrder = calculateTotal();
         const formattedId = new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '');
 
-        const order = {
-            idorder: formattedId,
-            iduser: sessionStorage.getItem('iduser'),
-            tglorder: tglorder.toString(),
-            total: calculateTotal(),
-            status: 0,
-        }
-
-        const orderDetail = cart.map(item => {
-            return {
+        if (user.saldo < totalOrder) {
+            setErrorMessage('Insufficient balance');
+        } else {
+            const order = {
                 idorder: formattedId,
-                idbuku: item.id,
-                jumlah: item.jumlah
+                iduser: user.iduser,
+                tglorder: tglorder.toString(),
+                total: calculateTotal(),
+                status: 0,
             }
-        })
 
-        console.log(orderDetail);
-        orderDetail.forEach(item => {
-            link.post('/orderdetail', item
+            const orderDetail = cart.map(item => {
+                return {
+                    idorder: formattedId,
+                    idbuku: item.id,
+                    jumlah: item.jumlah
+                }
+            })
+
+            console.log(orderDetail);
+            orderDetail.forEach(item => {
+                link.post('/orderdetail', item
+                ).then(res => {
+                    console.log(res.data);
+                })
+            })
+            link.post('/order', order
             ).then(res => {
                 console.log(res.data);
+                setCart([]);
+                sessionStorage.setItem('cart', "[]");
+                navigate('/')
+                window.location.reload()
             })
-        })
-        link.post('/order', order
-        ).then(res => {
-            console.log(res.data);
-            setCart([]);
-            sessionStorage.setItem('cart', "[]");
-            navigate('/')
-            window.location.reload()
-        })
+        }
     }
 
     function cartContent() {
@@ -163,6 +173,14 @@ function CartPage() {
                 <h1 className='text-5xl ml-8 mb-4 row justify-start font-extrabold'>Your Cart</h1>
             </div>
             <div className="row justify-center">
+                <div className='fixed z-[3]'>
+                    {errorMessage && (
+                        <div role="alert" className="alert alert-error">
+                            <FontAwesomeIcon icon={faTriangleExclamation} />
+                            <span className="ml-2">{errorMessage}</span>
+                        </div>
+                    )}
+                </div>
                 <div className="col-8 m-4">
                     <div className="row w-full">
                         {cartContent()}

@@ -84,14 +84,21 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
 
             if ($user->otp == 0) {
-                return response()->json([
-                    'message' => 'Email Verified',
-                    'status' => true,
-                    'user' => $user,
-                    'iduser' => $user->id,
-                    'token_type' => 'Bearer',
-                    'auth_token' => $token,
-                ], 200);
+                if ($user->status == 5) {
+                    return response()->json([
+                        'message' => 'Your account has been banned',
+                        'status' => false
+                    ], 400);
+                } else {
+                    return response()->json([
+                        'message' => 'Email Verified',
+                        'status' => true,
+                        'user' => $user,
+                        'iduser' => $user->id,
+                        'token_type' => 'Bearer',
+                        'auth_token' => $token,
+                    ], 200);
+                }
             } else {
                 return response()->json([
                     'message' => 'Email Not Verified',
@@ -101,17 +108,18 @@ class AuthController extends Controller
         }
     }
 
-    public function checkOTP(Request $request){
+    public function checkOTP(Request $request)
+    {
 
         $user = User::where('email', $request->email)->first();
-        if($request->otp == $user->otp){
+        if ($request->otp == $user->otp) {
             User::where('email', $request->email)->update(['otp' => 0]);
-            
+
             return response()->json([
                 'message' => 'OTP Matched',
                 'status' => true
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'OTP Not Matched',
                 'status' => false

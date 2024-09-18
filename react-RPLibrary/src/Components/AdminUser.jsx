@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { faBars, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faEdit, faTrash, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { link } from '../Axios/link';
 import LoadingAnimation from './LoadingAnimation';
@@ -65,12 +65,12 @@ function AdminUser(props) {
                         <FontAwesomeIcon icon={faBars} />
                     </div>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu ml-2 shadow border-4 border-base-200 bg-base-100 rounded-box">
-                        {row.status !== 0 &&
+                        {row.status !== 5 && row.status !== 0 &&
                             <li onClick={() => switchuser(row.id, row.status)}>
                                 <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make Admin</a>
                             </li>
                         }
-                        {row.status !== 1 &&
+                        {row.status !== 5 && row.status !== 1 &&
                             <li onClick={() => switchuser(row.id, row.status)}>
                                 <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make User</a>
                             </li>
@@ -78,9 +78,15 @@ function AdminUser(props) {
                         <li onClick={() => deleteUser(row.id)}>
                             <a className='text-nowrap'><FontAwesomeIcon icon={faTrash} /> Delete</a>
                         </li>
-                        <li onClick={() => banUser(row.id)}>
-                            <a className='text-nowrap'>Ban</a>
-                        </li>
+                        {row.status == 5 ?
+                            <li onClick={() => banUser(row.id)}>
+                                <a className='text-nowrap'><FontAwesomeIcon icon={faTriangleExclamation} />Unban</a>
+                            </li>
+                            :
+                            <li onClick={() => banUser(row.id)}>
+                                <a className='text-nowrap'><FontAwesomeIcon icon={faTriangleExclamation} />Ban</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             ),
@@ -117,8 +123,8 @@ function AdminUser(props) {
                 return <div className="badge badge-outline">User</div>;
             case 2:
                 return <div className="badge badge-secondary">Bluemark</div>;
-                case 5:
-                    return <div className="badge badge-error">Banned</div>;
+            case 5:
+                return <div className="badge badge-error">Banned</div>;
             default:
                 return null;
         }

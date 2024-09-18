@@ -90,7 +90,7 @@ function HomePage() {
                                 {Number(user?.data?.saldo).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
                             </div>
                         </div>
-                        {pinjaman ? <div className="stat">
+                        {pinjaman && pinjaman?.data?.idbuku ? <div className="stat">
                             <div className="stat-title">Borrowed book</div>
                             <div className='bg-base-200 p-4 my-2 rounded-box flex'>
                                 <img src={buku?.cover} className='w-20 rounded-box glass mr-2' alt="" />
@@ -114,8 +114,8 @@ function HomePage() {
                         </div>
                             :
                             <div className="stat">
-                                <div className="stat-title">Your Subscription</div>
-                                <div className="stat-value">No Subscription</div>
+                                <div className="stat-title">Borrowed Book</div>
+                                <div className="stat-desc opacity-80">You are not borrowing any book</div>
                             </div>
                         }
                         <div className="stat">
