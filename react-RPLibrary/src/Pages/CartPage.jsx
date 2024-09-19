@@ -4,6 +4,7 @@ import { link } from '../Axios/link'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import LoadingAnimation from '../Components/LoadingAnimation'
 
 function CartPage() {
     const navigate = useNavigate()
@@ -78,14 +79,15 @@ function CartPage() {
         const totalOrder = calculateTotal();
         const formattedId = new Date().toISOString().slice(0, 19).replace(/[-T:]/g, '');
 
-        if (user.saldo < totalOrder) {
+        setErrorMessage('');
+        if (user?.data?.saldo < totalOrder) {
             setErrorMessage('Insufficient balance');
         } else {
             const order = {
                 idorder: formattedId,
-                iduser: user.iduser,
+                iduser: user?.data?.iduser,
                 tglorder: tglorder.toString(),
-                total: calculateTotal(),
+                total: totalOrder,
                 status: 0,
             }
 
@@ -132,55 +134,59 @@ function CartPage() {
             );
         }
 
-        return cart?.map((item, index) => {
-            const buku = daftarBuku?.data?.[item?.id - 1]
-            if (!buku) return null;
-            // console.log(buku?.judul + " : " + index);
+        return (
+            cart ? cart.map((item, index) => {
+                const buku = daftarBuku?.data?.[item?.id - 1]
+                if (!buku) return null;
+                // console.log(buku?.judul + " : " + index);
 
-            return (
-                <div key={index}>
-                    <div className="rounded-box flex">
-                        <img className='max-w-28 max-h-32 rounded-box' src={buku.cover} />
-                        <div className='mx-6 w-full h-full flex flex-col justify-between'>
-                            <div>
-                                <h3 className="font-bold text-2xl">{buku.judul}</h3>
-                                <p className="text-sm">by {buku.pengarang}</p>
-                            </div>
-                            <div className='flex-row justify-between flex'>
-                                <h3 className='font-bold text-3xl'>{Number(buku.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}<span className='text-lg font-normal'>/pcs</span></h3>
-                                <div className='flex py-2'>
-                                    <div className='bg-base-200 rounded-box flex font-bold'>
-                                        <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah - 1)}>-</button>
-                                        <p className='text-lg pt-1 px-2'>{item.jumlah}</p>
-                                        <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah + 1)}>+</button>
+                return (
+                    <div key={index}>
+                        <div className="rounded-box flex">
+                            <img className='max-w-28 max-h-32 rounded-box' src={buku.cover} />
+                            <div className='mx-6 w-full h-full flex flex-col justify-between'>
+                                <div>
+                                    <h3 className="font-bold text-2xl">{buku.judul}</h3>
+                                    <p className="text-sm">by {buku.pengarang}</p>
+                                </div>
+                                <div className='flex-row justify-between flex'>
+                                    <h3 className='font-bold text-3xl'>{Number(buku.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}<span className='text-lg font-normal'>/pcs</span></h3>
+                                    <div className='flex py-2'>
+                                        <div className='bg-base-200 rounded-box flex font-bold'>
+                                            <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah - 1)}>-</button>
+                                            <p className='text-lg pt-1 px-2'>{item.jumlah}</p>
+                                            <button className="btn btn-sm btn-square btn-ghost" onClick={() => handleQuantityChange(index, item.jumlah + 1)}>+</button>
+                                        </div>
+                                        {/* delete button */}
+                                        <button className="btn mx-2 btn-sm btn-square btn-ghost" onClick={() => handleDelete(index)}>X</button>
                                     </div>
-                                    {/* delete button */}
-                                    <button className="btn mx-2 btn-sm btn-square btn-ghost" onClick={() => handleDelete(index)}>X</button>
                                 </div>
                             </div>
                         </div>
+                        <div className="divider"></div>
                     </div>
-                    <div className="divider"></div>
-                </div>
-            );
-        });
+                );
+            })
+                :
+                <LoadingAnimation />
+        )
     }
 
 
     return (
         <>
+            <div className='fixed w-full flex justify-center z-[3]'>
+                {errorMessage && (
+                    <div role="alert" className="alert alert-error w-1/2">
+                        <FontAwesomeIcon icon={faTriangleExclamation} />
+                        <span className="ml-2">{errorMessage}</span>
+                    </div>
+                )}
+            </div>
             <div className="row">
                 <h1 className='text-5xl ml-8 mb-4 row justify-start font-extrabold'>Your Cart</h1>
             </div>
             <div className="row justify-center">
-                <div className='fixed z-[3]'>
-                    {errorMessage && (
-                        <div role="alert" className="alert alert-error">
-                            <FontAwesomeIcon icon={faTriangleExclamation} />
-                            <span className="ml-2">{errorMessage}</span>
-                        </div>
-                    )}
-                </div>
                 <div className="col-8 m-4">
                     <div className="row w-full">
                         {cartContent()}

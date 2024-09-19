@@ -91,7 +91,7 @@ function Book(props) {
     // }, [idUser, idBukuPinjam, idPeminjam]) 
 
     function bookInteractionChecker(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin) {
-        // console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
+        console.log(id_user, book_pdf, peminjam_id, buku_dipinjam, is_not_admin);
         let a, b, c, d;
         if (id_user) {
             if (book_pdf) {
@@ -103,7 +103,7 @@ function Book(props) {
                 if (peminjam_id == id_user) {
                     b = (<div className="tooltip" data-tip={`You have borrowed this book`}><button className="btn btn-disabled">Borrow Book</button></div>)
                 }
-            } else if (buku_dipinjam !== null) {
+            } else if (buku_dipinjam !== null) { 
                 b = (<div className="tooltip" data-tip={`You have borrowed another book. Return the previous book first`}><button className="btn btn-disabled">Borrow Book</button></div>)
             } else {
                 b = (<button onClick={() => { borrowBook() }} className="btn bg-transparent border-[#03A9F4] border-2 hover:bg-[#03A9F4] hover:border-[#03A9F4] hover:text-white group" ><img src="bluemark.svg" alt="" className='w-8 -m-1 mb-3' />Borrow Book</button>)
@@ -217,11 +217,11 @@ function Book(props) {
         } else if (state == "modal") {
             if (!cover) {
                 return (
-                    <img src={"RPLibrary(placeholder).jpg"} className='max-h-[75svh]' />
+                    <img src={"RPLibrary(placeholder).jpg"} className='' />
                 )
             } else {
                 return (
-                    <img src={cover} className='h-[75svh] ' />
+                    <img src={cover} className='' />
                 )
             }
         }
@@ -331,7 +331,7 @@ function Book(props) {
                         }}>✕</button>
                     </form>
                     <div className="row flex h-max">
-                        <div className='rounded-lg col-4 glass flex justify-center align-middle h-1/6'>
+                        <div className='rounded-lg col-4 glass flex justify-center align-middle my-10'>
                             {coverChecker("modal")}
                         </div>
                         <div className="col-8 flex-col">
@@ -351,8 +351,8 @@ function Book(props) {
             <div id={`book${id}`} onClick={() => {
                 document.getElementById(`bookInfoModal${id}`).showModal();
                 console.log(id, judul, namaFile, idPeminjam);
-            }} className='w-36 h-64 bg-base-100 mx-2 my-2 cursor-pointer rounded-box'>
-                <div className="bg-base-300 row overflow-hidden h-48 w-36 rounded-t-box">
+            }} className='w-36 bg-base-100 mx-2 pb-2 my-2 cursor-pointer rounded-box'>
+                <div className="bg-base-300 row overflow-hidden h-48 rounded-t-box">
                     {coverChecker("initial")}
                 </div>
                 <div className="row mt-2 flex justify-center">

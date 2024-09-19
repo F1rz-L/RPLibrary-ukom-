@@ -46,7 +46,6 @@ function Navbar() {
                     return 'User'
                 } else if (statusUser == 2) {
                     return 'Bluemark'
-                    setBluemark(true)
                 } else if (statusUser == 3) {
                     return 'Curator'
                 }
@@ -107,10 +106,10 @@ function Navbar() {
     return (
         <div className="navbar bg-base-300 px-8">
             <div className="flex-1">
-                <Link to={"/"} className="btn btn-ghost text-xl w-1/12"
+                <Link to={"/"} className="btn btn-ghost w-20"
                 // style={{ backgroundImage: "url(/RPLibrary.png)", backgroundSize: "72px 72px", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}
                 >
-                    <img src="/RPLibrary.png" alt="Logo" className='min-h-10 min-w-10' />
+                    <img src="/RPLibrary.png" alt="Logo" className='' />
                 </Link>
             </div>
             <div className="flex-none">

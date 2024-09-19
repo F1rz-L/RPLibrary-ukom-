@@ -1,21 +1,30 @@
-import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTriangleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { link } from '../Axios/link'
+import UseGet from '../Axios/UseGet'
 
 function GetBluemark() {
     const [idUser, setIdUser] = useState(sessionStorage.getItem('iduser'))
+    const [user] = UseGet(`/user/${idUser}`)
+    const [errorMessage, setErrorMessage] = useState('')
     const navigate = useNavigate()
+
     function subscribe() {
-        link.post('/subscribe', { iduser: idUser }).then((res) => {
-            console.log(res.data)
-            sessionStorage.setItem('status_user', 2)
-            navigate('/')
-            window.location.reload()
-        }).catch((error) => {
-            console.error('Error:', error);
-        })
+        setErrorMessage('')
+        if (user?.data?.saldo < 120000) {
+            setErrorMessage('Insufficient balance')
+        } else {
+            link.post('/subscribe', user?.data?.iduser).then((res) => {
+                console.log(res.data)
+                sessionStorage.setItem('status_user', 2)
+                navigate('/')
+                window.location.reload()
+            }).catch((error) => {
+                console.error('Error:', error);
+            })
+        }
     }
 
     return (
@@ -23,6 +32,14 @@ function GetBluemark() {
             <div className="flex justify-center">
                 <div className=''>
                     <div className='flex justify-center'>
+                        <div className='fixed flex justify-center z-[3]'>
+                            {errorMessage && (
+                                <div role="alert" className="alert alert-error px-5">
+                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                    <span className="ml-2">{errorMessage}</span>
+                                </div>
+                            )}
+                        </div>
                         <img src="RPLibrary(icon).png" className='w-20 h-20 justify-self-center' alt="" />
                     </div>
                     <h1 className='text-3xl mb-4 font-bold'>Subscribing to Bluemark?</h1>
