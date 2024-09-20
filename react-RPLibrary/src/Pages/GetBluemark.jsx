@@ -16,7 +16,9 @@ function GetBluemark() {
         if (user?.data?.saldo < 120000) {
             setErrorMessage('Insufficient balance')
         } else {
-            link.post('/subscribe', user?.data?.iduser).then((res) => {
+            link.post('/subscribe', {
+                iduser: user?.data?.id
+            }).then((res) => {
                 console.log(res.data)
                 sessionStorage.setItem('status_user', 2)
                 navigate('/')
