@@ -85,7 +85,7 @@ function CartPage() {
         } else {
             const order = {
                 idorder: formattedId,
-                iduser: user?.data?.iduser,
+                iduser: user?.data?.id,
                 tglorder: tglorder.toString(),
                 total: totalOrder,
                 status: 0,
