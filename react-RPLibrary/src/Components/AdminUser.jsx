@@ -132,7 +132,7 @@ function AdminUser(props) {
 
     return (
         <>
-            <div className="stats shadow-lg mb-4 w-full">
+            <div className="stats glass shadow-lg mb-4 w-full">
                 <div className="stat">
                     <div className="stat-title">All Users</div>
                     <div className="stat-value">{users.data?.length}</div>

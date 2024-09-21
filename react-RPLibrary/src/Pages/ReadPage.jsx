@@ -77,7 +77,7 @@ function ReadPage() {
                             renderAnnotationLayer={false}
                             customTextRenderer={false}
                             pageNumber={pageNumber}
-                            height={700}
+                            height={1000}
                             className="mx-auto"
                         />
                     </Document>

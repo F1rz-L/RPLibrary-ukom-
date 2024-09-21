@@ -165,7 +165,7 @@ function AdminOrder(props) {
 
     return (
         <>
-            <div className="stats shadow-lg mb-4 w-full">
+            <div className="stats glass shadow-lg mb-4 w-full">
                 <div className="stat">
                     <div className="stat-title">Order Count</div>
                     <div className="stat-value">{orders.data?.length}</div>

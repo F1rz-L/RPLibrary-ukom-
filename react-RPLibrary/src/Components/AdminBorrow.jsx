@@ -93,7 +93,7 @@ function AdminBorrow(props) {
 
     return (
         <>
-            <div className="stats shadow-lg mb-4 w-full">
+            <div className="stats glass shadow-lg mb-4 w-full">
                 <div className="stat">
                     <div className="stat-title">Borrowment Count</div>
                     <div className="stat-value">{borrows.data?.length}</div>

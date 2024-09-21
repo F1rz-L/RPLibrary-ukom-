@@ -83,7 +83,7 @@ function HomePage() {
 
             return (
                 <div className="hero bg-base-200 justify-center p-2 m-4 rounded-box">
-                    <div className="stats shadow w-full">
+                    <div className="stats glass shadow w-full">
                         <div className="stat">
                             <div className="stat-title">Your Balance</div>
                             <div className="stat-value">
@@ -122,7 +122,7 @@ function HomePage() {
                             <div className="stat-desc">Your subscription ends in..</div>
                             <div className="stat-value flex justify-center my-2">
                                 <div
-                                    className="radial-progress bg-base-200 text-primary-content text-sm border-base-200 border-4"
+                                    className="radial-progress bg-base-300 text-sm border-base-300 border-4"
                                     style={{ "--value": percentageRemainingSubscription }}
                                     role="progressbar">
                                     <span className="countdown font-mono text-lg">
