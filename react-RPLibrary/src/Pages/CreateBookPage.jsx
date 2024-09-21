@@ -61,9 +61,15 @@ function CreateBookPage() {
         setValue('cover', file); // Update form value with the selected file
     }
 
+    function clearCover() {
+        setCover(null);
+        setValue('cover', null);
+        console.log('Cover cleared');
+    }
+
     function createBook(data) {
         console.log(data.cover);
-        const token = sessionStorage.getItem('auth_token');
+        // const token = sessionStorage.getItem('auth_token');
         const formData = new FormData();
         formData.append('judul', data.judul);
         formData.append('pengarang', data.pengarang);
@@ -75,27 +81,40 @@ function CreateBookPage() {
         formData.append('page_number', data.page_number);
         formData.append('rating', data.rating);
         formData.append('tahun_terbit', data.tahun_terbit);
-        formData.append('cover', data.cover);
+        if (data.cover) {
+            formData.append('cover', data.cover);
+        } 
 
-        axios.post(`http://127.0.0.1:8000/api/buku`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}`
-            }
-        }
-        ).then(res => {
-            console.log(res.data)
-            navigate('/book-index')
-        })
+        link.post('/buku', formData)
+            .then(res => {
+                console.log(res.data)
+                navigate('/book-index')
+            })
     }
 
     return (
         <>
             <div className="flex">
-                <h1 className='text-5xl ml-8 mb-4 row justify-start font-extrabold'>Input Buku Baru</h1>
+                <h1 className='text-5xl ml-8 mb-4 row justify-start font-extrabold'>Input New Book</h1>
             </div>
-            <form onSubmit={handleSubmit(createBook)}>
-                <div className="rounded-box bg-base-200 m-4 p-8 flex flex-col gap-2">
+            <form onSubmit={handleSubmit(createBook)} className='flex'>
+                <div className="col-4 m-4 sticky h-full">
+                    {cover ? (
+                        <div className="glass rounded-box p-1 flex justify-center">
+                            <img src={cover} className="rounded-box h-80" alt="Book Cover" />
+                        </div>
+                    ) : (
+                        <div className="glass rounded-box p-1 flex justify-center">
+                            <img src="RPLibrary(placeholder).jpg" className="rounded-box" alt="Book Cover" />
+                        </div>)}
+                    <div className='gap-2 w-full my-2 grid grid-flow-col'>
+                        <input type="file" id="selectedFile" className='hidden' {...register("cover")} onChange={handleFileChange} />
+                        <input type="button" value={"Add Cover"} className="btn btn-secondary grid-cols-10" onClick={() => document.getElementById('selectedFile').click()} />
+                        <input type='button' value={"Clear"} onClick={clearCover} className="btn btn-error text-white" />
+                    </div>
+                </div>
+
+                <div className="rounded-box bg-base-200 col-8 m-4 p-8 flex flex-col gap-2">
                     <label htmlFor="" className="form-control">
                         <span className="label-text">ISBN 13</span>
                         <div className='flex gap-1'>
@@ -106,38 +125,41 @@ function CreateBookPage() {
                         <span className="label-text text-red-700">{errors.isbn13 && "ISBN 13 harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Judul Buku</span>
+                        <span className="label-text">Title</span>
                         <input type="text" id='judul' {...register("judul", { required: true })} className='input input-bordered' />
                         <span className="label-text text-red-700">{errors.judul && "Judul buku harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Pengarang Buku</span>
+                        <span className="label-text">Author</span>
                         <input type="text" id='pengarang' {...register("pengarang", { required: true })} className="input input-bordered" />
                         <span className="label-text text-red-700">{errors.pengarang && "Pengarang harus diisi"}</span>
                     </label>
                     <label className="form-control">
-                        <span className="label-text">Deskripsi Buku</span>
+                        <span className="label-text">Book Description</span>
                         <textarea name="" id="deskripsi" {...register("deskripsi", { required: true })} rows="2" className="grow textarea textarea-bordered "></textarea>
                         <span className="label-text text-red-700">{errors.deskripsi && "Deskripsi harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Penerbit Buku</span>
+                        <span className="label-text">Publisher</span>
                         <input type="text" id='penerbit' {...register("penerbit", { required: true })} className="input input-bordered" />
                         <span className="label-text text-red-700">{errors.penerbit && "Penerbit harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Bahasa</span>
+                        <span className="label-text">Language</span>
                         <input type="text" id='bahasa' {...register("bahasa", { required: true })} className="input input-bordered w-20 uppercase" />
                         <span className="label-text text-red-700">{errors.bahasa && "Bahasa harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Tahun Terbit</span>
-                        <input type="text" id='tahun_terbit' {...register("tahun_terbit", { required: true })} className="input input-bordered w-20" />
+                        <div className='flex gap-1'>
+                            <span className="label-text">Published Year</span>
+                            <span className='label-text italic opacity-80 text-sm'>(YYYY-MM-DD)</span>
+                        </div>
+                        <input type="text" id='tahun_terbit' {...register("tahun_terbit", { required: true })} className="input input-bordered w-32" />
                         <span className="label-text text-red-700">{errors.tahun_terbit && "Tahun terbit harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
                         <span className="label-text">Rating</span>
-                        <input type="text" id='rating' {...register("rating", { required: true })} className="input input-bordered w-12" />
+                        <input type="text" id='rating' {...register("rating", { required: true })} className="input input-bordered w-20" />
                         <span className="label-text text-red-700">{errors.rating && "Rating harus diisi"}</span>
                     </label>
                     <label htmlFor="" className="form-control">
@@ -145,21 +167,9 @@ function CreateBookPage() {
                         <input type="text" id='page_number' {...register("page_number", { required: true })} className="input input-bordered w-20" />
                         <span className="label-text text-red-700">{errors.page_number && "Page number harus diisi"}</span>
                     </label>
-                    {cover ? (
-                        <label htmlFor="" className="form-control">
-                            <span className="label-text">Cover</span>
-                            <div className="flex gap-2 glass rounded-box w-32 p-1">
-                                <img src={cover} className="rounded-box" alt="Book Cover" />
-                            </div>
-                        </label>
-                    ) : (<label htmlFor="" className="form-control">
-                        <span className="label-text">Cover</span>
-                        <div className="flex gap-2 glass rounded-box w-32 p-1">
-                            <img src="RPLibrary(placeholder).jpg" className="rounded-box" alt="Book Cover" />
-                        </div>
-                    </label>)}
+
                     <label htmlFor="" className="form-control">
-                        <span className="label-text">Harga</span>
+                        <span className="label-text">Price</span>
                         <div>
                             <span className='text-xl font-bold'>Rp </span><input type="text" id='harga' {...register("harga", { required: true })} className="input input-bordered w-28" />
                         </div>
@@ -167,8 +177,6 @@ function CreateBookPage() {
                     </label>
 
                     <div className='flex gap-2 w-full justify-end'>
-                        <input type="file" id="selectedFile" className='hidden' {...register("cover")} onChange={handleFileChange} />
-                        <input type="button" value={"Add Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedFile').click()} />
                         <input type='submit' value={"Input Book"} className="btn btn-success text-white" />
                     </div>
                 </div>

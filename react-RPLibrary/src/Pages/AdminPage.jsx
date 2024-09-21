@@ -12,7 +12,7 @@ function AdminPage() {
     const [users] = UseGet('/user')
     const [orders] = UseGet('/order')
 
-    console.log(orders);
+    console.log(borrows);
 
     return (
         <>

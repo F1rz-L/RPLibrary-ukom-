@@ -34,24 +34,31 @@ class BluemarkController extends Controller
 
     public function indexPinjam()
     {
-        $data = DB::table('pinjamen')->join('bukus', 'pinjamen.idbuku', '=', 'bukus.idbuku')->where('status', 0)->select('pinjamen.*', 'bukus.*')->get();
+        $data = DB::table('pinjamen')
+            ->join('bukus', 'pinjamen.idbuku', '=', 'bukus.idbuku')
+            // ->where('status', 0)
+            ->select('pinjamen.*', 'bukus.*')
+            ->get();
 
         // calculate denda
         $currentDate = Carbon::now();
         $data->transform(function ($item) use ($currentDate) {
             $tglkembali = Carbon::parse($item->tglkembali);
 
-            // Check if the book is returned late
             if ($currentDate->greaterThan($tglkembali)) {
-                // Calculate days overdue
                 $daysLate = $currentDate->diffInDays($tglkembali);
-                // Calculate the fine (500 per day)
-                $item->denda = $daysLate * 500;
-                $item->status = 1;
+                $denda = $daysLate * 500;
+                $status = 1;
             } else {
-                // No fine if returned on time
-                $item->denda = 0;
+                $denda = 0;
+                $status = 0;
             }
+
+            // Update the record in the database
+            DB::table('pinjamen')->where('idpinjaman', $item->idpinjaman)->update([
+                'denda' => $denda,
+                'status' => $status,
+            ]);
 
             return $item;
         });
@@ -75,13 +82,29 @@ class BluemarkController extends Controller
     public function kembali($idpinjaman)
     {
         $data = Pinjaman::where('idpinjaman', $idpinjaman)->first();
-        User::where('id', $data->idpeminjam)->update(['idbukupinjam' => null]);
-        Buku::where('idbuku', $data->idbuku)->update(['idpeminjam' => null]);
-        Pinjaman::where('idpinjaman', $idpinjaman)->update(['status' => 1]);
-        return response()->json([
-            'message' => 'Success',
-            'data' => $data
-        ], 200);
+        $user = User::where('id', $data->idpeminjam)->first();
+        
+        if ($data->status == 1) {
+            $denda = $data->denda;
+            $saldoAfter = $user->saldo - $denda;
+            
+            User::where('id', $data->idpeminjam)->update(['saldo' => $saldoAfter]);
+            User::where('id', $data->idpeminjam)->update(['idbukupinjam' => null]);
+            Buku::where('idbuku', $data->idbuku)->update(['idpeminjam' => null]);
+            Pinjaman::where('idpinjaman', $idpinjaman)->delete();
+            return response()->json([
+                'message' => 'Success',
+                'data' => $data
+            ], 200);
+        } else {
+            User::where('id', $data->idpeminjam)->update(['idbukupinjam' => null]);
+            Buku::where('idbuku', $data->idbuku)->update(['idpeminjam' => null]);
+            Pinjaman::where('idpinjaman', $idpinjaman)->delete();
+            return response()->json([
+                'message' => 'Success',
+                'data' => $data
+            ], 200);
+        }
     }
 
     public function subscribe(Request $request)

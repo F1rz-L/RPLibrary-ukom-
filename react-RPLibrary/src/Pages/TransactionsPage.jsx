@@ -55,7 +55,7 @@ function TransactionsPage() {
                                                                 <p className="text-2xl mt-3 mx-4 font-bold">{index + 1}</p>
                                                                 <div>
                                                                     <p className='text-2xl w-fit'>{orderDetail.judul}</p>
-                                                                    <p className='text-sm opacity-50'>{orderDetail.jumlah} book(s) @ {Number(orderDetail.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
+                                                                    <p className='text-sm opacity-70'>{orderDetail.jumlah} book(s) @ {Number(orderDetail.harga).toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}</p>
                                                                 </div>
                                                             </div>
                                                             <div className="divider"></div>
