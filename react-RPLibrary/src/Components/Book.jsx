@@ -12,6 +12,7 @@ function Book(props) {
         register,
         handleSubmit,
         watch,
+        getValues,
         formState: { errors },
     } = useForm()
 
@@ -227,6 +228,13 @@ function Book(props) {
         }
     }
 
+    function handlePdfChange(){
+        console.log(
+            getValues('namaFile')
+        );
+        
+    }
+
     // Untuk memanggil fungsi edit
     useEffect(() => {
         if (modalIsEditing) {
@@ -260,15 +268,15 @@ function Book(props) {
                         </div>
                         <div className="mt-6 flex justify-between px-8 h-1/6">
                             <div className='flex-col col-6'>
-                                <h2 className='text-4xl'>Rp <input type="text" defaultValue={harga} {...register("harga", { required: true })} className="input input-bordered w-28 h-10" /></h2>
+                                <h2 className='text-4xl' onClick={handlePdfChange}>Rp <input type="text" defaultValue={harga} {...register("harga", { required: true })} className="input input-bordered w-28 h-10" /></h2>
                             </div>
                             <div className='col-6 flex gap-2'>
                                 <input type="file" id="selectedIMG" name='cover' className='hidden' {...register("cover")} />
                                 <input type="button" value={"Edit Cover"} className="btn text-white btn-warning" onClick={() => document.getElementById('selectedIMG').click()} />
 
                                 <div className='relative'>
-                                    {/* { && <div className='badge badge-success badge-md absolute -mr-1 -mt-1 right-0 text-white'><FontAwesomeIcon icon={faCheck} /></div>} */}
-                                    <input type="file" id="selectedPDF" name='namaFile' className='hidden' {...register("namaFile")} />
+                                    {getValues("namaFile") && <div className='badge badge-success badge-md absolute -mr-1 -mt-1 right-0 text-white'><FontAwesomeIcon icon={faCheck} /></div>}
+                                    <input type="file" id="selectedPDF" name='namaFile' onChange={handlePdfChange} className='hidden' {...register("namaFile")} />
                                     <input type="button" value={"Insert PDF"} className="btn text-white btn-accent" onClick={() => document.getElementById('selectedPDF').click()} />
                                 </div>
                                 {/* <input type="file" className="file-input file-input-bordered w-full" /> */}

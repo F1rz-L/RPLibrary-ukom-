@@ -70,7 +70,7 @@ function AdminUser(props) {
                                 <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make Admin</a>
                             </li>
                         }
-                        {row.status !== 5 && row.status !== 1 &&
+                        {row.status !== 5 && row.status !== 1 && row.status !== 2 &&
                             <li onClick={() => switchuser(row.id, row.status)}>
                                 <a className='text-nowrap'><FontAwesomeIcon icon={faEdit} /> Make User</a>
                             </li>
@@ -108,7 +108,7 @@ function AdminUser(props) {
         });
     }
 
-    function switchuser(idUser, statusUser) {
+    function switchuser(idUser) {
         link.get(`/user/switchUser/${idUser}`).then((res) => {
             console.log(res.data);
             window.location.reload();

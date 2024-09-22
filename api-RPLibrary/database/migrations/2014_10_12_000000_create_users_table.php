@@ -38,8 +38,24 @@ return new class extends Migration
         ]);
 
         User::create([
-            'nama' => 'Joni',
-            'email' => 'joni@g.cc',
+            'nama' => 'Joni1',
+            'email' => 'joni1@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 1,
+            'saldo' => 0,
+        ]);
+        User::create([
+            'nama' => 'Joni2',
+            'email' => 'joni2@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 1,
+            'saldo' => 0,
+        ]);
+        User::create([
+            'nama' => 'Joni3',
+            'email' => 'joni3@g.cc',
             'password' => bcrypt('123'),
             'alamat' => 'Bangah Regency',
             'status' => 1,
@@ -47,8 +63,24 @@ return new class extends Migration
         ]);
 
         User::create([
-            'nama' => 'Tejo',
-            'email' => 'tejo@g.cc',
+            'nama' => 'Tejo1',
+            'email' => 'tejo1@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 2,
+            'saldo' => 0,
+        ]);
+        User::create([
+            'nama' => 'Tejo2',
+            'email' => 'tejo2@g.cc',
+            'password' => bcrypt('123'),
+            'alamat' => 'Bangah Regency',
+            'status' => 2,
+            'saldo' => 0,
+        ]);
+        User::create([
+            'nama' => 'Tejo3',
+            'email' => 'tejo3@g.cc',
             'password' => bcrypt('123'),
             'alamat' => 'Bangah Regency',
             'status' => 2,
