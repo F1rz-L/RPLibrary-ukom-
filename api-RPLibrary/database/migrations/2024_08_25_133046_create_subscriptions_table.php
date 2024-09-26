@@ -21,7 +21,15 @@ return new class extends Migration
         });
 
         Subscription::create([
-            'iduser' => 3,
+            'iduser' => 5,
+            'tglakhir' => date('Y-m-d', strtotime('+1 month'))
+        ]);
+        Subscription::create([
+            'iduser' => 6,
+            'tglakhir' => date('Y-m-d', strtotime('+1 month'))
+        ]);
+        Subscription::create([
+            'iduser' => 7,
             'tglakhir' => date('Y-m-d', strtotime('+1 month'))
         ]);
     }

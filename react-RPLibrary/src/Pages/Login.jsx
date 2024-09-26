@@ -99,6 +99,7 @@ function Login() {
                         <button type="submit" className="btn btn-primary mt-4">Login</button>
                     </form>
                     <p className='text-sm text-center'>Don't have an account? <Link to={"/register"} className="link">Register</Link>.</p>
+                    <p className='text-sm text-center'>Forgot password? <Link to={"/forgotpassword"} className="link">Send verification email</Link>.</p>
                     {/* <button onClick={() => {
                         console.log(sessionStorage.getItem('token'), sessionStorage.getItem('iduser'));
                     }}>test token</button> */}

@@ -8,9 +8,13 @@ use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -19,8 +23,17 @@ class AuthController extends Controller
         $user = new User();
         $rules = [
             'nama' => 'required',
+            'regex:/^[a-zA-Z\s]+$/',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&.,_-]/',
+            ],
             'alamat' => 'required',
         ];
 
@@ -106,6 +119,100 @@ class AuthController extends Controller
                 ], 400);
             }
         }
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        // Validate the email field
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first(),
+                'status' => false
+            ], 400);
+        }
+
+        // Get the user from the database
+        $user = User::where('email', $request->email)->first();
+
+        // Generate a password reset token
+        $token = Str::random(60);
+
+        // Store the token in the password_resets table
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => Hash::make($token),
+            'created_at' => now()
+        ]);
+
+        // Construct the reset link pointing to the React frontend
+        $resetLink = "http://localhost:5173/resetpassword?token=" . $token . "&email=" . urlencode($request->email);
+
+        // Send the reset link via email
+        Mail::send('reset-password', ['resetLink' => $resetLink], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Reset Your Password');
+        });
+
+        return response()->json([
+            'message' => 'A password reset link has been sent to your email.',
+            'status' => true
+        ], 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        // Validate request data
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email|exists:users,email',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&.,_-]/',
+                'confirmed',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()->first(),
+                'status' => false
+            ], 400);
+        }
+
+        // Check if the reset token and email match the database record
+        $passwordReset = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+
+        if (!$passwordReset) {
+            return response()->json([
+                'message' => 'Invalid token or email.',
+                'status' => false
+            ], 400);
+        }
+
+        // Reset the user's password
+        $user = User::where('email', $request->email)->first();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Delete the reset record so the token cannot be reused
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return response()->json([
+            'message' => 'Password has been successfully reset.',
+            'status' => true
+        ], 200);
     }
 
     public function checkOTP(Request $request)

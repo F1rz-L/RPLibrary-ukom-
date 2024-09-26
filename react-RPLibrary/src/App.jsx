@@ -9,6 +9,8 @@ import CreateBookPage from "./Pages/CreateBookPage";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import OTPVerification from "./Pages/OTPVerification";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 function App() {
     const lenis = useLenis(({ scroll }) => {
@@ -24,6 +26,8 @@ function App() {
                         <Route path="/register" element={<Register />} />
                         <Route path="/verification" element={<OTPVerification />} />
                         <Route path="/login" element={<Login />} />
+                        <Route path="/forgotpassword" element={<ForgotPassword />} />
+                        <Route path="/resetpassword" element={<ResetPassword />} />
                         <Route path="/gbookapi" element={<GBookApi />} />
                     </Routes>
                 </BrowserRouter>

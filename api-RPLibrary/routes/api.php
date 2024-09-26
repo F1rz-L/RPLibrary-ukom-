@@ -38,6 +38,8 @@ Route::get('/', function () {
 Route::post('/otp', [AuthController::class, 'checkOTP']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgotpassword', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::get('/user', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
